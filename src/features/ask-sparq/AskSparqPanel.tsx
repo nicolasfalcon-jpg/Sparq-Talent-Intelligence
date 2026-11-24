@@ -110,7 +110,7 @@ export function AskSparqPanel({ greetingName, ownPersonId }: { greetingName: str
 
             <form className="relative flex items-center gap-2 px-[18px] pt-3 pb-[18px]" onSubmit={(e) => { e.preventDefault(); send(); }}>
               <label htmlFor="nav-ai-q" className="sr-only-v">Ask Sparq</label>
-              <div className="flex h-[52px] flex-1 items-center rounded-pill bg-white px-[18px]">
+              <div className="focus-ring-within flex h-[52px] flex-1 items-center rounded-pill bg-white px-[18px]">
                 <input id="nav-ai-q" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Ask anything…" className="min-w-0 flex-1 border-0 bg-transparent text-[15px] text-ink outline-none" />
               </div>
               <button type="submit" aria-label="Send" className="inline-flex size-[52px] cursor-pointer items-center justify-center rounded-full border-0 bg-coral text-white"><Icon name="arrowUp" size={18} strokeWidth={2.2} /></button>

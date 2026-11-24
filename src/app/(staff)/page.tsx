@@ -49,13 +49,16 @@ export default async function HomePage() {
                   <div className="flex-none text-right"><div className="text-[30px] leading-none font-light tracking-[-0.03em]">{o.day}</div><div className="mt-1 text-xs text-mute">{o.month} kick-off</div></div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    {o.seats.map((s) => (
-                      <span key={s.id} className={clsx("inline-flex size-[38px] items-center justify-center overflow-hidden rounded-full bg-white", !s.personId && "border-[1.5px] border-dashed border-seat-empty")}>
-                        {s.personId && <Portrait who={s.personId} size={38} decorative />}
-                      </span>
-                    ))}
-                    <span className="ml-2 text-[13px] text-mute">{o.seatsLabel}</span>
+                  {/* The label shrinks beside the seats first (as before); it drops under them only when even its narrowest form cannot fit. */}
+                  <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1.5">
+                    <div className="flex items-center gap-1.5">
+                      {o.seats.map((s) => (
+                        <span key={s.id} className={clsx("inline-flex size-[38px] flex-none items-center justify-center overflow-hidden rounded-full bg-white", !s.personId && "border-[1.5px] border-dashed border-seat-empty")}>
+                          {s.personId && <Portrait who={s.personId} size={38} decorative />}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="min-w-min flex-[1_1_0px] text-[13px] text-mute">{o.seatsLabel}</span>
                   </div>
                   <span aria-hidden="true" className="inline-flex size-10 flex-none items-center justify-center rounded-full bg-surface-muted transition-colors group-hover:bg-ink group-hover:text-white"><Icon name="arrowUpRight" size={16} strokeWidth={1.8} /></span>
                 </div>

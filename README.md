@@ -16,7 +16,7 @@ npm run dev            # http://localhost:3000
 |---|---|
 | `npm run check` | Typecheck, lint and unit tests (Vitest) |
 | `npm run build` / `start` | Production build and server |
-| `npm run test:e2e` | Playwright (run `npx playwright install chromium` once) |
+| `npm run test:e2e` | Builds an isolated copy of the app, then runs Playwright at 1440 and 1024 (each test gets its own server; never touches `npm run dev` or `.next`). Run `npx playwright install chromium` once per Playwright version. See `docs/handoff/07-testing.md` |
 | `npm run db:check` | Applies `supabase/migrations` to an in-process Postgres (PGlite) |
 | `npm run snapshot` | Builds and captures a static HTML snapshot of the main screens |
 
@@ -32,7 +32,7 @@ npm run dev            # http://localhost:3000
 - **Auth** is a demo persona cookie.
 - **Persistence** is server memory, so it resets on restart.
 - **Fill a Role, Build a Team, Compare, Planning, Insights and My Space** are honest placeholders.
-- **E2E tests** are written but haven't been executed yet.
+- **Test coverage is the phase-1 journeys.** Typecheck, lint, 55 unit tests and 34 E2E tests pass (verified 2026-11-24, see `docs/handoff/07-testing.md`). Known limitations are listed there.
 
 Details: `docs/handoff/01-capability-assessment.md` and `05-gap-analysis.md`.
 

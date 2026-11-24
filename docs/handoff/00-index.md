@@ -10,6 +10,7 @@ The approved design is **V4.2**. The design phase is closed, and this folder is 
 | 04 | [Data & domain](04-data-domain.md) | Entities, relationships, fictional dataset, real logic vs illustrative data |
 | 05 | [Prototype-to-production gap analysis](05-gap-analysis.md) | Everything static, simulated, local-only or predefined in V4.2, and its production behavior |
 | 06 | [Status & roadmap](06-roadmap.md) | Phase 1 delivered, phases 2–3 plan, definition of done |
+| 07 | [Testing, environments & verification status](07-testing.md) | What was verified and how, the E2E isolation strategy, Playwright requirements, remaining limitations |
 
 **Visual references**
 - `screenshots/v4.2-approved/`: 12 approved V4.2 screens captured in Play at 1440×900, downscaled to 800px wide.

@@ -31,11 +31,29 @@
 
 @layer utilities {
   .sr-only-v { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  /*
+   * Text inputs that sit inside a pill container drop their own outline; the container shows the same
+   * 2px coral ring as every other focusable element (the :focus-visible rule above). Never remove it.
+   */
+  .focus-ring-within:has(input:focus-visible) { outline: 2px solid var(--color-coral); outline-offset: 3px; }
 }
 
 /* Print: only the passport document preview is printed (used by "Export PDF portfolio"). */
 @media print {
+  /* The app shell takes no space in print (display:none, so it cannot add blank pages). */
+  body > div:not(:has([data-print-root])) { display: none !important; }
   body * { visibility: hidden !important; }
   [data-print-root], [data-print-root] * { visibility: visible !important; }
+  /*
+   * The export dialog is centred with Tailwind v4's `translate: var(--tw-translate-x) var(--tw-translate-y)` and clipped with
+   * overflow, which makes it the containing block of the document and offsets the document on the page. Flatten it so the
+   * document starts at the top. The two variables are reset (not `translate: none`) because the CSS minifier rewrites
+   * `translate: none` away, which silently leaves the offset in place.
+   */
+  [role="dialog"]:has([data-print-root]) {
+    position: absolute !important; inset: 0 auto auto 0 !important; --tw-translate-x: 0 !important; --tw-translate-y: 0 !important; display: block !important;
+    width: 100% !important; max-width: none !important; max-height: none !important; overflow: visible !important;
+    background: transparent !important; box-shadow: none !important;
+  }
   [data-print-root] { position: absolute !important; inset: 0 auto auto 0 !important; width: 100% !important; box-shadow: none !important; border-radius: 0 !important; }
 }

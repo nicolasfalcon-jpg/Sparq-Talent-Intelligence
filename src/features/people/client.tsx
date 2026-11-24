@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import { SparkGlyph } from "@/design-system/icons";
 import { Portrait } from "@/design-system/Portrait";
 import { pillClass } from "@/design-system/primitives";
-import { COMPARE_LIMIT, useUi } from "@/lib/ui-store";
+import { COMPARE_LIMIT, useHydrated, useUi } from "@/lib/ui-store";
 
 /** Natural-language search bar. Navigates to /people?q=… so results are shareable URLs. */
 export function PeopleSearchBar({ initialQ }: { initialQ: string }) {
@@ -24,7 +24,7 @@ export function PeopleSearchBar({ initialQ }: { initialQ: string }) {
 
   return (
     <>
-      <form role="search" onSubmit={(e) => { e.preventDefault(); go(q); }} className="flex h-[68px] items-center gap-3 rounded-pill bg-white pr-2.5 pl-3 shadow-search">
+      <form role="search" onSubmit={(e) => { e.preventDefault(); go(q); }} className="focus-ring-within flex h-[68px] items-center gap-3 rounded-pill bg-white pr-2.5 pl-3 shadow-search">
         <span className="inline-flex size-[46px] flex-none items-center justify-center rounded-full bg-coral"><SparkGlyph size={18} /></span>
         <label htmlFor="nl" className="sr-only-v">Describe who you are looking for</label>
         <input id="nl" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Describe who you’re looking for…" className="min-w-0 flex-1 border-0 bg-transparent text-[17px] text-ink outline-none" />
@@ -38,10 +38,11 @@ export function PeopleSearchBar({ initialQ }: { initialQ: string }) {
 
 export function AddToCompareButton({ personId }: { personId: string }) {
   const { compare, toggleCompare } = useUi();
+  const hydrated = useHydrated();
   const on = compare.includes(personId);
   const full = !on && compare.length >= COMPARE_LIMIT;
   return (
-    <button type="button" className={pillClass("default", "xl")} aria-pressed={on} disabled={full} onClick={() => toggleCompare(personId)} title={full ? `Compare up to ${COMPARE_LIMIT} people` : undefined}>
+    <button type="button" className={pillClass("default", "xl")} aria-pressed={on} disabled={!hydrated || full} onClick={() => toggleCompare(personId)} title={full ? `Compare up to ${COMPARE_LIMIT} people` : undefined}>
       {on ? "✓ Added to compare" : "Add to compare"}
     </button>
   );

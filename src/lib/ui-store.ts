@@ -5,10 +5,21 @@
  * - Compare tray selection (max 3), kept per browser tab in sessionStorage so it survives navigation.
  * Business data (shortlists, passport edits) goes through server actions → repositories.
  */
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export const COMPARE_LIMIT = 3;
+
+const noopSubscribe = () => () => {};
+/**
+ * False in server-rendered HTML and during hydration, true afterwards. The compare selection lives in
+ * sessionStorage, which the server cannot see, so controls that depend on it stay disabled until hydrated
+ * (otherwise the 4th "Add to compare" is briefly enabled even when three people are already selected).
+ */
+export function useHydrated(): boolean {
+  return useSyncExternalStore(noopSubscribe, () => true, () => false);
+}
 
 type AssistantMode = "closed" | "open" | "min";
 

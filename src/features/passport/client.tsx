@@ -192,8 +192,9 @@ export function OwnerActions({ view }: { view: PassportView }) {
   });
   const openAt = (t: Tab) => { setTab(t); setDraft(view.person.summary); setError(null); setOpen(true); };
   const tabBtn = (t: Tab, label: string) => <button key={t} type="button" role="tab" aria-selected={tab === t} onClick={() => setTab(t)} className={pillClass(tab === t ? "ink" : "default", "sm")}>{label}</button>;
-  const input = "h-[46px] w-full rounded-pill border-0 bg-surface-muted px-[18px] text-[15px] text-ink outline-none";
-  const area = "w-full resize-y rounded-lg border-0 bg-surface-muted px-[18px] py-4 text-base leading-[1.6] text-ink outline-none";
+  // No `outline-none`: these fields use the global coral :focus-visible ring (2px, offset 3px).
+  const input = "h-[46px] w-full rounded-pill border-0 bg-surface-muted px-[18px] text-[15px] text-ink";
+  const area = "w-full resize-y rounded-lg border-0 bg-surface-muted px-[18px] py-4 text-base leading-[1.6] text-ink";
 
   return (
     <>

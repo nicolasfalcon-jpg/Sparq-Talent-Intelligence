@@ -1,5 +1,7 @@
 # 01 · Engineering capability assessment & stack decision
 
+> **Status update (2026-11-24, phase 2A.1).** The Playwright limitation described below no longer applies: the suite has since been executed locally and passes (see [07-testing.md](07-testing.md)). The rest of this document is the original assessment, kept as written.
+
 Assessed on 2026-11-24 in the environment that produced this repository: a Linux sandbox with Node.js 22 and npm 10, access to the npm registry, and **no** access to browser binaries, OS package mirrors or external databases.
 
 ## 1. Answers

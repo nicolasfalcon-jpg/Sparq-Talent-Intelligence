@@ -93,7 +93,7 @@ export function HomeAskCard() {
 
       <form className="relative flex items-center gap-2" onSubmit={(e) => { e.preventDefault(); send(); }}>
         <label htmlFor="ask" className="sr-only-v">Ask Sparq</label>
-        <div className="flex h-[54px] flex-1 items-center rounded-pill bg-white px-[18px] shadow-[0_4px_16px_rgba(241,91,64,.08)]">
+        <div className="focus-ring-within flex h-[54px] flex-1 items-center rounded-pill bg-white px-[18px] shadow-[0_4px_16px_rgba(241,91,64,.08)]">
           <input id="ask" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ask anything…" className="min-w-0 flex-1 border-0 bg-transparent text-[15px] text-ink outline-none" />
         </div>
         <button type="submit" aria-label="Ask" className="inline-flex size-[54px] flex-none cursor-pointer items-center justify-center rounded-full border-0 bg-coral text-white shadow-coral"><Icon name="arrowUp" size={18} strokeWidth={2.2} /></button>

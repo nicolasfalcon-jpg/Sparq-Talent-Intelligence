@@ -7,7 +7,7 @@
 | Next.js App Router project, strict TS, Tailwind v4, ESLint, Vitest, Playwright config | ✅ |
 | Feature-based architecture (`domain` → `data` → `features` → `app`) | ✅ |
 | Design tokens and primitives extracted from V4.2 | ✅ |
-| App shell: header, nav (icons-only ≤1180), New opportunity chooser, notifications, workspace switch | ✅ |
+| App shell: header, nav (icons-only below 1180), New opportunity chooser, notifications, workspace switch | ✅ |
 | Global Ask Sparq (FAB, drawer, wide, minimized; empty, loading, answer and error states) behind `/api/assistant` | ✅ (rule-based gateway) |
 | Domain contracts (Zod) and pure rules, unit-tested | ✅ |
 | Fictional dataset behind async repositories (in-memory adapter) | ✅ |
@@ -18,7 +18,7 @@
 | **Opportunities**: status tabs, URL-addressable drawer, computed requirement summary | ✅ |
 | Role-guarded workspaces (demo persona) | ✅ |
 | Supabase schema + RLS draft, validated in PGlite | ✅ |
-| E2E specs | ✍️ written, **not executed** (no browser in the build sandbox) |
+| E2E specs | ✅ executed locally (phase 2A.1): 34 tests pass at 1440 and 1024, repeatably; each test runs on its own server. See [07-testing.md](07-testing.md) |
 
 ## Phase 2 — Persistence, identity, core staffing flows
 
@@ -30,7 +30,7 @@
 6. **Talent Comparison** (`/compare?ids=&role=`): consumes the compare tray selection and the role context. Show relevant people only. Max 3. No ranking.
 7. **Resource Planning** (`/planning`): timeline computed from assignments, plus "Ask the delivery lead to confirm" as a real notification.
 8. **My Space** (`/me`): Now / Next, matching opportunities (skills ∩ interests), express interest, "Update from my CV" (see import below).
-9. Run the Playwright suite in CI at 1440 and 1024. Add visual-regression baselines against `docs/handoff/screenshots/v4.2-approved`.
+9. Run the Playwright suite in CI at 1440 and 1024 (it runs locally today; the CI runner, `npx playwright install --with-deps`, and a Linux run are not set up or verified). Add visual-regression baselines against `docs/handoff/screenshots/v4.2-approved`.
 
 ## Phase 3 — Intelligence
 

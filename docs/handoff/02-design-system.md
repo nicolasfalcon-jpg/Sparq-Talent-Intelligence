@@ -77,7 +77,7 @@ Responsive type: below 960px, display sizes step down (52→40, 56→44, 64→48
 
 ## 4. Spacing, layout and radii
 
-- **Page container:** max-width **1360px** (passport **1240px**), side padding **40px** (**20px** ≤1180px), top padding 12–24px, bottom 96–120px (room for the FAB).
+- **Page container:** max-width **1360px** (passport **1240px**), side padding **40px** (**20px** below 1180px), top padding 12–24px, bottom 96–120px (room for the FAB).
 - **Header:** 84px tall, 3 zones (brand flex-1 · nav pill · actions flex-1).
 - **Grid gaps:** 8 / 12 / 14 / 16 / 18 / 20 / 24 / 32 / 44 / 56px. Card inner padding: 18–22px for small cards, 26–32px for large cards, 48px for the passport hero.
 - **Home:** Ask card column `flex: 1 1 380px; max-width: 440px; min-height: 640px`, content column `flex: 999 1 560px`, gap 32.
@@ -158,7 +158,7 @@ Overlay scrims: drawers `rgba(24,25,27,.24)`, Ask Sparq `rgba(0,0,0,.14)`, expor
 ## 10. Interaction states
 
 - **Hover:** pill → `surface-hover`; ink → `ink-hover`; coral → `coral-hover`. Cards lift 2–3px with a larger shadow. Arrow circles invert to ink on card hover.
-- **Focus:** `2px solid coral` outline with 3px offset on every focusable element. Never remove it.
+- **Focus:** `2px solid coral` outline with 3px offset on every focusable element. Never remove it. Text inputs that sit inside a pill (People search, Home ask, Ask Sparq panel) keep `outline-none` on the `<input>` and show the same ring on the pill via `.focus-ring-within`; other fields (edit drawer) use the global ring directly.
 - **Selected / pressed:** pills turn ink (`aria-pressed` / `aria-current`). The selected person card gets a 2px ink ring.
 - **Disabled:** 50% opacity, `not-allowed` cursor (for example "Word document export is planned").
 - **Loading:** inline copy ("Reading documented skills and availability…") plus coral skeleton lines. Never show a spinner alone.
@@ -170,12 +170,14 @@ Overlay scrims: drawers `rgba(24,25,27,.24)`, Ask Sparq `rgba(0,0,0,.14)`, expor
 
 V4.2 was validated at 1440, 1280, 1024 and 800px. It is desktop-first and wasn't designed for phones.
 
+**Breakpoint semantics.** `tokens.css` overrides Tailwind's `xl`, `lg` and `md` to 1180 / 960 / 900px, and Tailwind's `max-*` variants are strict (`width < N`). So "collapses below 1180" is exact: at exactly 1180px the full labels still show. Earlier drafts of this document wrote "≤1180"; the implementation was kept and the documentation corrected.
+
 | Breakpoint | Behavior |
 |---|---|
 | ≥1180 | Full labels in the nav and on "New opportunity" |
-| ≤1180 (`max-xl`) | Nav and "New opportunity" collapse to icons (labels stay as `aria-label` and `title`). Page padding drops to 20px. Home "ready" grid → 3 columns. |
-| ≤960 (`max-lg`) | Display sizes step down. People preview aside is hidden in favor of opening the passport. Grids drop a column. |
-| ≤900 (`max-md`) | 2-column grids → 1 column. Build a Team seats shrink to 170px (per V4.2). |
+| <1180 (`max-xl`) | Nav and "New opportunity" collapse to icons (labels stay as `aria-label` and `title`). Page padding drops to 20px. Home "ready" grid → 3 columns. Home team cards let the seat label wrap under the seats. |
+| <960 (`max-lg`) | Display sizes step down. People preview aside is hidden in favor of opening the passport. Grids drop a column. |
+| <900 (`max-md`) | 2-column grids → 1 column. Build a Team seats shrink to 170px (per V4.2). |
 | <800 | **Not designed.** Needs a mobile design pass before shipping to phones. |
 
 ## 12. Navigation structure
@@ -192,7 +194,7 @@ V4.2 was validated at 1440, 1280, 1024 and 800px. It is desktop-first and wasn't
 |---|---|---|---|
 | Opportunity details | card click | 540 | AI summary strip, team roles, footer "See availability" / "Build the team" |
 | Edit profile | "Edit my passport", "+ Add experience" | 480 | Tabs About / Skills / Experience / Interests |
-| Preview & export | "Preview profile" / "Preview & export" | max 1080 | Format list, hide client names, document preview (600px A4-like card) |
+| Preview & export | "Preview profile" / "Preview & export" | max 1080 | Format list, hide client names, document preview (600px A4-like card). Print ("Save as PDF") outputs only the document, one A4 page, starting at the top (print rules in `globals.css`). |
 | Ask Sparq | FAB | 440 / 900 | Minimize to a 380px card, Escape minimizes |
 | Header popovers | New opportunity / bell / avatar | 360 / 350 / 280 | radius 24–26 |
 | Seat drawer (Team) | seat click | 500 | phase 2 |

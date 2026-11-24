@@ -2,7 +2,7 @@
 /**
  * App header — V4.2 `v4-nav` header. 84px tall, max 1360, three zones:
  * brand (left) · pill navigation (center) · actions (right).
- * ≤1180px: nav and "New opportunity" collapse to icons (labels hidden, kept for screen readers via aria-label).
+ * Below 1180px (`max-xl`, strict): nav and "New opportunity" collapse to icons (labels hidden, kept for screen readers via aria-label).
  */
 import Link from "next/link";
 import { usePathname } from "next/navigation";

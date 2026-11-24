@@ -18,9 +18,17 @@ export async function getSessionUser(): Promise<AppUser> {
   return getRepositories().directory.getUserByRole(role);
 }
 
+/** Thrown by `requireRole`. Server actions turn it into a typed `{ ok: false }` result instead of letting it escape. */
+export class ForbiddenError extends Error {
+  constructor(message = "Not allowed for the current persona") {
+    super(message);
+    this.name = "ForbiddenError";
+  }
+}
+
 /** Server-side authorisation helper for server actions. */
 export async function requireRole(role: UserRole): Promise<AppUser> {
   const user = await getSessionUser();
-  if (user.role !== role) throw new Error("Not allowed for the current persona");
+  if (user.role !== role) throw new ForbiddenError();
   return user;
 }

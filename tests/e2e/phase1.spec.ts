@@ -1,8 +1,9 @@
 /**
- * Phase-1 end-to-end journeys. NOTE: authored but NOT yet executed — the build sandbox
- * could not download Playwright browsers. Run locally: `npx playwright install chromium && npm run test:e2e`.
+ * Phase-1 end-to-end journeys. Run with `npm run test:e2e` (first time: `npx playwright install chromium`).
+ * `test` comes from ./fixtures: every test gets its own server process, so tests that mutate data
+ * (shortlist, skills) always start from the pristine fictional dataset.
  */
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 
 test("Home shows computed stats and teams in the making", async ({ page }) => {
   await page.goto("/");
