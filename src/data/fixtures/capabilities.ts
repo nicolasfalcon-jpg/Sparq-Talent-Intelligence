@@ -1,0 +1,45 @@
+/**
+ * FICTIONAL DEMO DATA — skills catalogue.
+ * Aliases let plain-language search ("native iOS", "LLM") resolve to capabilities.
+ */
+import type { Capability } from "@/domain/schemas";
+
+export const capabilities: Capability[] = [
+  { id: "react-native", name: "React Native", group: "mobile", aliases: ["react native", "react-native", "rn"] },
+  { id: "ios", name: "Native iOS", group: "mobile", aliases: ["native ios", "ios", "swift", "swiftui", "iphone"] },
+  { id: "android", name: "Native Android", group: "mobile", aliases: ["android", "kotlin", "jetpack compose", "compose"] },
+  { id: "widgetkit", name: "WidgetKit", group: "mobile", aliases: ["widgetkit", "widgets", "live activities"] },
+  { id: "healthkit", name: "HealthKit", group: "mobile", aliases: ["healthkit"] },
+  { id: "offline-first", name: "Offline-first architecture", group: "mobile", aliases: ["offline-first", "offline first", "offline"] },
+  { id: "kmp", name: "Kotlin Multiplatform", group: "mobile", aliases: ["kotlin multiplatform", "kmp"] },
+  { id: "typescript", name: "TypeScript", group: "web", aliases: ["typescript", "ts"] },
+  { id: "graphql", name: "GraphQL", group: "web", aliases: ["graphql"] },
+  { id: "accessibility", name: "Accessibility", group: "web", aliases: ["accessibility", "a11y", "wcag", "accessible"] },
+  { id: "react", name: "React", group: "web", aliases: ["react", "reactjs"] },
+  { id: "nextjs", name: "Next.js", group: "web", aliases: ["next.js", "nextjs"] },
+  { id: "design-systems", name: "Design systems", group: "web", aliases: ["design system", "design systems"] },
+  { id: "nodejs", name: "Node.js", group: "web", aliases: ["node.js", "nodejs", "node"] },
+  { id: "go", name: "Go", group: "web", aliases: ["golang", " go "] },
+  { id: "postgresql", name: "PostgreSQL", group: "web", aliases: ["postgresql", "postgres"] },
+  { id: "dotnet", name: ".NET", group: "web", aliases: [".net", "dotnet", "c#"] },
+  { id: "llm-apps", name: "LLM applications", group: "ai", aliases: ["llm", "llms", "genai", "generative ai", "ai engineer", "llm integration", "llm apps"] },
+  { id: "rag", name: "RAG", group: "ai", aliases: ["rag", "retrieval"] },
+  { id: "python", name: "Python", group: "ai", aliases: ["python"] },
+  { id: "ondevice-ml", name: "On-device ML", group: "ai", aliases: ["on-device", "text recognition", "core ml", "vision"] },
+  { id: "mlops", name: "MLOps", group: "ai", aliases: ["mlops", "vertex ai", "ml pipelines"] },
+  { id: "pytorch", name: "PyTorch", group: "ai", aliases: ["pytorch"] },
+  { id: "forecasting", name: "Forecasting", group: "ai", aliases: ["forecasting", "forecast"] },
+  { id: "aws", name: "AWS", group: "cloud", aliases: ["aws", "amazon web services", "bedrock"] },
+  { id: "azure", name: "Azure", group: "cloud", aliases: ["azure"] },
+  { id: "terraform", name: "Terraform", group: "cloud", aliases: ["terraform", "infrastructure as code", "iac"] },
+  { id: "kubernetes", name: "Kubernetes", group: "cloud", aliases: ["kubernetes", "k8s"] },
+  { id: "snowflake", name: "Snowflake", group: "data", aliases: ["snowflake"] },
+  { id: "dbt", name: "dbt", group: "data", aliases: ["dbt"] },
+  { id: "spark", name: "Spark", group: "data", aliases: ["spark"] },
+  { id: "appium", name: "Appium", group: "quality", aliases: ["appium", "mobile automation"] },
+  { id: "playwright", name: "Playwright", group: "quality", aliases: ["playwright"] },
+  { id: "test-strategy", name: "Test strategy", group: "quality", aliases: ["test strategy", "qa", "quality assurance"] },
+  { id: "event-driven", name: "Event-driven architecture", group: "architecture", aliases: ["event-driven", "event driven"] },
+  { id: "microservices", name: "Microservices", group: "architecture", aliases: ["microservices"] },
+  { id: "cloud-migration", name: "Cloud migration", group: "architecture", aliases: ["migration", "cloud migration"] },
+];

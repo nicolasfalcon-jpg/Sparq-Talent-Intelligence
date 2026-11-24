@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Planning</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.pill:hover{background:#EBEBF0}
+.p-ink,.pill.on{background:#1D1D1F;color:#fff}.p-ink:hover,.pill.on:hover{background:#2E2F32;color:#fff}
+.p-coral{background:#CF4529;color:#fff}.p-coral:hover{background:#B83C23;color:#fff}
+.p-soft{background:#F5F5F7}.p-soft:hover{background:#EBEBF0}
+.p-sm{height:34px;padding:0 14px;font-size:13px}
+.pill:disabled{opacity:.4;cursor:not-allowed}
+.av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:500;color:#1D1D1F;flex:none}
+.bar{all:unset;box-sizing:border-box;position:absolute;top:9px;height:32px;border-radius:999px;display:flex;align-items:center;padding:0 14px;font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.bar:hover{box-shadow:0 0 0 2px #1D1D1F}
+.bar:focus-visible{outline:2px solid #F15B40;outline-offset:2px}
+.sf,.wh,.card,.oc{box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.p-ink,.pill.on,.p-coral,.p-soft{box-shadow:none}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="planning" mode="staff" context="planning" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:24px 40px 120px;display:flex;flex-direction:column;gap:26px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px"><h1 style="font-size:52px;line-height:1.05;font-weight:300;letter-spacing:-0.035em">Who’s free, <span style="font-weight:500">and when.</span></h1><div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px"><p class="mute" style="font-size:17px">{{ range }}</p><span style="display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:999px;background:#F5F5F7;color:#6E6E73;font-size:12px;font-weight:500;white-space:nowrap"><span style="width:6px;height:6px;border-radius:50%;background:#AEAEB2"></span>Illustrative snapshot · proposals made in this session aren’t shown here</span></div></div>
+<div style="display:flex;gap:10px;align-items:center">
+<button class="pill p-sm" style="width:40px;height:40px;padding:0" onClick="{{ prev }}" disabled="{{ monthly }}" aria-label="Earlier">←</button>
+<button class="pill p-sm" style="height:40px" onClick="{{ today }}">Today</button>
+<button class="pill p-sm" style="width:40px;height:40px;padding:0" onClick="{{ next }}" disabled="{{ monthly }}" aria-label="Later">→</button>
+<div style="display:flex;gap:4px;padding:4px;background:#FFFFFF;border-radius:999px;margin-left:6px"><button class="{{ wCls }}" style="height:36px" onClick="{{ setW }}">Weeks</button><button class="{{ mCls }}" style="height:36px" onClick="{{ setM }}">Months</button></div>
+</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ discs }}" as="d" hint-placeholder-count="9"><button class="{{ d.cls }}" onClick="{{ d.pick }}">{{ d.label }}</button></sc-for></div>
+
+<div style="display:flex;gap:20px;align-items:flex-start">
+<section class="wh" style="flex:1;min-width:0;background:#FFFFFF;border-radius:32px;padding:12px 0 18px;overflow:hidden">
+<div style="overflow-x:auto"><div style="min-width:760px">
+<div style="display:grid;grid-template-columns:230px minmax(0,1fr);padding-right:24px">
+<span></span>
+<div style="position:relative;height:40px"><sc-for list="{{ ticks }}" as="t" hint-placeholder-count="8"><span style="position:absolute;top:12px;left:{{ t.l }}%;font-size:12px;color:#6E6E73;white-space:nowrap;transform:translateX(-2px)">{{ t.label }}</span></sc-for></div>
+</div>
+<div style="display:grid;grid-template-columns:230px minmax(0,1fr);padding-right:24px">
+<div style="padding:8px 24px;font-size:13px;color:#6E6E73">Kick-offs</div>
+<div style="position:relative;height:76px"><sc-for list="{{ demand }}" as="d" hint-placeholder-count="5"><a href="v4-opportunities.dc.html" style="position:absolute;top:{{ d.top }}px;left:{{ d.l }}%;display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 10px 0 4px;border-radius:999px;background:#F5F5F7;font-size:11px;font-weight:500;white-space:nowrap"><span style="width:14px;height:14px;border-radius:50%;background:{{ d.c }}"></span>{{ d.n }}</a></sc-for></div>
+</div>
+<div style="position:relative">
+<div style="position:absolute;top:0;bottom:0;left:calc(230px + (100% - 254px) * {{ todayF }});width:2px;background:#F15B40;opacity:.8;z-index:2;pointer-events:none"></div>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="12">
+<div style="display:grid;grid-template-columns:230px minmax(0,1fr);padding-right:24px">
+<div style="padding:8px 24px;display:flex;align-items:center;gap:12px;min-width:0"><dc-import name="v3-portrait" who="{{ r.id }}" size="36" hint-size="36px,36px"></dc-import><div style="min-width:0"><div style="font-size:14px;font-weight:500;white-space:nowrap">{{ r.n }}</div><div class="mute" style="font-size:12px">{{ r.disc }}</div></div></div>
+<div style="position:relative;height:50px"><sc-for list="{{ r.bars }}" as="b" hint-placeholder-count="2"><button class="bar" onClick="{{ b.pick }}" aria-label="{{ b.aria }}" style="left:{{ b.l }}%;width:{{ b.w }}%;background:{{ b.bg }};color:{{ b.fg }};border:{{ b.bd }};box-shadow:{{ b.ring }}">{{ b.label }}</button></sc-for></div>
+</div>
+</sc-for>
+</div>
+</div></div>
+<div class="mute" style="display:flex;flex-wrap:wrap;gap:20px;font-size:13px;padding:18px 24px 0">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:26px;height:12px;border-radius:999px;background:#E8E8ED"></span>On a project</span>
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:26px;height:12px;border-radius:999px;background:#DDEFE3"></span>Available · confirmed</span>
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:26px;height:12px;border-radius:999px;background:#FFF7EA;border:1.5px dashed #D9982A"></span>Available · pending confirmation</span>
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:26px;height:12px;border-radius:999px;background:#FFE4D6;border:1.5px solid #F15B40"></span>Proposed for a team</span>
+</div>
+</section>
+
+<sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+<aside class="wh" style="flex:0 0 340px;border-radius:32px;padding:26px;display:flex;flex-direction:column;gap:18px;background:#fff;position:sticky;top:16px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start"><span style="display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:{{ s.kbg }};font-size:12px;font-weight:500;color:{{ s.kfg }}">{{ s.kind }}</span><button class="pill p-sm p-soft" style="width:34px;padding:0" onClick="{{ clear }}" aria-label="Close">✕</button></div>
+<div style="display:flex;align-items:center;gap:14px"><dc-import name="v3-portrait" who="{{ s.id }}" size="56" hint-size="56px,56px"></dc-import><div><div style="font-size:20px;font-weight:400;letter-spacing:-0.015em">{{ s.n }}</div><div class="mute" style="font-size:14px">{{ s.role }}</div></div></div>
+<p style="font-size:17px;font-weight:300;line-height:1.45">{{ s.line }}</p>
+<div style="display:flex;flex-direction:column;gap:10px"><sc-for list="{{ s.facts }}" as="f" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;font-size:14px"><span class="mute">{{ f.k }}</span><span>{{ f.v }}</span></div></sc-for></div>
+<sc-if value="{{ s.pending }}" hint-placeholder-val="{{ false }}"><button class="pill p-ink" onClick="{{ requestConf }}" disabled="{{ s.requested }}">{{ s.reqLabel }}</button></sc-if>
+<a href="v4-opportunities.dc.html" class="pill p-coral">Explore matching opportunities</a>
+<a href="{{ s.href }}" class="pill p-soft">Open profile</a>
+</aside>
+</sc-if>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1050}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { view: 'w', off: 0, disc: 'All', sel: 'daniel:av', req: {} }; }
+  renderVals() {
+    const S = this.state;
+    const MO = [['Nov',0],['Dec',30],['Jan',61],['Feb',92],['Mar',120],['Apr',151],['May',181],['Jun',212]];
+    const lab = d => { let m = MO[0]; for (const x of MO) if (d >= x[1]) m = x; return m[0] + ' ' + (d - m[1] + 1); };
+    const T = 23, weekly = S.view === 'w';
+    const d0 = weekly ? 21 + S.off : 0, span = weekly ? 112 : 181, d1 = d0 + span;
+    const pc = d => Math.max(0, Math.min(100, (d - d0) / span * 100));
+    const P = [
+      ['ana','Ana Ruiz','AR','#FFE4D6','Mobile','Senior Mobile Engineer','Meridian Health',48,65,true,'Rafael Ortiz',['Kestrel Travel',72]],
+      ['javier','Javier Morales','JM','#DCEBEC','Mobile','iOS Engineer','Meridian Health',48,65,true,'Rafael Ortiz'],
+      ['ethan','Ethan Brooks','EB','#DEE6F2','Mobile','Android Engineer','Lumen Retail',76,79,true,'Inés Vidal'],
+      ['sofia','Sofía Martínez','SM','#F2E8D6','Frontend','Senior Frontend Engineer','Helix Insurance',41,44,true,'Rafael Ortiz'],
+      ['daniel','Daniel Okafor','DO','#DEE6F2','Backend','Staff Backend Engineer','Atlas Payments',90,93,false,'Inés Vidal'],
+      ['mateo','Mateo Silva','MS','#F2E8D6','Backend','Full-stack Engineer','Northwind Logistics',90,93,false,'Inés Vidal'],
+      ['lucia','Lucía Fernández','LF','#E9E2F3','AI','AI Engineer',null,0,0,true,'Rafael Ortiz',['Vela Bank',72]],
+      ['valentina','Valentina Rojas','VR','#FFE4D6','AI','ML Engineer','Orbit Energy',90,93,true,'Inés Vidal'],
+      ['priya','Priya Nair','PN','#F5E3EC','Data','Data Engineer','Lumen Retail',104,107,false,'Inés Vidal'],
+      ['tomas','Tomás Herrera','TH','#E6E5E1','Cloud','DevOps Engineer','Atlas Payments',118,120,false,'Inés Vidal'],
+      ['marcus','Marcus Chen','MC','#E1EFE5','Architecture','Solutions Architect','Northwind Logistics',90,93,false,'Inés Vidal'],
+      ['camila','Camila Duarte','CD','#E1EFE5','Quality','QA Automation Lead','Helix Insurance',34,37,true,'Rafael Ortiz',['Vela Bank',72]],
+    ].map(([id,n,i,t,disc,role,proj,end,av,ok,lead,prop]) => ({ id,n,i,t,disc,role,proj,end,av,ok,lead,prop }));
+    const DL = { All:'All', Mobile:'Mobile', Frontend:'Frontend', Backend:'Backend', AI:'AI', Data:'Data', Cloud:'Cloud', Architecture:'Architecture', Quality:'Quality' };
+    const list = P.filter(p => S.disc === 'All' || p.disc === S.disc);
+    const ST = { as:{ bg:'#E8E8ED', fg:'#1D1D1F', bd:'0' }, ok:{ bg:'#DDEFE3', fg:'#1F6B44', bd:'0' }, pend:{ bg:'#FFF7EA', fg:'#7A4F0E', bd:'1.5px dashed #D9982A' }, prop:{ bg:'#FFE4D6', fg:'#9E3119', bd:'1.5px solid #F15B40' } };
+    const mk = (p, kind, a, b, label) => { const l = pc(a), r = pc(b); if (r - l <= 0.4) return null; const key = p.id + ':' + kind, on = S.sel === key; const sty = kind === 'as' ? ST.as : kind === 'prop' ? ST.prop : p.ok ? ST.ok : ST.pend;
+      return { ...sty, l: l.toFixed(2), w: (r - l).toFixed(2), label: (r - l) > 8 ? label : '', aria: p.n + ': ' + label, ring: on ? '0 0 0 2px #1D1D1F' : 'none', pick: () => this.setState({ sel: on ? null : key }) }; };
+    const rows = list.map(p => { const bars = []; if (p.proj) bars.push(mk(p, 'as', -999, p.end + 1, p.proj)); bars.push(mk(p, 'av', p.proj ? p.av : T, p.prop ? p.prop[1] : 999, p.ok ? (p.proj ? 'Free from ' + lab(p.av) : 'Free now') : 'Pending · ' + lab(p.av))); if (p.prop) bars.push(mk(p, 'prop', p.prop[1], 999, 'Proposed · ' + p.prop[0])); return { ...p, disc: DL[p.disc], bars: bars.filter(Boolean) }; });
+    let ticks = [];
+    if (weekly) for (let d = d0; d < d1; d += 14) ticks.push({ label: lab(d), l: pc(d).toFixed(2) });
+    else ticks = MO.filter(m => m[1] >= d0 && m[1] < d1).map(m => ({ label: m[0], l: pc(m[1]).toFixed(2) }));
+    const DEM = [['Vela Bank',72,'#F15B40',2],['Kestrel (draft)',72,'#FFC9B0',26],['Cobalt',79,'#F15B40',50],['Terra Foods',100,'#F15B40',2],['Nimbus',120,'#F15B40',26]];
+    const demand = DEM.filter(d => d[1] >= d0 && d[1] < d1).map(([n, d, c, top]) => ({ n, c, top, l: pc(d).toFixed(2) }));
+    let s = null;
+    if (S.sel) { const [pid, kind] = S.sel.split(':'); const p = P.find(x => x.id === pid); if (p) {
+      const pend = kind === 'av' && !p.ok, rq = !!S.req[pid];
+      const line = kind === 'as' ? 'On ' + p.proj + ' until ' + lab(p.end) + '.' : kind === 'prop' ? 'Proposed for ' + p.prop[0] + ' from ' + lab(p.prop[1]) + ', awaiting human review.' : p.ok ? (p.proj ? 'Free from ' + lab(p.av) + '. Confirmed by ' + p.lead + '.' : 'Free now. Not on a project.') : 'Expected free from ' + lab(p.av) + ', but the project end date isn’t confirmed yet.';
+      s = { ...p, line, pending: pend, requested: rq, reqLabel: rq ? 'Asked ' + p.lead + ' to confirm' : 'Ask ' + p.lead + ' to confirm', href: pid === 'ana' ? 'v4-passport.dc.html' : 'v4-people.dc.html',
+        kind: kind === 'as' ? 'On a project' : kind === 'prop' ? 'Proposed' : p.ok ? 'Confirmed availability' : 'Pending confirmation',
+        kbg: kind === 'as' ? '#F5F5F7' : kind === 'prop' ? '#FFE4D6' : p.ok ? '#DDEFE3' : '#FFF1D9', kfg: kind === 'prop' ? '#9E3119' : p.ok || kind === 'as' ? '#1F3B2C' : '#7A4F0E',
+        facts: [{ k:'Current project', v: p.proj || 'None' }, { k:'Free from', v: p.proj ? lab(p.av) : 'Now' }, { k:'Delivery lead', v: p.lead }] }; } }
+    return {
+      range: weekly ? lab(d0) + ' – ' + lab(d1 - 1) + ' · by week' : 'November – April · by month',
+      monthly: !weekly, wCls: weekly ? 'pill p-sm on' : 'pill p-sm', mCls: weekly ? 'pill p-sm' : 'pill p-sm on',
+      setW: () => this.setState({ view: 'w' }), setM: () => this.setState({ view: 'm', off: 0 }), prev: () => this.setState({ off: S.off - 28 }), next: () => this.setState({ off: S.off + 28 }), today: () => this.setState({ off: 0 }),
+      discs: Object.keys(DL).map(k => ({ label: DL[k], cls: S.disc === k ? 'pill p-sm on' : 'pill p-sm', pick: () => this.setState({ disc: k }) })),
+      ticks, demand, rows, todayF: (T >= d0 && T <= d1 ? (T - d0) / span : -1).toFixed(4),
+      hasSel: !!s, s: s || { facts: [] }, clear: () => this.setState({ sel: null }), requestConf: () => { if (s) this.setState({ req: { ...S.req, [s.id]: true } }); },
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+/*
+ * Sparq design tokens — extracted 1:1 from the approved V4.2 prototype.
+ * Tailwind v4 reads `@theme` and generates utilities (bg-canvas, text-mute, rounded-card, shadow-card…).
+ * Change values here only; components must not hard-code hex values.
+ */
+@theme {
+  /* Typography */
+  --font-sans: "Inter Variable", Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Neutrals */
+  --color-canvas: #FAFAFA;        /* page background */
+  --color-surface: #FFFFFF;       /* cards, drawers */
+  --color-surface-muted: #F5F5F7; /* inputs, soft pills, tags, inner panels */
+  --color-surface-hover: #EBEBF0; /* pill hover */
+  --color-ink: #1D1D1F;           /* primary text, ink buttons, active nav */
+  --color-ink-hover: #2E2F32;
+  --color-ink-soft: #333336;      /* hover on light ink surfaces / dark chips */
+  --color-ink-2: #424245;         /* secondary text, inactive nav */
+  --color-mute: #6E6E73;          /* muted text */
+  --color-mute-2: #8E8E93;        /* not documented */
+  --color-faint: #AEAEB2;         /* placeholder dots, tertiary */
+  --color-line: #E8E8ED;          /* hairlines, pill inset border */
+  --color-line-strong: #D2D2D7;   /* dashed / empty indicators */
+  --color-seat-empty: #C7C7CC;    /* dashed empty seat */
+
+  /* Brand — coral */
+  --color-coral: #F15B40;         /* brand mark, Ask Sparq, focus ring, accents */
+  --color-coral-strong: #CF4529;  /* coral BUTTONS (AA contrast with white text) */
+  --color-coral-hover: #B83C23;
+  --color-coral-soft: #FF8A70;    /* "+" glyph, on-dark accents */
+  --color-coral-tint: #FFF1E9;    /* interpreted criteria strip */
+  --color-peach-1: #FFE2D4;       /* AI gradient stop */
+  --color-peach-2: #FFEDE5;
+  --color-peach-3: #FFF8F5;       /* AI surface base */
+  --color-peach-4: #FFF9F7;       /* Ask Sparq drawer base */
+  --color-coral-skeleton: #FFE9E1;
+
+  /* Status */
+  --color-ok: #3E9B6A;            /* available / confirmed dot */
+  --color-ok-bright: #34A065;     /* passport presence dot, home "ready" dot */
+  --color-ok-text: #1F7A4A;
+  --color-ok-bg: #E3F3E8;
+  --color-ok-bg-2: #EEF7F1;
+  --color-ok-ring: #BFE3CC;
+  --color-warn: #C98A1E;          /* pending availability (outlined dot) */
+  --color-warn-text: #8A5A12;
+  --color-warn-ring: #F1D4A0;
+
+  /* Radii */
+  --radius-pill: 999px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 22px;
+  --radius-card: 24px;
+  --radius-surface: 28px;
+  --radius-panel: 32px;
+  --radius-feature: 36px;
+  --radius-hero: 40px;
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgba(0,0,0,.03), 0 12px 32px rgba(0,0,0,.045);
+  --shadow-card-hover: 0 2px 4px rgba(0,0,0,.03), 0 20px 44px rgba(0,0,0,.07);
+  --shadow-card-lift: 0 14px 36px rgba(24,25,27,.07);
+  --shadow-nav: 0 1px 2px rgba(0,0,0,.04), 0 6px 20px rgba(0,0,0,.04);
+  --shadow-search: 0 8px 30px rgba(24,25,27,.05);
+  --shadow-popover: 0 24px 64px rgba(0,0,0,.14);
+  --shadow-drawer: 0 30px 80px rgba(24,25,27,.22);
+  --shadow-toast: 0 16px 40px rgba(24,25,27,.25);
+  --shadow-coral: 0 6px 16px rgba(241,91,64,.35);
+  --shadow-fab: 0 10px 28px rgba(241,91,64,.35), 0 2px 6px rgba(0,0,0,.08);
+  --shadow-ai-card: 0 1px 2px rgba(241,91,64,.06), 0 20px 50px rgba(241,91,64,.10);
+  --shadow-portrait: 0 14px 36px rgba(0,0,0,.10);
+
+  /* Layout */
+  --container-page: 1360px;
+  --container-passport: 1240px;
+  --spacing-header: 84px;
+
+  /* Breakpoints used by the approved design (desktop-first app; see docs/handoff/02-design-system.md) */
+  --breakpoint-md: 900px;
+  --breakpoint-lg: 960px;
+  --breakpoint-xl: 1180px;
+}
+
+:root {
+  /* Signature gradients (not expressible as single tokens) */
+  --gradient-ai-card: radial-gradient(120% 70% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%), radial-gradient(90% 60% at 0% 100%, #FFEDE5 0%, rgba(255,237,229,0) 70%), #FFF8F5;
+  --gradient-ai-soft: radial-gradient(90% 120% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%), #FFF8F5;
+  --gradient-ai-drawer: radial-gradient(100% 45% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 65%), radial-gradient(80% 40% at 0% 100%, #FFEDE5 0%, rgba(255,237,229,0) 70%), #FFF9F7;
+  --gradient-ai-min: radial-gradient(120% 140% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%), #FFF8F5;
+  --gradient-journey: linear-gradient(90deg, #D2D2D7, #F15B40);
+  --gradient-skeleton: linear-gradient(90deg, #F5F5F7, #FFE9E1, #F5F5F7);
+}

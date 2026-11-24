@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>My space</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.sf{background:#FFFFFF;border-radius:28px}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.pill:hover{background:#EBEBF0}
+.p-ink,.pill.on{background:#1D1D1F;color:#fff}.p-ink:hover,.pill.on:hover{background:#2E2F32;color:#fff}
+.p-coral{background:#CF4529;color:#fff}.p-coral:hover{background:#B83C23;color:#fff}
+.p-soft{background:#F5F5F7}.p-soft:hover{background:#EBEBF0}
+.p-sm{height:34px;padding:0 14px;font-size:13px}
+.pill:disabled{opacity:.45;cursor:not-allowed}
+.tag{display:inline-flex;align-items:center;height:30px;padding:0 13px;border-radius:999px;background:#F5F5F7;font-size:13px;color:#424245;white-space:nowrap}
+.in{height:42px;border:0;border-radius:999px;background:#F5F5F7;padding:0 16px;font:400 14px Inter,system-ui,sans-serif;color:#1D1D1F;outline:none}
+.ta{width:100%;border:0;border-radius:20px;background:#F5F5F7;padding:14px 16px;font:400 15px/1.55 Inter,system-ui,sans-serif;color:#1D1D1F;resize:vertical;outline:none}
+.sf,.wh,.card,.oc{box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.p-ink,.pill.on,.p-coral,.p-soft{box-shadow:none}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="me" mode="personal" context="me" live-q="What have I shared so far?" live-a="{{ liveA }}" live-bullets="{{ liveBullets }}" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:16px 40px 120px;display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start">
+
+<aside style="flex:1 1 360px;max-width:420px;display:flex;flex-direction:column;gap:20px;position:sticky;top:16px">
+<section style="border-radius:36px;padding:30px;min-height:520px;display:flex;flex-direction:column;gap:20px;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)">
+<div style="display:flex;justify-content:space-between;align-items:center"><span class="mute" style="font-size:14px">My Talent Passport</span><a href="v4-mypassport.dc.html" class="pill p-sm">View</a></div>
+<div style="position:relative;width:150px;height:150px">
+<svg width="150" height="150" viewBox="0 0 150 150" role="img" aria-label="Passport {{ pct }} percent complete"><circle cx="75" cy="75" r="64" fill="none" stroke="rgba(24,25,27,.08)" stroke-width="10"/><circle cx="75" cy="75" r="64" fill="none" stroke="#F15B40" stroke-width="10" stroke-linecap="round" stroke-dasharray="{{ dash }} 402" transform="rotate(-90 75 75)"/></svg>
+<span style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:40px;font-weight:300;letter-spacing:-0.03em;line-height:1">{{ pct }}%</span><span class="mute" style="font-size:12px">complete</span></span>
+</div>
+<div style="flex:1"></div>
+<h2 style="font-size:30px;line-height:1.2;font-weight:300;letter-spacing:-0.025em">Your next chapter starts <span style="font-weight:500">January 5.</span></h2>
+<p class="mute" style="font-size:15px">Meridian Health wraps up Dec 19. Your availability is confirmed, and staffing leads can see what you’re looking for.</p>
+<button class="pill p-ink" style="height:50px" onClick="{{ openCv }}">Update from my CV</button>
+</section>
+<section class="sf" style="padding:26px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:18px;font-weight:400">What I’m looking for</span><span class="mute" style="font-size:12px">{{ intNote }}</span></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ interests }}" as="i" hint-placeholder-count="6"><button class="{{ i.cls }}" onClick="{{ i.toggle }}" aria-pressed="{{ i.on }}">{{ i.n }}</button></sc-for></div>
+<label style="display:flex;gap:10px;align-items:center;font-size:14px;cursor:pointer;margin-top:4px"><input type="checkbox" checked="{{ openTo }}" onChange="{{ toggleOpen }}" style="width:18px;height:18px;accent-color:#1D1D1F">Open to new opportunities</label>
+</section>
+<section class="sf" style="padding:26px;display:flex;flex-direction:column;gap:12px">
+<span style="font-size:18px;font-weight:400">Recently added</span>
+<sc-for list="{{ recent }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;gap:12px;font-size:14px"><span>{{ r.n }}</span><span class="mute" style="font-size:13px;white-space:nowrap">{{ r.d }}</span></div></sc-for>
+</section>
+<section class="sf" style="padding:26px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:18px;font-weight:400">My goals</span><span class="mute" style="font-size:12px">Set by you</span></div>
+<sc-for list="{{ goals }}" as="g" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;font-size:14px;gap:8px"><span>{{ g.n }}</span><span class="mute">{{ g.p }}%</span></div><div style="height:5px;border-radius:3px;background:#F5F5F7"><div style="height:100%;border-radius:3px;background:#1D1D1F;width:{{ g.p }}%"></div></div></div></sc-for>
+</section>
+</aside>
+
+<div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:44px">
+<header style="display:flex;flex-direction:column;gap:10px;padding-top:24px"><h1 style="font-size:52px;line-height:1.05;font-weight:300;letter-spacing:-0.035em">Hi, <span style="font-weight:500">Ana.</span></h1><p class="mute" style="font-size:17px">Three opportunities fit what you do and what you want to do next.</p></header>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+<div class="wh" style="background:#fff;padding:22px;border-radius:24px;display:flex;gap:16px;align-items:center"><span style="width:46px;height:46px;border-radius:50%;background:#F5F5F7;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16v11H4zM9 8V5.5h6V8"/></svg></span><div><div class="mute" style="font-size:13px">Now</div><div style="font-size:17px;font-weight:500">Meridian Health · Mobile lead</div><div class="mute" style="font-size:13px">Patient companion app · until Dec 19</div></div></div>
+<div class="wh" style="background:#fff;padding:22px;border-radius:24px;display:flex;gap:16px;align-items:center"><span style="width:46px;height:46px;border-radius:50%;background:#E3F3E8;display:inline-flex;align-items:center;justify-content:center;flex:none"><span style="width:12px;height:12px;border-radius:50%;background:#34A065"></span></span><div><div class="mute" style="font-size:13px">Next</div><div style="font-size:17px;font-weight:500">Free from January 5</div><div class="mute" style="font-size:13px">Confirmed by Rafael Ortiz · holidays Dec 22 – Jan 2</div></div></div>
+</div>
+
+<section style="display:flex;flex-direction:column;gap:16px">
+<h2 style="font-size:24px;font-weight:400;letter-spacing:-0.02em">Opportunities that fit you</h2>
+<sc-for list="{{ opps }}" as="o" hint-placeholder-count="3">
+<article class="wh" style="background:#fff;border-radius:28px;padding:26px;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap">
+<div><div class="mute" style="font-size:14px">{{ o.client }} · starts {{ o.start }} · {{ o.dur }}</div><h3 style="font-size:26px;font-weight:300;letter-spacing:-0.02em;margin-top:4px">{{ o.title }}</h3><p class="mute" style="font-size:15px;margin-top:4px;max-width:560px">{{ o.desc }}</p></div>
+<sc-if value="{{ o.done }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;align-items:center"><span style="display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:999px;background:#E4F2E9;color:#1F6B44;font-size:14px;font-weight:500">✓ Interest shared</span><button class="pill p-sm p-soft" onClick="{{ o.withdraw }}">Withdraw</button></div></sc-if>
+<sc-if value="{{ o.notDone }}" hint-placeholder-val="{{ true }}"><button class="pill p-coral" onClick="{{ o.express }}">I’m interested</button></sc-if>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><span class="mute" style="font-size:13px;margin-right:4px">Why you’re seeing this</span><sc-for list="{{ o.why }}" as="w" hint-placeholder-count="3"><span class="tag" style="background:{{ w.bg }}">{{ w.t }}</span></sc-for></div>
+</article>
+</sc-for>
+</section>
+
+<sc-if value="{{ hasInts }}" hint-placeholder-val="{{ false }}">
+<section class="wh" style="background:#fff;padding:24px 26px;border-radius:28px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px"><h2 style="font-size:20px;font-weight:400;letter-spacing:-0.015em">Interests you’ve shared</h2><span class="mute" style="font-size:13px">Only Laura Gómez and the delivery lead can see these</span></div>
+<sc-for list="{{ myInts }}" as="m" hint-placeholder-count="1"><div style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:18px;background:#F5F5F7;flex-wrap:wrap"><span style="flex:1;min-width:200px"><span style="display:block;font-weight:500">{{ m.title }}</span><span class="mute" style="font-size:13px">{{ m.client }} · shared today</span></span><span style="font-size:13px;color:#1F7A4A">Laura will follow up</span><button class="pill p-sm" onClick="{{ m.withdraw }}">Withdraw</button></div></sc-for>
+</section>
+</sc-if>
+<section style="display:flex;flex-direction:column;gap:14px">
+<h2 style="font-size:24px;font-weight:400;letter-spacing:-0.02em">Explore beyond your title</h2>
+<p class="mute" style="font-size:15px;margin-top:-6px">Tell staffing which technical areas you’d like to grow into. It’s never used to evaluate you.</p>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px"><sc-for list="{{ areas }}" as="a" hint-placeholder-count="3"><button onClick="{{ a.toggle }}" aria-pressed="{{ a.on }}" style="all:unset;box-sizing:border-box;cursor:pointer;border-radius:24px;padding:22px;background:#fff;box-shadow:{{ a.sh }};display:flex;flex-direction:column;gap:8px"><span style="font-size:18px;font-weight:400;letter-spacing:-0.01em">{{ a.n }}</span><span class="mute" style="font-size:13px">{{ a.d }}</span><span style="font-size:13px;font-weight:500;color:{{ a.c }}">{{ a.l }}</span></button></sc-for></div>
+</section>
+<section style="display:flex;flex-direction:column;gap:16px">
+<h2 style="font-size:24px;font-weight:400;letter-spacing:-0.02em">Keep your passport current</h2>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+<div class="sf" style="padding:22px;display:flex;flex-direction:column;gap:12px"><span style="font-weight:500">How many years of GraphQL?</span><span class="mute" style="font-size:13px">Your CV says 3, your passport says 4.</span>
+<sc-if value="{{ gqlOpen }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:6px"><button class="pill p-sm" onClick="{{ gql3 }}">3 years</button><button class="pill p-sm" onClick="{{ gql4 }}">4 years</button></div></sc-if>
+<sc-if value="{{ gqlDone }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:#1F6B44">✓ Saved: {{ gql }}</span></sc-if></div>
+<div class="sf" style="padding:22px;display:flex;flex-direction:column;gap:12px"><span style="font-weight:500">Add a skill you’ve been using</span>
+<div style="display:flex;gap:6px"><input class="in" style="flex:1;min-width:0;background:#F5F5F7" aria-label="New skill" value="{{ ns }}" onChange="{{ onNs }}" onKeyDown="{{ nsKey }}" placeholder="e.g. Core ML"><button class="pill p-sm p-ink" style="height:42px" onClick="{{ addSkill }}">Add</button></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ added }}" as="a" hint-placeholder-count="1"><span class="tag" style="background:#FFE4D6">+ {{ a }}</span></sc-for></div></div>
+<div class="sf" style="padding:22px;display:flex;flex-direction:column;gap:12px"><span style="font-weight:500">Document your Meridian Health work</span>
+<sc-if value="{{ outOpen }}" hint-placeholder-val="{{ true }}"><textarea class="ta" style="background:#F5F5F7" rows="2" aria-label="Outcome" value="{{ outcome }}" onChange="{{ onOutcome }}"></textarea><button class="pill p-sm p-ink" style="align-self:flex-start" onClick="{{ saveOutcome }}">Save</button></sc-if>
+<sc-if value="{{ outDone }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px">“{{ outcome }}”</span><span style="font-size:13px;color:#1F6B44">✓ Added to your passport</span></sc-if></div>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:16px">
+<h2 style="font-size:24px;font-weight:400;letter-spacing:-0.02em">Learning for where you’re heading</h2>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px"><sc-for list="{{ learning }}" as="l" hint-placeholder-count="3"><div class="wh" style="background:#fff;border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:10px"><span style="font-size:17px;font-weight:400;letter-spacing:-0.01em">{{ l.n }}</span><span class="mute" style="font-size:13px;flex:1">{{ l.d }}</span><button class="{{ l.cls }}" style="align-self:flex-start" onClick="{{ l.toggle }}">{{ l.label }}</button></div></sc-for></div>
+</section>
+</div>
+</div>
+
+<sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}"><div role="status" style="position:fixed;top:100px;left:50%;transform:translateX(-50%);z-index:70;background:#1D1D1F;color:#fff;padding:14px 22px;border-radius:999px;font-size:14px;box-shadow:0 16px 40px rgba(24,25,27,.25)">{{ toastMsg }}</div></sc-if>
+
+<sc-if value="{{ intOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(24,25,27,.3);z-index:58;display:flex;align-items:center;justify-content:center;padding:24px">
+<div role="dialog" aria-label="Share your interest" style="width:100%;max-width:500px;background:#fff;border-radius:32px;padding:30px;display:flex;flex-direction:column;gap:16px;box-shadow:0 30px 80px rgba(24,25,27,.22)">
+<div><span class="mute" style="font-size:14px">{{ cur.client }}</span><h2 style="font-size:26px;font-weight:300;letter-spacing:-0.02em">Share your interest in <span style="font-weight:500">{{ cur.title }}</span></h2></div>
+<textarea class="ta" rows="3" aria-label="Note to the staffing team" value="{{ msg }}" onChange="{{ onMsg }}"></textarea>
+<div style="display:flex;justify-content:space-between;padding:14px 16px;border-radius:18px;background:#F5F5F7;font-size:14px"><span class="mute">Your availability</span><span>From Jan 5 · confirmed</span></div>
+<p class="mute" style="font-size:13px">Only Laura Gómez and the delivery lead will see this. It’s not a commitment, and you can withdraw anytime.</p>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button class="pill p-soft" onClick="{{ closeInt }}">Cancel</button><button class="pill p-coral" onClick="{{ sendInt }}">Share interest</button></div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ cvOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;background:rgba(24,25,27,.3);z-index:58;display:flex;align-items:center;justify-content:center;padding:24px">
+<div role="dialog" aria-label="Update from CV" style="width:100%;max-width:620px;max-height:calc(100vh - 48px);overflow:auto;background:#FFFFFF;border-radius:32px;padding:30px;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 80px rgba(24,25,27,.22)">
+<div style="display:flex;justify-content:space-between;align-items:flex-start"><h2 style="font-size:26px;font-weight:300;letter-spacing:-0.02em">Update from <span style="font-weight:500">your CV</span></h2><button class="pill p-sm" style="width:34px;padding:0" onClick="{{ closeCv }}" aria-label="Close">✕</button></div>
+<sc-if value="{{ cv1 }}" hint-placeholder-val="{{ true }}">
+<div style="border-radius:28px;border:1.5px dashed #D2D2D7;padding:40px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;background:#fff"><p style="font-size:18px">Drop your CV here</p><p class="mute" style="font-size:14px">PDF or Word. Nothing changes until you confirm it.</p><button class="pill p-ink" onClick="{{ useSample }}">Use Ana_Ruiz_CV_2026.pdf</button></div>
+</sc-if>
+<sc-if value="{{ cv2 }}" hint-placeholder-val="{{ false }}"><p class="mute" style="padding:30px 0;text-align:center">Reading your CV and comparing it with your passport…</p></sc-if>
+<sc-if value="{{ cv3 }}" hint-placeholder-val="{{ false }}">
+<p class="mute" style="font-size:14px">I found 4 things that could update your passport. Keep or skip each one.</p>
+<sc-for list="{{ ext }}" as="x" hint-placeholder-count="4">
+<div style="background:#F5F5F7;border-radius:22px;padding:16px 18px;display:flex;gap:14px;align-items:center;opacity:{{ x.op }}">
+<div style="flex:1;min-width:0"><div class="mute" style="font-size:12px">{{ x.kind }}</div><div style="font-weight:500">{{ x.v }}</div><div class="mute" style="font-size:13px">{{ x.note }}</div></div>
+<div style="display:flex;gap:6px"><button class="{{ x.keepCls }}" onClick="{{ x.keep }}">Keep</button><button class="{{ x.skipCls }}" onClick="{{ x.skip }}">Skip</button></div>
+</div>
+</sc-for>
+<div style="display:flex;justify-content:flex-end;gap:8px"><button class="pill p-soft" onClick="{{ closeCv }}">Cancel</button><button class="pill p-coral" onClick="{{ applyCv }}" disabled="{{ noKeep }}">Update passport ({{ keepN }})</button></div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1250}}'>
+class Component extends DCLogic {
+  ld(k, d) { try { const v = window.localStorage.getItem('sti42.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  sv(k, v) { try { window.localStorage.setItem('sti42.' + k, JSON.stringify(v)); } catch (e) {} }
+  componentDidMount() { const p = this.hydrate(); if (p) this.setState(p); }
+  componentDidUpdate() { this.persist(); }
+  hydrate() {
+    const M = this.ld('me', {}), ints = this.ld('ints', null), add = this.ld('skillsAdded', []);
+    return { ...M, ints: ints ? { ...this.state.ints, ...ints } : this.state.ints, added: add.map(a => a.n) };
+  }
+  persist() {
+    const S = this.state;
+    this.sv('me', { interested: S.interested, curious: S.curious, gql: S.gql, outDone: S.outDone, outcome: S.outcome, bonus: S.bonus, plan: S.plan });
+    this.sv('ints', { ...this.ld('ints', {}), ...S.ints });
+    const prev = this.ld('skillsAdded', []);
+    this.sv('skillsAdded', prev.concat(S.added.filter(n => !prev.some(p => p.n === n)).map(n => ({ n, t: 'p' }))));
+  }
+  constructor(p) { super(p); this.state = { curious: {}, ints: { 'Applied AI in mobile': true, 'Technical leadership': true, 'Healthcare': true, 'Fintech': true, 'Mentoring': true, 'Native iOS depth': false }, intTouched: false, openTo: true, interested: {}, cur: null, msg: 'I finish Meridian Health on Dec 19 and would love to bring my React Native experience to an AI product.', gql: '', ns: '', added: [], outcome: 'Released to three hospital networks with offline support from day one.', outDone: false, plan: {}, cv: 0, ext: { expo: 'keep', gql: 'keep', lumbre: 'keep', compose: 'skip' }, bonus: 0, toast: '' }; }
+  flash(t) { this.setState({ toast: t }); setTimeout(() => this.setState({ toast: '' }), 2600); }
+  renderVals() {
+    const S = this.state;
+    const O = [
+      { id:'vela', client:'Vela Bank', title:'Senior Mobile Engineer', start:'Jan 12', dur:'6 months', desc:'Build the mobile side of a conversational onboarding experience, next to an AI engineer.', why:[['React Native','#F5F5F7'],['TypeScript','#F5F5F7'],['Accessibility','#F5F5F7'],['Your interest: Applied AI','#FFE4D6']] },
+      { id:'cobalt', client:'Cobalt Mobility', title:'Mobile Tech Lead', start:'Jan 19', dur:'9 months', desc:'Lead a native rebuild of a driver app and mentor an iOS and an Android engineer.', why:[['Mobile architecture','#F5F5F7'],['Swift / iOS','#F5F5F7'],['Your interest: Leadership','#FFE4D6'],['Your interest: Mentoring','#FFE4D6']] },
+      { id:'cobalt-ios', client:'Cobalt Mobility', title:'iOS Engineer', start:'Jan 19', dur:'9 months', desc:'Native SwiftUI development with offline storage and background location.', why:[['Swift / SwiftUI','#F5F5F7'],['Offline storage','#F5F5F7']] },
+    ];
+    const I = S.interested;
+    const opps = O.map(o => ({ ...o, why: o.why.map(([t, bg]) => ({ t, bg })), done: !!I[o.id], notDone: !I[o.id], express: () => this.setState({ cur: o.id }), withdraw: () => { const n = { ...I }; delete n[o.id]; this.setState({ interested: n }); } }));
+    const cur = O.find(o => o.id === S.cur) || O[0];
+    const addSkill = () => { const v = S.ns.trim(); if (!v) return; this.setState({ added: [...S.added, v], ns: '' }); this.flash('✓ ' + v + ' added to your passport'); };
+    const X = [['expo','New skill','Expo Router','Independent project, 2025'],['gql','Correction','GraphQL · 3 years','Your passport says 4'],['lumbre','New project','Lumbre Studio — loyalty app, 2018','Earlier career'],['compose','New skill','Jetpack Compose','Mentioned once, without project context']];
+    const ext = X.map(([id, kind, v, note]) => { const st = S.ext[id]; return { kind, v, note, op: st === 'skip' ? '.5' : '1', keepCls: st === 'keep' ? 'pill p-sm p-ink' : 'pill p-sm p-soft', skipCls: st === 'skip' ? 'pill p-sm p-ink' : 'pill p-sm p-soft', keep: () => this.setState({ ext: { ...S.ext, [id]: 'keep' } }), skip: () => this.setState({ ext: { ...S.ext, [id]: 'skip' } }) }; });
+    const keepN = Object.values(S.ext).filter(v => v === 'keep').length;
+    const pct = Math.min(100, 86 + S.bonus + (S.gql ? 2 : 0) + (S.outDone ? 4 : 0) + Math.min(4, S.added.length * 2));
+    const myInts = O.filter(o => I[o.id]).map(o => ({ title: o.title, client: o.client, withdraw: () => { const n = { ...I }; delete n[o.id]; this.setState({ interested: n }); } }));
+    const AR = [['ai','AI engineering','2 roles this quarter · your RAG course counts'],['cloud','Platform & cloud','Highest demand in February'],['lead','Technical leadership','Cobalt Mobility needs a Mobile Tech Lead']];
+    const areas = AR.map(([k, n, d]) => { const on = !!S.curious[k]; return { n, d, on, l: on ? '✓ Interest shared with staffing' : 'I’m curious →', c: on ? '#1F7A4A' : '#1D1D1F', sh: on ? '0 0 0 2px #1D1D1F' : '0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)', toggle: () => { this.setState({ curious: { ...S.curious, [k]: !on } }); if (!on) this.flash('✓ Laura will see your interest in ' + n.toLowerCase()); } }; });
+    const recent = (this.ld('passport', {}).extra || []).map(x => ({ n: x.n, d: 'Experience · added' })).concat(S.added.map(n => ({ n, d:'Added today' }))).concat([{ n:'Kotlin Multiplatform', d:'Independent · Oct' }, { n:'Building RAG applications', d:'Course · Sep' }, { n:'AWS Developer – Associate', d:'Certified · 2024' }]);
+    return {
+      liveA: myInts.length ? 'You’ve shared interest in ' + myInts.length + ' opportunit' + (myInts.length > 1 ? 'ies' : 'y') + '. Only Laura Gómez and the delivery lead can see it.' : 'You haven’t shared interest in any opportunity yet. Tap “I’m interested” on one that fits.',
+      liveBullets: myInts.map(m => m.title + ' · ' + m.client).concat(Object.keys(S.curious).filter(k => S.curious[k]).map(k => 'Curious about ' + ({ ai:'AI engineering', cloud:'platform & cloud', lead:'technical leadership' })[k])),
+      hasInts: myInts.length > 0, myInts, areas, recent, goals: [{ n:'Lead an AI feature on a client project', p:40 }, { n:'Mentor an engineer moving to mobile', p:70 }, { n:'AWS Machine Learning certification', p:25 }],
+      pct, dash: (pct / 100 * 402).toFixed(0),
+      interests: Object.keys(S.ints).map(n => ({ n, on: S.ints[n], cls: S.ints[n] ? 'pill p-sm on' : 'pill p-sm', toggle: () => this.setState({ ints: { ...S.ints, [n]: !S.ints[n] }, intTouched: true }) })),
+      intNote: S.intTouched ? 'Saved ✓' : '', openTo: S.openTo, toggleOpen: () => this.setState({ openTo: !S.openTo }),
+      opps, intOpen: !!S.cur, cur, msg: S.msg, onMsg: e => this.setState({ msg: e.target.value }), closeInt: () => this.setState({ cur: null }),
+      sendInt: () => { this.setState({ interested: { ...I, [cur.id]: true }, cur: null }); this.flash('✓ Interest shared with Laura Gómez'); },
+      gqlOpen: !S.gql, gqlDone: !!S.gql, gql: S.gql, gql3: () => this.setState({ gql: '3 years' }), gql4: () => this.setState({ gql: '4 years' }),
+      ns: S.ns, onNs: e => this.setState({ ns: e.target.value }), nsKey: e => { if (e.key === 'Enter') addSkill(); }, addSkill, added: S.added,
+      outcome: S.outcome, onOutcome: e => this.setState({ outcome: e.target.value }), outOpen: !S.outDone, outDone: S.outDone, saveOutcome: () => this.setState({ outDone: true }),
+      learning: [['llm','LLM evaluation fundamentals','Internal course · 4 hours'],['coreml','On-device ML with Core ML','Internal course · 6 hours'],['disc','Leading technical discovery','Workshop · January']].map(([k, n, d]) => ({ n, d, cls: S.plan[k] ? 'pill p-sm p-ink' : 'pill p-sm p-soft', label: S.plan[k] ? '✓ In my plan' : 'Add to my plan', toggle: () => this.setState({ plan: { ...S.plan, [k]: !S.plan[k] } }) })),
+      cvOpen: S.cv > 0, cv1: S.cv === 1, cv2: S.cv === 2, cv3: S.cv === 3, openCv: () => this.setState({ cv: 1 }), closeCv: () => this.setState({ cv: 0 }),
+      useSample: () => { this.setState({ cv: 2 }); setTimeout(() => this.setState({ cv: 3 }), 1200); },
+      ext, keepN, noKeep: keepN === 0, applyCv: () => { this.setState({ cv: 0, bonus: Math.min(6, keepN * 2) }); this.flash('✓ Passport updated with ' + keepN + ' changes from your CV'); },
+      toast: !!S.toast, toastMsg: S.toast,
+    };
+  }
+}
+</script>
+</body>
+</html>

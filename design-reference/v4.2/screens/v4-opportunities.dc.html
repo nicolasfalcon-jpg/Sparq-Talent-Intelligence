@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Opportunities</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.sf{background:#FFFFFF;border-radius:28px}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.pill:hover{background:#EBEBF0}
+.p-ink,.pill.on{background:#1D1D1F;color:#fff}.p-ink:hover,.pill.on:hover{background:#2E2F32;color:#fff}
+.p-coral{background:#CF4529;color:#fff}.p-coral:hover{background:#B83C23;color:#fff}
+.p-soft{background:#F5F5F7}.p-soft:hover{background:#EBEBF0}
+.p-sm{height:34px;padding:0 14px;font-size:13px}
+.tag{display:inline-flex;align-items:center;height:30px;padding:0 13px;border-radius:999px;background:#F5F5F7;font-size:13px;color:#424245;white-space:nowrap}
+.av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:500;color:#1D1D1F;flex:none}
+.oc{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:22px;padding:32px;border-radius:32px;background:#FFFFFF;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.oc:hover{transform:translateY(-2px);box-shadow:0 16px 40px rgba(24,25,27,.07)}
+.oc:focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.circ{width:44px;height:44px;border-radius:50%;background:#F5F5F7;display:inline-flex;align-items:center;justify-content:center;transition:background .15s,color .15s}
+.oc:hover .circ{background:#1D1D1F;color:#fff}
+.sf,.wh,.card,.oc{box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.p-ink,.pill.on,.p-coral,.p-soft{box-shadow:none}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="opps" mode="staff" context="opps" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:24px 40px 120px;display:flex;flex-direction:column;gap:32px">
+
+<div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch">
+<header style="flex:999 1 520px;display:flex;flex-direction:column;justify-content:flex-end;gap:12px">
+<h1 style="font-size:52px;line-height:1.05;font-weight:300;letter-spacing:-0.035em">Work that’s <span style="font-weight:500">waiting for a team.</span></h1>
+<p class="mute" style="font-size:17px">4 opportunities · 10 open roles · first kick-off on Jan 12</p>
+</header>
+<div style="flex:1 1 440px;max-width:540px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+<a href="v4-role.dc.html" class="oc" style="padding:24px;gap:10px;border-radius:28px"><span style="width:42px;height:42px;border-radius:50%;background:#F5F5F7;display:inline-flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><span style="font-size:19px;font-weight:500;letter-spacing:-0.01em">Fill a role</span><span class="mute" style="font-size:13px">Find documented expertise for one position</span></a>
+<a href="v4-team.dc.html" class="oc" style="padding:24px;gap:10px;border-radius:28px;background:radial-gradient(90% 120% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),#FFF8F5"><span style="width:42px;height:42px;border-radius:50%;background:#F15B40;color:#fff;display:inline-flex;align-items:center;justify-content:center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="20" r="2"/><path d="M7 7l3 3M17 7l-3 3M12 15v3"/></svg></span><span style="font-size:19px;font-weight:500;letter-spacing:-0.01em">Build a team</span><span class="mute" style="font-size:13px">Compose a whole project team</span></a>
+</div>
+</div>
+
+<div style="display:flex;gap:6px;padding:5px;background:#FFFFFF;border-radius:999px;align-self:flex-start">
+<sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4"><button class="{{ t.cls }}" style="height:38px" onClick="{{ t.pick }}" aria-pressed="{{ t.on }}">{{ t.label }} <span style="opacity:.55">{{ t.n }}</span></button></sc-for>
+</div>
+
+<sc-if value="{{ hasDrafts }}" hint-placeholder-val="{{ false }}"><section style="display:flex;flex-direction:column;gap:10px"><span class="mute" style="font-size:14px">Your drafts in this session</span><div style="display:flex;flex-wrap:wrap;gap:12px"><sc-for list="{{ drafts }}" as="d" hint-placeholder-count="2"><a href="{{ d.href }}" class="oc" style="padding:18px 20px;gap:4px;border-radius:24px;flex:1 1 300px;max-width:440px"><span style="font-weight:500">{{ d.t }}</span><span class="mute" style="font-size:13px">{{ d.s }}</span><span style="font-size:13px;font-weight:500;color:{{ d.c }}">{{ d.st }}</span></a></sc-for></div></section></sc-if>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px">
+<sc-for list="{{ opps }}" as="o" hint-placeholder-count="4">
+<button class="oc" onClick="{{ o.open }}" aria-label="Open {{ o.client }}, {{ o.name }}">
+<div style="display:flex;justify-content:space-between;align-items:center;width:100%">
+<div style="display:flex;align-items:center;gap:12px"><span class="av" style="width:44px;height:44px;background:#F5F5F7;font-size:13px">{{ o.ini }}</span><div><div style="font-weight:500">{{ o.client }}</div><div class="mute" style="font-size:13px">{{ o.ind }}</div></div></div>
+<span style="display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:999px;background:#F5F5F7;font-size:13px"><span style="width:7px;height:7px;border-radius:50%;background:{{ o.dot }}"></span>{{ o.status }}</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><h2 style="font-size:32px;font-weight:300;letter-spacing:-0.03em;line-height:1.1">{{ o.name }}</h2><p class="mute" style="font-size:16px">{{ o.short }}</p></div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ o.caps }}" as="c" hint-placeholder-count="3"><span class="tag">{{ c }}</span></sc-for></div>
+<div style="display:flex;justify-content:space-between;align-items:flex-end;width:100%">
+<div style="display:flex;gap:36px">
+<div><div class="mute" style="font-size:13px">Starts</div><div style="font-size:24px;font-weight:300;letter-spacing:-0.02em">{{ o.start }}</div></div>
+<div><div class="mute" style="font-size:13px">Team · {{ o.prop }}/{{ o.n }} proposed</div><div style="display:flex;gap:6px;margin-top:10px"><sc-for list="{{ o.dots }}" as="r" hint-placeholder-count="3"><span style="width:14px;height:14px;border-radius:50%;background:{{ r }};border:1.5px solid #1D1D1F"></span></sc-for></div></div>
+</div>
+<span class="circ" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+</div>
+</button>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ hasDet }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ close }}" style="position:fixed;inset:0;background:rgba(24,25,27,.24);z-index:58"></div>
+<aside role="dialog" aria-label="Opportunity details" style="position:fixed;top:16px;right:16px;bottom:16px;width:540px;max-width:calc(100vw - 32px);z-index:60;background:#FFFFFF;border-radius:32px;box-shadow:0 30px 80px rgba(24,25,27,.22);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:30px 30px 0;display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><div class="mute" style="font-size:14px">{{ d.client }} · {{ d.ind }}</div><h2 style="font-size:32px;font-weight:300;letter-spacing:-0.03em;line-height:1.1;margin-top:6px">{{ d.name }}</h2></div><button class="pill p-sm" style="width:36px;padding:0" onClick="{{ close }}" aria-label="Close">✕</button></div>
+<div style="flex:1;overflow:auto;padding:22px 30px;display:flex;flex-direction:column;gap:24px">
+<div style="border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;background:radial-gradient(90% 120% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),#FFF8F5"><sc-if value="{{ noSum }}" hint-placeholder-val="{{ true }}"><button onClick="{{ doSum }}" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500"><span style="width:30px;height:30px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span>Summarize the requirements</button></sc-if><sc-if value="{{ sumLoading }}" hint-placeholder-val="{{ false }}"><span class="mute" style="font-size:14px">Reading the opportunity…</span></sc-if><sc-if value="{{ sumReady }}" hint-placeholder-val="{{ false }}"><span class="mute" style="font-size:12px">Ask Sparq · summary</span><sc-for list="{{ d.sumLines }}" as="l" hint-placeholder-count="3"><div style="display:flex;gap:10px;font-size:14px"><span style="color:#F15B40">●</span><span>{{ l }}</span></div></sc-for></sc-if></div>
+<p style="font-size:16px;color:#424245">{{ d.desc }}</p>
+<div style="display:flex;gap:32px"><div><div class="mute" style="font-size:13px">Kick-off</div><div style="font-size:22px;font-weight:300">{{ d.start }}</div></div><div><div class="mute" style="font-size:13px">Duration</div><div style="font-size:22px;font-weight:300">{{ d.dur }}</div></div><div><div class="mute" style="font-size:13px">Delivery lead</div><div style="font-size:22px;font-weight:300">{{ d.lead }}</div></div></div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span class="mute" style="font-size:13px">The team</span>
+<sc-for list="{{ d.roles }}" as="r" hint-placeholder-count="4">
+<div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:22px;background:#F5F5F7">
+<div style="flex:1;min-width:0"><div style="font-weight:500">{{ r.n }}</div><div class="mute" style="font-size:13px">{{ r.caps }}</div></div>
+<sc-if value="{{ r.hasP }}" hint-placeholder-val="{{ false }}"><span style="display:flex;align-items:center;gap:8px;font-size:13px"><dc-import name="v3-portrait" who="{{ r.pid }}" size="32" hint-size="32px,32px"></dc-import>{{ r.pn }}</span></sc-if>
+<sc-if value="{{ r.noP }}" hint-placeholder-val="{{ true }}"><a href="v4-role.dc.html" class="pill p-sm p-soft">Fill this role</a></sc-if>
+</div>
+</sc-for>
+</div>
+<p class="mute" style="font-size:13px">{{ d.interest }}</p>
+</div>
+<div style="padding:18px 30px 28px;display:flex;gap:8px"><a href="v4-planning.dc.html" class="pill" style="flex:1">See availability</a><a href="v4-team.dc.html" class="pill p-coral" style="flex:1.4">Build the team</a></div>
+</aside>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  ld(k, d) { try { const v = window.localStorage.getItem('sti42.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  sv(k, v) { try { window.localStorage.setItem('sti42.' + k, JSON.stringify(v)); } catch (e) {} }
+  componentDidMount() { const p = this.hydrate(); if (p) this.setState(p); }
+  componentDidUpdate() { this.persist(); }
+  hydrate() {
+    return null;
+  }
+  persist() {
+
+  }
+  constructor(p) { super(p); this.state = { tab: 'all', open: null, sum: 0 }; }
+  renderVals() {
+    const S = this.state;
+    const PP = { lucia:['LF','#E9E2F3','Lucía Fernández'], camila:['CD','#E1EFE5','Camila Duarte'] };
+    const O = [
+      { id:'vela', ini:'VB', client:'Vela Bank', ind:'Financial services', name:'AI-assisted onboarding', short:'A conversational way to open an account in the bank’s app.', status:'Staffing', dot:'#F15B40', start:'Jan 12', dur:'6 months', lead:'Rafael Ortiz', caps:['LLM apps','React Native','Node.js','Appium'],
+        desc:'A conversational onboarding experience inside the Vela Bank app that helps new customers open accounts and understand products, with human handoff.', interest:'1 engineer has expressed interest in the mobile role.',
+        roles:[['AI Engineer','LLM apps · RAG · Python','lucia'],['Senior Mobile Engineer','React Native · TypeScript · Accessibility'],['Backend Engineer','Node.js or Go · PostgreSQL'],['QA Automation','Appium · Playwright','camila']] },
+      { id:'cobalt', ini:'CM', client:'Cobalt Mobility', ind:'Transportation', name:'Fleet driver app rebuild', short:'Native apps for routes and proof of delivery, built for low coverage.', status:'Open', dot:'#3E9B6A', start:'Jan 19', dur:'9 months', lead:'Inés Vidal', caps:['Swift','Kotlin','Mobile architecture'],
+        desc:'Native iOS and Android rebuild of the driver app for route planning, proof of delivery and offline operation.', interest:'Visible to engineers in their personal workspace.',
+        roles:[['iOS Engineer','Swift · SwiftUI · Offline storage'],['Android Engineer','Kotlin · Jetpack Compose'],['Mobile Tech Lead','Mobile architecture · Mentoring']] },
+      { id:'terra', ini:'TF', client:'Terra Foods', ind:'Consumer goods', name:'Snowflake data platform', short:'One governed home for sales, supply and marketing data.', status:'Open', dot:'#3E9B6A', start:'Feb 9', dur:'5 months', lead:'Rafael Ortiz', caps:['Snowflake','dbt','Airflow','AWS'],
+        desc:'Consolidation of sales, supply and marketing data into a governed Snowflake platform with dbt models.', interest:'No expressions of interest yet.',
+        roles:[['Data Engineer','Snowflake · dbt · Airflow'],['Data Engineer','Snowflake · dbt · Python'],['Cloud Engineer','AWS · Terraform']] },
+      { id:'nimbus', ini:'NH', client:'Nimbus Health', ind:'Healthcare', name:'AWS cloud migration', short:'Moving clinical scheduling to the cloud, safely and in stages.', status:'Upcoming', dot:'#AEAEB2', start:'Mar 2', dur:'8 months', lead:'Inés Vidal', caps:['AWS','Terraform','Kubernetes'],
+        desc:'Migration of clinical scheduling and billing systems to AWS with compliance controls and staged cut-over.', interest:'Opens to expressions of interest on Dec 15.',
+        roles:[['Solutions Architect','AWS · Migration planning'],['DevOps Engineer','Terraform · Kubernetes']] },
+    ];
+    const en = o => { const roles = o.roles.map(([n, caps, p]) => ({ n, caps, hasP: !!p, noP: !p, pi: p ? PP[p][0] : '', pt: p ? PP[p][1] : '', pn: p ? PP[p][2] : '', pid: p || '' })); const prop = roles.filter(r => r.hasP).length; return { ...o, roles, n: roles.length, prop, sumLines: [roles.length + ' roles, ' + (roles.length - prop) + ' still open', 'Key capabilities: ' + o.caps.join(', '), 'Kick-off ' + o.start + ' · ' + o.dur + ' · delivery lead ' + o.lead], dots: roles.map(r => r.hasP ? '#1D1D1F' : 'transparent'), open: () => this.setState({ open: o.id, sum: 0 }) }; };
+    const list = O.filter(o => S.tab === 'all' || o.status === S.tab).map(en);
+    const det = O.find(o => o.id === S.open);
+    return {
+      tabs: [['all','All'],['Staffing','Staffing'],['Open','Open'],['Upcoming','Upcoming']].map(([v, label]) => ({ label, n: v === 'all' ? 4 : O.filter(o => o.status === v).length, on: S.tab === v, cls: S.tab === v ? 'pill on' : 'pill', pick: () => this.setState({ tab: v }) })),
+      ...(() => { const T = this.ld('team', null), Ro = this.ld('role', null), d = [];
+        if (T && T.roles) { const f = T.roles.filter(x => x.who).length; d.push({ t: 'Kestrel Travel · team', s: T.roles.length + ' roles · ' + f + ' proposed', st: T.sent ? 'Sent for review' : T.saved ? 'Draft saved' : 'In progress', c: T.sent ? '#1F7A4A' : '#6E6E73', href: 'v4-team.dc.html' }); }
+        if (Ro && Ro.st >= 1) d.push({ t: 'Vela Bank · Senior Mobile Engineer', s: Ro.prop ? 'One person proposed' : 'Requirements drafted', st: Ro.st === 3 ? 'Sent for review' : 'In progress', c: Ro.st === 3 ? '#1F7A4A' : '#6E6E73', href: 'v4-role.dc.html' });
+        return { drafts: d, hasDrafts: d.length > 0 }; })(),
+      noSum: S.sum === 0, sumLoading: S.sum === 1, sumReady: S.sum === 2, doSum: () => { this.setState({ sum: 1 }); setTimeout(() => this.setState({ sum: 2 }), 800); },
+      opps: list, hasDet: !!det, d: det ? en(det) : en(O[0]), close: () => this.setState({ open: null }),
+    };
+  }
+}
+</script>
+</body>
+</html>

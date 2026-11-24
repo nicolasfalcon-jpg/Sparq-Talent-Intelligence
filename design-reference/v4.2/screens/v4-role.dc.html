@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fill a role</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.wh{background:#fff;border-radius:32px;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s,transform .1s}
+.pill:hover{background:#F5F5F7}.pill:active{transform:scale(.98)}
+.p-ink{background:#1D1D1F;color:#fff;box-shadow:none}.p-ink:hover{background:#333336;color:#fff}
+.p-coral{background:#CF4529;color:#fff;box-shadow:none}.p-coral:hover{background:#B83C23;color:#fff}
+.p-soft{background:#F5F5F7;box-shadow:none}.p-soft:hover{background:#EBEBF0}
+.p-glass{background:rgba(255,255,255,.8);box-shadow:none}.p-glass:hover{background:#fff}
+.p-sm{height:32px;padding:0 13px;font-size:13px}
+.dm{width:12px;height:12px;border-radius:50%;display:inline-block;flex:none}
+.segb{height:32px;padding:0 14px;border:0;border-radius:999px;background:transparent;font:500 13px Inter,sans-serif;color:#424245;cursor:pointer}
+.segb.on{background:#fff;color:#1D1D1F;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="opps" mode="staff" context="role" live-items="{{ liveItems }}" live-hello="{{ liveHello }}" live-intro="{{ liveIntro }}" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:12px 40px 140px;display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start">
+
+<section aria-label="Conversation with Ask Sparq" style="flex:1 1 380px;max-width:440px;position:sticky;top:16px;min-height:700px;border-radius:36px;padding:28px;display:flex;flex-direction:column;gap:16px;overflow:hidden;background:radial-gradient(120% 60% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),radial-gradient(90% 50% at 0% 100%, #FFEDE5 0%, rgba(255,237,229,0) 70%),#FFF8F5;box-shadow:0 20px 50px rgba(241,91,64,.10)">
+<svg width="360" height="200" viewBox="0 0 360 200" aria-hidden="true" style="position:absolute;top:-20px;right:-60px;pointer-events:none"><g fill="none" stroke="#F15B40" transform="rotate(-18 220 100)"><ellipse cx="220" cy="100" rx="140" ry="50" stroke-opacity=".18"/><ellipse cx="220" cy="100" rx="96" ry="34" stroke-opacity=".26"/></g><circle cx="250" cy="86" r="28" fill="#FF9B7C" opacity=".55"/><circle cx="120" cy="140" r="5" fill="#F15B40"/></svg>
+<div style="display:flex;align-items:center;gap:12px;position:relative"><span style="width:44px;height:44px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span><span style="font-weight:500">Ask Sparq</span></div>
+<div style="flex:1;min-height:60px"></div>
+<p style="font-size:26px;font-weight:300;letter-spacing:-0.025em;line-height:1.25;position:relative">Which role do you need to fill? <span style="font-weight:500">Tell me in your own words.</span></p>
+<sc-if value="{{ st0 }}" hint-placeholder-val="{{ true }}">
+<div style="background:#fff;border-radius:24px;padding:16px 18px;position:relative"><label for="brief" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Describe the role</label><textarea id="brief" rows="6" value="{{ brief }}" onChange="{{ onBrief }}" style="width:100%;border:0;outline:none;resize:none;background:transparent;font:400 15px/1.6 Inter,system-ui,sans-serif;color:#1D1D1F"></textarea></div>
+<div style="display:flex;justify-content:space-between;align-items:center;position:relative"><a href="v4-team.dc.html" class="mute" style="font-size:13px;text-decoration:underline;text-underline-offset:3px">Need a whole team instead?</a><button class="pill p-coral" style="height:48px;padding:0 22px" onClick="{{ draft }}">{{ draftLabel }}</button></div>
+</sc-if>
+<sc-if value="{{ after0 }}" hint-placeholder-val="{{ false }}">
+<div style="align-self:flex-end;max-width:92%;background:#1D1D1F;color:#fff;padding:12px 16px;border-radius:22px 22px 6px 22px;font-size:14px;position:relative">{{ briefShort }}</div>
+<sc-if value="{{ after1 }}" hint-placeholder-val="{{ false }}">
+<div style="background:rgba(255,255,255,.88);border-radius:22px;padding:16px 18px;font-size:14px;position:relative">I drafted the requirements on the right. <span class="mute">Tap a capability to switch must-have and nice to have.</span></div>
+<div style="background:rgba(255,255,255,.88);border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;position:relative"><p style="font-size:14px">You mentioned working next to an AI engineer. Add LLM integration as a nice to have?</p>
+<sc-if value="{{ qOpen }}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:6px"><button class="pill p-sm p-soft" onClick="{{ qYes }}">Yes, add it</button><button class="pill p-sm p-soft" onClick="{{ qNo }}">No need</button></div></sc-if>
+<sc-if value="{{ qDone }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#1F7A4A">✓ {{ qAns }}</span></sc-if></div>
+</sc-if>
+<sc-if value="{{ after2 }}" hint-placeholder-val="{{ false }}"><div style="background:rgba(255,255,255,.88);border-radius:22px;padding:16px 18px;font-size:14px;position:relative">{{ foundMsg }} <span class="mute">I show where experience is documented. I don’t rank or decide.</span></div></sc-if>
+</sc-if>
+</section>
+
+<div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-direction:column;gap:6px;padding-top:8px"><a href="v4-opportunities.dc.html" class="mute" style="font-size:14px">← Opportunities</a><h1 style="font-size:44px;font-weight:300;letter-spacing:-0.035em;line-height:1.08">{{ title }}</h1></div>
+
+<sc-if value="{{ isSent }}" hint-placeholder-val="{{ false }}"><div role="status" style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:16px 20px;border-radius:24px;background:#EEF7F1"><span style="width:32px;height:32px;border-radius:50%;background:#34A065;color:#fff;display:inline-flex;align-items:center;justify-content:center">✓</span><span style="flex:1">{{ sentMsg }}</span><a href="v4-opportunities.dc.html" class="pill p-sm">Back to opportunities</a></div></sc-if>
+
+<sc-if value="{{ st0 }}" hint-placeholder-val="{{ true }}">
+<div style="border-radius:32px;border:1.5px dashed #D2D2D7;min-height:540px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:40px"><span style="width:72px;height:72px;border-radius:50%;border:1.5px dashed #C7C7CC"></span><p style="font-size:22px;font-weight:300;letter-spacing:-0.015em">Requirements and people will appear here.</p><p class="mute" style="max-width:360px">Nothing is decided automatically. You review everything before it goes to a delivery lead.</p></div>
+</sc-if>
+
+<sc-if value="{{ after1 }}" hint-placeholder-val="{{ false }}">
+<section class="wh" style="padding:28px 30px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+<div style="display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#F5F5F7"><sc-for list="{{ levels }}" as="l" hint-placeholder-count="3"><button class="{{ l.cls }}" onClick="{{ l.pick }}">{{ l.n }}</button></sc-for></div>
+<div style="display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#F5F5F7"><sc-for list="{{ allocs }}" as="l" hint-placeholder-count="2"><button class="{{ l.cls }}" onClick="{{ l.pick }}">{{ l.n }}</button></sc-for></div>
+<span class="mute" style="font-size:14px;margin-left:6px">Kick-off Jan 12 · 6 months</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><span style="font-size:20px;font-weight:400;letter-spacing:-0.015em">What this role needs</span><span class="mute" style="font-size:13px;display:flex;gap:14px"><span style="display:inline-flex;align-items:center;gap:6px"><span class="dm" style="background:#1D1D1F"></span>Must-have</span><span style="display:inline-flex;align-items:center;gap:6px"><span class="dm" style="border:1.5px solid #1D1D1F"></span>Nice to have</span></span></div>
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<sc-for list="{{ reqs }}" as="r" hint-placeholder-count="5"><span style="display:inline-flex;align-items:center;gap:4px;height:40px;padding:0 6px 0 16px;border-radius:999px;border:1.5px solid #1D1D1F;background:{{ r.bg }};color:{{ r.fg }};font-size:14px;font-weight:500"><button onClick="{{ r.toggle }}" title="{{ r.src }}" style="all:unset;cursor:pointer">{{ r.n }}</button><button onClick="{{ r.remove }}" aria-label="Remove {{ r.n }}" style="width:28px;height:28px;border-radius:50%;border:0;background:{{ r.xbg }};color:{{ r.fg }};cursor:pointer;font-size:11px;margin-left:6px">✕</button></span></sc-for>
+<input aria-label="Add a capability" value="{{ nr }}" onChange="{{ onNr }}" onKeyDown="{{ nrKey }}" placeholder="+ Add" style="height:40px;width:120px;border:0;border-radius:999px;background:#F5F5F7;padding:0 16px;font:500 14px Inter,sans-serif;color:#1D1D1F;outline:none">
+</div>
+<span class="mute" style="font-size:13px">Hover a capability to see where it came from in your description.</span>
+</div>
+<sc-if value="{{ st1 }}" hint-placeholder-val="{{ false }}"><button class="pill p-coral" style="align-self:flex-start;height:50px;padding:0 26px" onClick="{{ find }}">{{ findLabel }}</button></sc-if>
+</section>
+</sc-if>
+
+<sc-if value="{{ after2 }}" hint-placeholder-val="{{ false }}">
+<section style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px"><h2 style="font-size:28px;font-weight:300;letter-spacing:-0.025em">People with <span style="font-weight:500">documented experience</span></h2><span class="mute" style="font-size:13px;display:flex;gap:14px"><span style="display:inline-flex;align-items:center;gap:6px"><span class="dm" style="background:#1D1D1F"></span>Professional</span><span style="display:inline-flex;align-items:center;gap:6px"><span class="dm" style="border:1.5px solid #1D1D1F;background:linear-gradient(90deg,#1D1D1F 50%,#fff 50%)"></span>Training</span><span style="display:inline-flex;align-items:center;gap:6px"><span class="dm" style="border:1.5px solid #D2D2D7"></span>Not documented</span></span></div>
+<sc-for list="{{ cands }}" as="c" hint-placeholder-count="5">
+<article style="background:#fff;border-radius:28px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;box-shadow:{{ c.ring }}">
+<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+<dc-import name="v3-portrait" who="{{ c.id }}" size="52" hint-size="52px,52px"></dc-import>
+<div style="flex:1 1 200px;min-width:0"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-weight:500;font-size:16px">{{ c.n }}</span><sc-if value="{{ c.interested }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:#FFF0EB;color:#B83C23">Shared interest</span></sc-if><sc-if value="{{ c.onSl }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:#F5F5F7;color:#424245">On your shortlist</span></sc-if></div><div style="font-size:13px;color:{{ c.avC }}">{{ c.role }} · {{ c.avText }}</div></div>
+<div style="display:flex;gap:12px;align-items:flex-end"><sc-for list="{{ c.cells }}" as="x" hint-placeholder-count="4"><span style="display:flex;flex-direction:column;align-items:center;gap:5px;width:64px"><span class="dm" style="width:16px;height:16px;background:{{ x.bg }};border:1.5px solid {{ x.bd }}"></span><span style="font-size:11px;color:#6E6E73;text-align:center;line-height:1.2">{{ x.k }}</span></span></sc-for></div>
+<div style="display:flex;gap:6px"><button class="pill p-sm p-soft" onClick="{{ c.toggleEv }}" aria-expanded="{{ c.open }}">{{ c.evLabel }}</button><button class="{{ c.btnCls }}" onClick="{{ c.propose }}">{{ c.btn }}</button></div>
+</div>
+<sc-if value="{{ c.open }}" hint-placeholder-val="{{ false }}"><div style="margin-left:68px;padding:14px 16px;border-radius:20px;background:#F5F5F7;display:flex;flex-direction:column;gap:6px"><sc-for list="{{ c.ev }}" as="e" hint-placeholder-count="2"><span style="font-size:14px">{{ e }}</span></sc-for><sc-if value="{{ c.isAna }}" hint-placeholder-val="{{ false }}"><a href="v4-passport.dc.html" style="font-size:14px;font-weight:500;color:#CF4529">Open Ana’s passport →</a></sc-if></div></sc-if>
+</article>
+</sc-for>
+</section>
+</sc-if>
+</div>
+</div>
+
+<sc-if value="{{ dock }}" hint-placeholder-val="{{ false }}">
+<div class="s" style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:44;display:flex;align-items:center;gap:12px;height:64px;padding:0 10px 0 10px;background:#1D1D1F;color:#fff;border-radius:999px;box-shadow:0 16px 40px rgba(0,0,0,.25)">
+<dc-import name="v3-portrait" who="{{ prop.id }}" size="44" hint-size="44px,44px"></dc-import>
+<span style="font-size:14px;margin:0 6px">{{ prop.n }} proposed for this role</span>
+<a href="v4-compare.dc.html" class="pill" onClick="{{ goCompare }}" style="height:46px;background:#333336;color:#fff;box-shadow:none">Compare</a>
+<button class="pill p-coral" style="height:46px" onClick="{{ openReview }}">Send for review</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}"><div role="status" class="s" style="position:fixed;top:100px;left:50%;transform:translateX(-50%);z-index:70;background:#1D1D1F;color:#fff;padding:14px 22px;border-radius:999px;font-size:14px;box-shadow:0 16px 40px rgba(0,0,0,.25)">{{ toast }}</div></sc-if>
+
+<sc-if value="{{ review }}" hint-placeholder-val="{{ false }}">
+<div class="s" style="position:fixed;inset:0;background:rgba(0,0,0,.24);z-index:62;display:flex;align-items:center;justify-content:center;padding:24px">
+<div role="dialog" aria-label="Send for review" style="width:100%;max-width:520px;background:#fff;border-radius:34px;padding:32px;display:flex;flex-direction:column;gap:18px;box-shadow:0 30px 80px rgba(0,0,0,.24)">
+<h2 style="font-size:28px;font-weight:300;letter-spacing:-0.025em">Send for <span style="font-weight:500">human review</span></h2>
+<div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:22px;background:#F5F5F7"><dc-import name="v3-portrait" who="{{ prop.id }}" size="52" hint-size="52px,52px"></dc-import><div style="flex:1"><div style="font-weight:500">{{ prop.n }}</div><div class="mute" style="font-size:13px">Senior Mobile Engineer · Vela Bank · {{ prop.avText }}</div></div></div>
+<div style="display:flex;justify-content:space-between;font-size:14px"><span class="mute">Reviewer</span><span>Rafael Ortiz, delivery lead</span></div>
+<p class="mute" style="font-size:13px">Proposing isn’t assigning. Rafael decides, and {{ prop.first }} is contacted only after review.</p>
+<div style="display:flex;gap:8px;justify-content:flex-end"><button class="pill p-soft" onClick="{{ closeReview }}">Keep editing</button><button class="pill p-coral" onClick="{{ send }}">Send</button></div>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"stage":{"editor":"enum","options":["describe","review","people","sent"],"default":"describe"},"$preview":{"width":1440,"height":1150}}'>
+class Component extends DCLogic {
+  ld(k, d) { try { const v = window.localStorage.getItem('sti42.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  sv(k, v) { try { window.localStorage.setItem('sti42.' + k, JSON.stringify(v)); } catch (e) {} }
+  componentDidMount() { const p = this.hydrate(); if (p) this.setState(p); }
+  componentDidUpdate() { this.persist(); }
+  hydrate() {
+    const R0 = this.ld('role', null);
+    if (!R0) return null;
+    const p = { reqs: R0.reqs || this.state.reqs, level: R0.level || this.state.level, alloc: R0.alloc || this.state.alloc, qa: R0.qa !== undefined ? R0.qa : this.state.qa, prop: R0.prop !== undefined ? R0.prop : this.state.prop, st: Math.max(this.state.st, R0.st || 0) };
+    if (p.st === 3 && !p.prop) p.prop = 'ana';
+    return p;
+  }
+  persist() {
+    const S = this.state;
+    this.sv('role', { reqs: S.reqs, level: S.level, alloc: S.alloc, qa: S.qa, prop: S.prop, st: S.st });
+  }
+  constructor(p) {
+    super(p);
+    const st = (this.props && this.props.stage) || 'describe';
+    const n = { describe:0, review:1, people:2, sent:3 }[st] || 0;
+    this.state = { st: n, busy: false, level: 'Senior', alloc: 'Full-time', nr: '', qa: n >= 2 ? 'Added LLM integration as a nice to have' : '', open: { ana: n === 2 }, prop: n === 3 ? 'ana' : null, review: false, toast: '',
+      brief: 'Vela Bank needs a senior mobile engineer for its conversational onboarding app: React Native with TypeScript and strong accessibility, working next to an AI engineer. Starts Jan 12 for six months.',
+      reqs: [['React Native','m','“React Native”'],['TypeScript','m','“with TypeScript”'],['Accessibility','m','“strong accessibility”'],['GraphQL','n','Common in Vela Bank’s stack']].concat(n >= 2 ? [['LLM integration','n','Added from your answer']] : []).map(([k, lv, src]) => ({ k, lv, src })) };
+  }
+  flash(t) { this.setState({ toast: t }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2400); }
+  renderVals() {
+    const S = this.state, st = S.st;
+    const SLIST = this.ld('shortlist', []);
+    const P = {
+      ana:{ n:'Ana Ruiz', role:'Senior Mobile Engineer', av:65, avl:'Jan 5', ok:true, interested:true, sk:{ 'React Native':'p','TypeScript':'p','Accessibility':'p','GraphQL':'p','LLM integration':'t' }, ev:['React Native lead on Meridian Health, 2025–26','WCAG 2.2 AA accessibility audits','LLM visit-notes prototype, 2026'] },
+      ethan:{ n:'Ethan Brooks', role:'Android Engineer', av:79, avl:'Jan 19', ok:true, sk:{ 'React Native':'p','TypeScript':'p','GraphQL':'p','Accessibility':'t' }, ev:['React Native on Lumen Retail','GraphQL client caching layer'] },
+      sofia:{ n:'Sofía Martínez', role:'Senior Frontend Engineer', av:44, avl:'Dec 15', ok:true, sk:{ 'React Native':'t','TypeScript':'p','Accessibility':'p','GraphQL':'t' }, ev:['Accessible design systems','React Native course, 2025'] },
+      javier:{ n:'Javier Morales', role:'iOS Engineer', av:65, avl:'Jan 5', ok:true, sk:{ 'React Native':'t','Accessibility':'p' }, ev:['VoiceOver audits on Meridian Health','React Native training, 2026'] },
+      mateo:{ n:'Mateo Silva', role:'Full-stack Engineer', av:93, avl:'Feb 2', ok:false, sk:{ 'React Native':'t','TypeScript':'p','GraphQL':'p' }, ev:['Node.js and GraphQL on Northwind','React Native independent project'] },
+    };
+    const fit = p => p.av > 72 ? { t:'free ' + p.avl + ', after kick-off' + (p.ok ? '' : ' · pending'), c:'#8A5A12' } : !p.ok ? { t:'free ' + p.avl + ' · pending', c:'#8A5A12' } : { t:'free ' + p.avl + ' · confirmed', c:'#1F7A4A' };
+    const reqs = S.reqs.map((r, i) => ({ n: r.k, src: r.src, bg: r.lv === 'm' ? '#1D1D1F' : '#fff', fg: r.lv === 'm' ? '#fff' : '#1D1D1F', xbg: r.lv === 'm' ? '#333336' : '#F5F5F7',
+      toggle: () => this.setState({ reqs: S.reqs.map((x, j) => j === i ? { ...x, lv: x.lv === 'm' ? 'n' : 'm' } : x) }), remove: () => this.setState({ reqs: S.reqs.filter((_, j) => j !== i) }) }));
+    const addR = () => { const v = S.nr.trim(); if (!v) return; this.setState({ nr: '', reqs: [...S.reqs, { k: v, lv: 'm', src: 'Added by you' }] }); };
+    const keys = S.reqs.map(r => r.k);
+    const score = id => S.reqs.reduce((s, r) => s + ((P[id].sk[r.k] === 'p' ? 1 : P[id].sk[r.k] === 't' ? .4 : 0) * (r.lv === 'm' ? 2 : 1)), 0);
+    const cell = (k, v) => v === 'p' ? { k, bg:'#1D1D1F', bd:'#1D1D1F' } : v === 't' ? { k, bg:'linear-gradient(90deg,#1D1D1F 50%,#fff 50%)', bd:'#1D1D1F' } : { k, bg:'#fff', bd:'#D2D2D7' };
+    const ids = Object.keys(P).filter(id => keys.some(k => P[id].sk[k])).sort((a, b) => score(b) - score(a) || P[a].av - P[b].av);
+    const cands = ids.map(id => { const p = P[id], f = fit(p), open = !!S.open[id], mine = S.prop === id;
+      return { id, onSl: SLIST.includes(id), n: p.n, role: p.role, avText: f.t, avC: f.c, interested: !!p.interested, isAna: id === 'ana', ev: p.ev, open, evLabel: open ? 'Hide evidence' : 'Evidence',
+        toggleEv: () => this.setState({ open: { ...S.open, [id]: !open } }), cells: keys.map(k => cell(k, p.sk[k])),
+        ring: mine ? '0 0 0 2px #1D1D1F' : '0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)',
+        btn: mine ? '✓ Proposed' : S.prop ? 'Propose instead' : 'Propose', btnCls: mine ? 'pill p-sm p-ink' : 'pill p-sm',
+        propose: () => { if (mine) { this.setState({ prop: null }); this.flash(p.n + ' removed'); } else { const prev = S.prop; this.setState({ prop: id }); this.flash(prev ? p.n + ' replaces ' + P[prev].n : p.n + ' proposed'); } } }; });
+    const pp = S.prop ? { id: S.prop, ...P[S.prop], first: P[S.prop].n.split(' ')[0], avText: fit(P[S.prop]).t } : { id:'ana', n:'', first:'', avText:'' };
+    const w = S.brief.split(' ');
+    return {
+      st0: st === 0, after0: st >= 1, after1: st >= 1, st1: st === 1, after2: st >= 2, isSent: st === 3,
+      title: st >= 1 ? 'Vela Bank · Senior Mobile Engineer' : 'Fill a role',
+      brief: S.brief, onBrief: e => this.setState({ brief: e.target.value }), briefShort: w.length > 30 ? w.slice(0, 30).join(' ') + '…' : S.brief,
+      draftLabel: S.busy ? 'Drafting…' : 'Draft the requirements', draft: () => { this.setState({ busy: true }); setTimeout(() => this.setState({ busy: false, st: 1 }), 1000); },
+      findLabel: S.busy ? 'Looking through 12 profiles…' : 'Find people with this experience', find: () => { this.setState({ busy: true }); setTimeout(() => this.setState({ busy: false, st: 2 }), 1000); },
+      qOpen: !S.qa, qDone: !!S.qa, qAns: S.qa,
+      qYes: () => this.setState({ qa: 'Added LLM integration as a nice to have', reqs: [...S.reqs, { k:'LLM integration', lv:'n', src:'Added from your answer' }] }), qNo: () => this.setState({ qa: 'Kept the requirements as they are' }),
+      levels: ['Mid','Senior','Lead'].map(v => ({ n: v, cls: S.level === v ? 'segb on' : 'segb', pick: () => this.setState({ level: v }) })),
+      allocs: ['Full-time','Half-time'].map(v => ({ n: v, cls: S.alloc === v ? 'segb on' : 'segb', pick: () => this.setState({ alloc: v }) })),
+      reqs, nr: S.nr, onNr: e => this.setState({ nr: e.target.value }), nrKey: e => { if (e.key === 'Enter') addR(); },
+      cands, foundMsg: cands.length + ' people have documented experience with at least one capability.',
+      dock: st === 2 && !!S.prop, prop: pp, review: S.review, openReview: () => this.setState({ review: true }), closeReview: () => this.setState({ review: false }),
+      send: () => this.setState({ review: false, st: 3 }), sentMsg: (S.prop ? P[S.prop].n : 'Your proposal') + ' was sent to Rafael Ortiz for review. Nobody has been assigned.',
+      goCompare: () => this.sv('compare', { role: { title: 'Senior Mobile Engineer · Vela Bank', caps: S.reqs.map(r => r.k) }, ids: [S.prop].concat(['ana','ethan','sofia','javier','mateo']).filter((x, i, a) => x && a.indexOf(x) === i).slice(0, 3), from: { href: this.props.self || 'v4-role.dc.html', label: 'Fill a role' } }),
+      liveHello: st === 0 ? 'Let’s find the right person.' : 'Here’s your role so far.',
+      liveIntro: st === 0 ? 'Describe the role on the left and I’ll draft the requirements with you.' : 'I’m reading your requirements and the documented profiles.',
+      liveItems: st === 0 ? [] : [
+        { q: 'Review these requirements', a: 'Vela Bank · Senior Mobile Engineer · ' + S.level + ', ' + S.alloc.toLowerCase() + ' from Jan 12.', bullets: ['Must-have: ' + (S.reqs.filter(r => r.lv === 'm').map(r => r.k).join(', ') || 'none'), 'Nice to have: ' + (S.reqs.filter(r => r.lv === 'n').map(r => r.k).join(', ') || 'none')] },
+        { q: 'Identify requirements that need confirmation', a: 'A few points are worth confirming with Vela Bank before review.', bullets: S.reqs.filter(r => r.lv === 'm' && !Object.keys(P).some(id => P[id].sk[r.k] === 'p')).map(r => r.k + ': nobody has documented professional experience').concat(S.reqs.filter(r => r.lv === 'n').map(r => r.k + ': confirm whether it is really needed')).concat(['Kick-off Jan 12 is taken from the brief']) },
+      ].concat(st >= 2 ? [{ q: 'Explore documented expertise', a: cands.length + ' people have documented experience with at least one capability.', bullets: cands.slice(0, 3).map(c => c.n + ' · ' + c.cells.filter(x => x.bg === '#1D1D1F').length + ' of ' + keys.length + ' documented professionally') }] : []).concat(S.prop ? [
+        { q: 'Summarize the proposed professional', a: P[S.prop].n + ', ' + P[S.prop].role + ', ' + fit(P[S.prop]).t + '.', bullets: P[S.prop].ev },
+        { q: 'Review availability', a: P[S.prop].n + ' is ' + fit(P[S.prop]).t + '.', bullets: [P[S.prop].av > 72 ? 'Starts after the Jan 12 kick-off: discuss a later start or an alternative' : 'Free before the Jan 12 kick-off'].concat(P[S.prop].ok ? [] : ['End date of the current project is not confirmed']) } ] : []),
+      toastOn: !!S.toast, toast: S.toast,
+      liveA: st === 0 ? 'Nothing drafted yet. Describe the role and I’ll draft the requirements with you.' : 'Vela Bank · Senior Mobile Engineer · ' + S.level + ', ' + S.alloc.toLowerCase() + ' from Jan 12. ' + (S.prop ? P[S.prop].n + ' is proposed.' : 'No one proposed yet.'),
+      liveBullets: st === 0 ? [] : ['Must-have: ' + (S.reqs.filter(r => r.lv === 'm').map(r => r.k).join(', ') || 'none'), 'Nice to have: ' + (S.reqs.filter(r => r.lv === 'n').map(r => r.k).join(', ') || 'none')].concat(st >= 2 ? [cands.length + ' people with documented experience in at least one capability'] : []),
+    };
+  }
+}
+</script>
+</body>
+</html>

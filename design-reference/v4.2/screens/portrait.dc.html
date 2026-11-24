@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Portrait</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>body{margin:0}</style>
+</helmet>
+<span role="img" aria-label="{{ label }}" style="display:inline-flex;width:{{ px }};height:{{ px }};border-radius:50%;overflow:hidden;flex:none;vertical-align:middle">
+<svg width="100%" height="100%" viewBox="0 0 100 100" aria-hidden="true">
+<rect width="100" height="100" fill="{{ bg }}"/>
+<circle cx="78" cy="22" r="26" fill="#fff" opacity=".35"/>
+<path d="{{ back }}" fill="{{ hair }}"/>
+<path d="M12 106 C14 81 30 70 50 70 C70 70 86 81 88 106 Z" fill="{{ shirt }}"/>
+<path d="M43 52 H57 V68 C57 72 43 72 43 68 Z" fill="{{ skin }}"/>
+<path d="M43 58 H57 V62 C53 64 47 64 43 62 Z" fill="#000" opacity=".08"/>
+<path d="M42 70 L50 80 L58 70 C55 69 45 69 42 70 Z" fill="{{ skin }}"/>
+<ellipse cx="50" cy="41" rx="15" ry="18" fill="{{ skin }}"/>
+<path d="{{ front }}" fill="{{ hair }}"/>
+<path d="{{ beard }}" fill="{{ hair }}" opacity=".85"/>
+</svg>
+</span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"who":{"editor":"enum","options":["ana","lucia","javier","ethan","sofia","camila","daniel","mateo","valentina","marcus","priya","tomas","laura"],"default":"ana"},"size":{"editor":"int","default":64,"min":16,"max":240},"$preview":{"width":120,"height":120}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const F = {
+      cap: 'M34 40 C34 26 42 21 50 21 C59 21 66 27 66 40 C63 33 57 30 50 30 C43 30 37 33 34 40 Z',
+      wavy: 'M33 41 C32 27 41 20 50 20 C60 20 68 27 67 41 C65 35 62 33 58 33 C56 30 53 30 50 31 C47 29 43 30 41 33 C38 33 35 35 33 41 Z',
+      buzz: 'M35.5 35 C37 27 43 23.5 50 23.5 C57 23.5 63 27 64.5 35 C60 31 55 30 50 30 C45 30 40 31 35.5 35 Z',
+      fringe: 'M34 40 C35 27 42 22 50 22 C58 22 66 27 66 40 C61 31 52 29 44 33 C40 35 36 37 34 40 Z',
+      side: 'M34 42 C34 27 42 21 51 21 C60 21 66 28 66 38 C60 30 49 28 40 34 C37 36 35 39 34 42 Z',
+    };
+    const B = {
+      none: '',
+      long: 'M31 44 C30 26 39 19 50 19 C61 19 70 26 69 44 L70 75 C64 78 58 77 56 75 L56 52 L44 52 L44 75 C42 77 36 78 30 75 Z',
+      bob: 'M31 44 C30 27 39 20 50 20 C61 20 70 27 69 44 L69 60 C64 62 60 61 58 60 L58 48 L42 48 L42 60 C40 61 36 62 31 60 Z',
+      bun: 'M50 6 a10 10 0 1 0 0.01 0 Z',
+      curly: 'M50 14 C62 13 70 19 72 29 C77 33 78 41 74 47 C76 53 72 59 66 60 L34 60 C28 59 24 53 26 47 C22 41 23 33 28 29 C30 19 38 15 50 14 Z',
+    };
+    const beard = 'M36 44 C37 58 44 63 50 63 C56 63 63 58 64 44 C61 51 57 54 50 54 C43 54 39 51 36 44 Z';
+    const S = { a:'#F1D2BC', b:'#E2B08C', c:'#C98E66', d:'#A56C49', e:'#7B4B33' };
+    const H = { dark:'#2E2320', brown:'#5B3B29', black:'#1C1918', auburn:'#8B4028', grey:'#A29C96', blonde:'#C8A266' };
+    const P = {
+      ana:      { n:'Ana Ruiz', skin:S.b, hair:H.brown, back:'long', front:'fringe', shirt:'#2F3A4A', bg:'#FFE4D6' },
+      lucia:    { n:'Lucía Fernández', skin:S.c, hair:H.dark, back:'curly', front:'fringe', shirt:'#4A4E57', bg:'#EEE9F6' },
+      javier:   { n:'Javier Morales', skin:S.b, hair:H.dark, back:'none', front:'cap', shirt:'#6F8070', bg:'#E3EFF0', beard:true },
+      ethan:    { n:'Ethan Brooks', skin:S.a, hair:H.blonde, back:'none', front:'side', shirt:'#2F3A4A', bg:'#E8EEF6' },
+      sofia:    { n:'Sofía Martínez', skin:S.a, hair:H.auburn, back:'long', front:'side', shirt:'#4A4E57', bg:'#F4EDE4' },
+      camila:   { n:'Camila Duarte', skin:S.c, hair:H.black, back:'bob', front:'fringe', shirt:'#6F8070', bg:'#EAF3EC' },
+      daniel:   { n:'Daniel Okafor', skin:S.e, hair:H.black, back:'none', front:'buzz', shirt:'#C9D6E3', bg:'#E8EEF6', beard:true },
+      mateo:    { n:'Mateo Silva', skin:S.c, hair:H.brown, back:'none', front:'wavy', shirt:'#2F3A4A', bg:'#F4EDE4' },
+      valentina:{ n:'Valentina Rojas', skin:S.b, hair:H.black, back:'long', front:'fringe', shirt:'#8E5A4A', bg:'#FFE9DF' },
+      marcus:   { n:'Marcus Chen', skin:S.a, hair:H.grey, back:'none', front:'side', shirt:'#4A4E57', bg:'#EAF3EC' },
+      priya:    { n:'Priya Nair', skin:S.d, hair:H.black, back:'long', front:'side', shirt:'#2F3A4A', bg:'#F6E6EE' },
+      tomas:    { n:'Tomás Herrera', skin:S.c, hair:H.black, back:'none', front:'cap', shirt:'#8D99A6', bg:'#F0F0F3' },
+      laura:    { n:'Laura Gómez', skin:S.a, hair:H.brown, back:'bob', front:'side', shirt:'#2F3A4A', bg:'#F0F0F3' },
+    };
+    const p = P[this.props.who] || P.ana;
+    const size = Number(this.props.size ?? 64) || 64;
+    return { px: size + 'px', label: 'Illustrated portrait of ' + p.n, bg: p.bg, skin: p.skin, hair: p.hair, shirt: p.shirt, back: B[p.back], front: F[p.front], beard: p.beard ? beard : '' };
+  }
+}
+</script>
+</body>
+</html>

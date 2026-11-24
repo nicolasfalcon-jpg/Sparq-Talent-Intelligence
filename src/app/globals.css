@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "../design-system/tokens.css";
+
+/*
+ * Base layer — mirrors the `.s` root style of the approved V4.2 screens:
+ * Inter 15/1.5, -0.006em tracking, antialiased, #FAFAFA canvas, coral focus ring.
+ */
+@layer base {
+  html { background: var(--color-canvas); }
+  body {
+    margin: 0;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    letter-spacing: -0.006em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  h1, h2, h3, h4, p { margin: 0; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--color-coral); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+}
+
+@layer utilities {
+  .sr-only-v { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+/* Print: only the passport document preview is printed (used by "Export PDF portfolio"). */
+@media print {
+  body * { visibility: hidden !important; }
+  [data-print-root], [data-print-root] * { visibility: visible !important; }
+  [data-print-root] { position: absolute !important; inset: 0 auto auto 0 !important; width: 100% !important; box-shadow: none !important; border-radius: 0 !important; }
+}

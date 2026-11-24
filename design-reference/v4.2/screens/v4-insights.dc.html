@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Insights</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.pill:hover{background:#EBEBF0}
+.p-ink,.pill.on{background:#1D1D1F;color:#fff}.p-ink:hover,.pill.on:hover{background:#2E2F32;color:#fff}
+.p-sm{height:34px;padding:0 14px;font-size:13px}
+.av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:500;color:#1D1D1F;flex:none}
+.row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:220px minmax(0,1fr) 150px;gap:20px;align-items:center;padding:16px 22px;border-radius:24px;cursor:pointer;width:100%;transition:background .15s}
+.row:hover{background:#F5F5F7}
+.row:focus-visible{outline:2px solid #F15B40}
+.dt{width:18px;height:18px;border-radius:50%;display:inline-block;flex:none}
+.sub{all:unset;box-sizing:border-box;display:grid;grid-template-columns:150px minmax(0,1fr) 40px;gap:12px;align-items:center;padding:10px 12px;border-radius:16px;cursor:pointer;width:100%}
+.sub:hover{background:#F5F5F7}
+.sub:focus-visible{outline:2px solid #F15B40}
+.sf,.wh,.card,.oc{box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.p-ink,.pill.on,.p-coral,.p-soft{box-shadow:none}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="insights" mode="staff" context="insights" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:24px 40px 120px;display:flex;flex-direction:column;gap:36px">
+<header style="display:flex;flex-direction:column;gap:10px"><h1 style="font-size:52px;line-height:1.05;font-weight:300;letter-spacing:-0.035em">What your organization <span style="font-weight:500">knows.</span></h1><p class="mute" style="font-size:17px">Each dot is a person with documented experience. Never a performance measure.</p></header>
+
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px">
+<sc-for list="{{ obs }}" as="o" hint-placeholder-count="3">
+<button onClick="{{ o.go }}" style="all:unset;box-sizing:border-box;cursor:pointer;border-radius:28px;padding:26px;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045);display:flex;flex-direction:column;gap:14px;background:{{ o.bg }}">
+<span style="font-size:44px;font-weight:300;letter-spacing:-0.04em;line-height:1">{{ o.big }}</span>
+<span style="font-size:17px;line-height:1.4">{{ o.t }}</span>
+<span class="mute" style="font-size:14px">{{ o.d }}</span>
+<span style="font-size:14px;font-weight:500">{{ o.a }} →</span>
+</button>
+</sc-for>
+</div>
+
+<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+<section class="wh" style="flex:999 1 620px;min-width:0;background:#FFFFFF;border-radius:32px;padding:18px">
+<div class="mute" style="display:flex;flex-wrap:wrap;gap:20px;font-size:13px;padding:8px 22px 14px"><span style="display:inline-flex;align-items:center;gap:8px"><span class="dt" style="width:12px;height:12px;background:#1D1D1F"></span>Professional experience</span><span style="display:inline-flex;align-items:center;gap:8px"><span class="dt" style="width:12px;height:12px;border:1.5px solid #1D1D1F;background:linear-gradient(90deg,#1D1D1F 50%,#fff 50%)"></span>Training or emerging</span><span style="display:inline-flex;align-items:center;gap:8px"><span class="dt" style="width:12px;height:12px;border:2px solid #F15B40"></span>Open role</span></div>
+<sc-for list="{{ caps }}" as="c" hint-placeholder-count="8">
+<button class="row" onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="background:{{ c.bg }}">
+<span style="font-size:18px;font-weight:{{ c.fw }};letter-spacing:-0.01em">{{ c.label }}</span>
+<span style="display:flex;gap:7px;align-items:center;flex-wrap:wrap">
+<sc-for list="{{ c.dots }}" as="d" hint-placeholder-count="5"><span class="dt" style="background:{{ d.bg }};border:{{ d.bd }}"></span></sc-for>
+<span style="width:14px"></span>
+<sc-for list="{{ c.dem }}" as="d" hint-placeholder-count="2"><span class="dt" style="border:2px solid #F15B40"></span></sc-for>
+</span>
+<span class="mute" style="font-size:13px;text-align:right">{{ c.av }}</span>
+</button>
+</sc-for>
+</section>
+
+<aside style="flex:1 1 360px;max-width:440px;border-radius:32px;padding:30px;display:flex;flex-direction:column;gap:22px;position:sticky;top:16px;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)">
+<sc-if value="{{ noSel }}" hint-placeholder-val="{{ true }}"><p style="font-size:24px;font-weight:300;letter-spacing:-0.02em;line-height:1.3">Choose a capability to see <span style="font-weight:500">the skills inside it</span> and the people behind them.</p></sc-if>
+<sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+<div><span class="mute" style="font-size:14px">{{ sel.pro }} professional · {{ sel.em }} growing · {{ sel.demand }} open roles</span><h2 style="font-size:34px;font-weight:300;letter-spacing:-0.03em;line-height:1.1;margin-top:6px">{{ sel.label }}</h2></div>
+<sc-if value="{{ sel.hasGap }}" hint-placeholder-val="{{ false }}"><p style="font-size:15px;padding:14px 16px;border-radius:18px;background:#F5F5F7">{{ sel.gap }}</p></sc-if>
+<div style="display:flex;flex-direction:column;gap:2px"><sc-for list="{{ subs }}" as="s" hint-placeholder-count="4"><button class="sub" onClick="{{ s.pick }}" aria-pressed="{{ s.on }}" style="background:{{ s.bg }}"><span style="font-size:14px;font-weight:{{ s.fw }}">{{ s.n }}</span><span style="height:8px;border-radius:999px;background:rgba(24,25,27,.08);overflow:hidden;display:flex"><span style="width:{{ s.pw }}%;background:#1D1D1F"></span><span style="width:{{ s.tw }}%;background:#AEAEB2"></span></span><span class="mute" style="font-size:13px;text-align:right">{{ s.c }}</span></button></sc-for></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span class="mute" style="font-size:13px">{{ peopleLabel }}</span>
+<sc-for list="{{ people }}" as="p" hint-placeholder-count="4"><a href="{{ p.href }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;background:#F5F5F7"><dc-import name="v3-portrait" who="{{ p.id }}" size="38" hint-size="38px,38px"></dc-import><span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:500">{{ p.n }}</span><span class="mute" style="display:block;font-size:12px">{{ p.ev }}</span></span><span class="mute" style="font-size:12px">{{ p.type }}</span></a></sc-for>
+</div>
+<button class="pill p-sm" style="align-self:flex-start" onClick="{{ clear }}">All capabilities</button>
+</sc-if>
+</aside>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { sel: 'mo', sub: null }; }
+  renderVals() {
+    const S = this.state;
+    const H = { ana:['Ana Ruiz','AR','#FFE4D6'], javier:['Javier Morales','JM','#DCEBEC'], ethan:['Ethan Brooks','EB','#DEE6F2'], sofia:['Sofía Martínez','SM','#F2E8D6'], mateo:['Mateo Silva','MS','#F2E8D6'], daniel:['Daniel Okafor','DO','#DEE6F2'], marcus:['Marcus Chen','MC','#E1EFE5'], lucia:['Lucía Fernández','LF','#E9E2F3'], valentina:['Valentina Rojas','VR','#FFE4D6'], priya:['Priya Nair','PN','#F5E3EC'], tomas:['Tomás Herrera','TH','#E6E5E1'], camila:['Camila Duarte','CD','#E1EFE5'] };
+    const D = [
+      { k:'fe', label:'Frontend', av:'3 free soon', demand:0, subs:[['React',4,1],['TypeScript',4,0],['Next.js',1,0],['Design systems',1,0]], ppl:[['sofia','p','React, Next.js',['React','TypeScript','Next.js','Design systems']],['mateo','p','React',['React','TypeScript']],['ana','p','React web',['React','TypeScript']],['ethan','p','React',['React','TypeScript']],['javier','t','React course',['React']],['lucia','t','Demo front-ends',[]]] },
+      { k:'mo', label:'Mobile', av:'3 free in Jan', demand:4, gap:'4 mobile roles start in January and 3 engineers become available. Flutter has no documented experience.', subs:[['React Native',2,3],['Swift / iOS',2,0],['Kotlin / Android',1,0],['Flutter',0,0]], ppl:[['ana','p','React Native, Swift',['React Native','Swift / iOS']],['javier','p','Swift, SwiftUI',['Swift / iOS']],['ethan','p','Kotlin, React Native',['React Native','Kotlin / Android']],['mateo','t','React Native, independent',['React Native']],['sofia','t','React Native course',['React Native']]] },
+      { k:'be', label:'Backend', av:'1 free now', demand:1, subs:[['Go',1,0],['Node.js',1,1],['Python',2,0],['.NET',1,0]], ppl:[['daniel','p','Go, PostgreSQL',['Go']],['mateo','p','Node.js, .NET',['Node.js','.NET']],['marcus','p','Microservices',['Go']],['lucia','p','Python APIs',['Python','Node.js']],['valentina','t','Python services',['Python']]] },
+      { k:'cl', label:'Cloud & DevOps', av:'None before Feb', demand:2, gap:'Nobody with documented cloud experience is free before Feb 2, while Terra Foods and Nimbus Health need 2 roles.', subs:[['AWS',2,1],['Azure',1,0],['Terraform',2,0],['Kubernetes',3,0]], ppl:[['tomas','p','Azure, Terraform',['Azure','Terraform','Kubernetes']],['marcus','p','AWS migrations',['AWS','Terraform','Kubernetes']],['daniel','p','Kubernetes',['Kubernetes','AWS']],['valentina','t','GCP training',['AWS']]] },
+      { k:'ai', label:'Artificial intelligence', av:'1 free now', demand:1, subs:[['LLM apps',1,1],['RAG',1,1],['Forecasting',1,0],['MLOps',1,1]], ppl:[['lucia','p','LLM apps, RAG',['LLM apps','RAG','MLOps']],['valentina','p','Forecasting, MLOps',['Forecasting','MLOps']],['ana','t','LLM on mobile, emerging',['LLM apps','RAG']],['priya','t','MLOps course',['MLOps']]] },
+      { k:'da', label:'Data engineering', av:'Feb 16 · pending', demand:2, gap:'Terra Foods needs 2 data engineers from Feb 9; Priya Nair is expected Feb 16, not yet confirmed.', subs:[['Snowflake',1,0],['dbt',1,0],['Spark',2,0],['Airflow',1,1]], ppl:[['priya','p','Snowflake, dbt',['Snowflake','dbt','Spark','Airflow']],['valentina','p','Spark',['Spark']],['daniel','t','Airflow training',['Airflow']]] },
+      { k:'ar', label:'Architecture', av:'1 free in Jan', demand:1, subs:[['Cloud',1,0],['Event-driven',1,0],['Mobile',1,0]], ppl:[['marcus','p','Cloud migrations',['Cloud']],['daniel','p','Event-driven payments',['Event-driven']],['ana','p','Offline-first mobile',['Mobile']]] },
+      { k:'qa', label:'Quality engineering', av:'1 free Dec 8', demand:1, subs:[['Mobile automation',1,0],['Web automation',1,1],['Test strategy',1,0]], ppl:[['camila','p','Appium, Playwright',['Mobile automation','Web automation','Test strategy']],['sofia','t','Component testing',['Web automation']]] },
+    ];
+    const caps = D.map(d => { const on = S.sel === d.k; const pro = d.ppl.filter(p => p[1] === 'p').length, em = d.ppl.length - pro;
+      return { ...d, on, bg: on ? '#F5F5F7' : 'transparent', fw: on ? '500' : '400',
+        dots: [...Array(pro).fill({ bg:'#1D1D1F', bd:'0' }), ...Array(em).fill({ bg:'linear-gradient(90deg,#1D1D1F 50%,#fff 50%)', bd:'1.5px solid #1D1D1F' })],
+        dem: Array(d.demand).fill(1), pick: () => this.setState({ sel: d.k, sub: null }) }; });
+    const sd = D.find(d => d.k === S.sel);
+    let subs = [], people = [];
+    if (sd) {
+      subs = sd.subs.map(([n, p, t]) => ({ n, c: p + t, pw: (p / 5 * 100).toFixed(0), tw: (t / 5 * 100).toFixed(0), on: S.sub === n, bg: S.sub === n ? '#F5F5F7' : 'transparent', fw: S.sub === n ? '600' : '400', pick: () => this.setState({ sub: S.sub === n ? null : n }) }));
+      people = sd.ppl.filter(p => !S.sub || p[3].includes(S.sub)).map(([id, ty, ev]) => ({ id, n: H[id][0], i: H[id][1], t: H[id][2], ev, type: ty === 'p' ? 'Professional' : 'Growing', href: id === 'ana' ? 'v4-passport.dc.html' : 'v4-people.dc.html' }));
+    }
+    const pro = sd ? sd.ppl.filter(p => p[1] === 'p').length : 0;
+    const go = k => () => this.setState({ sel: k, sub: null });
+    return {
+      caps, hasSel: !!sd, noSel: !sd, sel: sd ? { ...sd, pro, em: sd.ppl.length - pro, hasGap: !!sd.gap, gap: sd.gap || '' } : { label:'' }, subs, people, clear: () => this.setState({ sel: null, sub: null }),
+      peopleLabel: people.length + ' people with documented ' + (S.sub || (sd ? sd.label : '')).toLowerCase() + ' experience',
+      obs: [
+        { big:'4 : 3', t:'Mobile roles vs. mobile engineers free in January', d:'Vela Bank and Cobalt Mobility start within a week of each other.', a:'Explore mobile', go: go('mo'), bg:'#FFFFFF' },
+        { big:'0', t:'Cloud engineers free before February', d:'Two cloud roles open on Terra Foods and Nimbus Health.', a:'Explore cloud', go: go('cl'), bg:'#FFFFFF' },
+        { big:'+2', t:'People growing into AI this quarter', d:'Including Ana Ruiz’s LLM prototype and RAG course.', a:'Explore AI', go: go('ai'), bg:'#FFFFFF' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

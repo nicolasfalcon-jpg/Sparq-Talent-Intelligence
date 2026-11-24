@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Navigation and Ask Sparq</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}@media (max-width:1180px){.nv-lbl,.nv-new-lbl{display:none}.nv-hdr{padding:0 20px!important;gap:12px!important}}</style>
+</helmet>
+<div style="font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;position:relative;z-index:40">
+<header class="nv-hdr" style="max-width:1360px;margin:0 auto;height:84px;padding:0 40px;display:flex;align-items:center;gap:20px;box-sizing:border-box">
+<a href="{{ homeHref }}" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#1D1D1F;flex:1 1 0;min-width:max-content">
+<span style="width:34px;height:34px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span>
+<span style="font-weight:600;font-size:17px;letter-spacing:-0.02em">Sparq</span>
+</a>
+<nav aria-label="Primary" style="display:flex;gap:2px;padding:5px;background:#fff;border-radius:999px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.04)">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="5">
+<a href="{{ it.href }}" aria-current="{{ it.cur }}" aria-label="{{ it.label }}" title="{{ it.label }}" style="display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:999px;text-decoration:none;font-size:14px;font-weight:500;background:{{ it.bg }};color:{{ it.fg }};transition:background .18s ease,color .18s ease">
+<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ it.d }}"/></svg><span class="nv-lbl">{{ it.label }}</span></a>
+</sc-for>
+</nav>
+<div style="flex:1 1 0;display:flex;justify-content:flex-end;align-items:center;gap:10px;min-width:max-content">
+<sc-if value="{{ isStaff }}" hint-placeholder-val="{{ true }}">
+<div style="position:relative">
+<button onClick="{{ toggleNew }}" aria-expanded="{{ newOpen }}" aria-label="New opportunity" title="New opportunity" style="display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;border-radius:999px;border:0;background:#1D1D1F;color:#fff;font:500 14px Inter,sans-serif;cursor:pointer"><span style="font-size:18px;line-height:1;color:#FF8A70">+</span><span class="nv-new-lbl">New opportunity</span></button>
+<sc-if value="{{ newOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;top:54px;width:360px;background:#fff;border-radius:26px;box-shadow:0 24px 64px rgba(0,0,0,.16);padding:10px;display:flex;flex-direction:column;gap:6px">
+<a href="v4-role.dc.html" style="display:flex;gap:14px;align-items:center;padding:16px;border-radius:20px;background:#F5F5F7;text-decoration:none;color:#1D1D1F"><span style="width:44px;height:44px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><span><span style="display:block;font-weight:500">Fill a role</span><span style="display:block;font-size:13px;color:#6E6E73">Find documented expertise for one position</span></span></a>
+<a href="v4-team.dc.html" style="display:flex;gap:14px;align-items:center;padding:16px;border-radius:20px;background:radial-gradient(100% 140% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),#FFF8F5;text-decoration:none;color:#1D1D1F"><span style="width:44px;height:44px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="20" r="2"/><path d="M7 7l3 3M17 7l-3 3M12 15v3"/></svg></span><span><span style="display:block;font-weight:500">Build a team</span><span style="display:block;font-size:13px;color:#6E6E73">Compose a multidisciplinary project team</span></span></a>
+</div>
+</sc-if>
+</div>
+</sc-if>
+<div style="position:relative">
+<button onClick="{{ toggleBell }}" aria-label="Notifications" aria-expanded="{{ bell }}" style="width:44px;height:44px;border-radius:50%;border:0;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04),0 6px 20px rgba(0,0,0,.04);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;position:relative"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 16v-5a5.5 5.5 0 1 1 11 0v5l1.5 2H5zM10 20.5a2 2 0 0 0 4 0"/></svg><sc-if value="{{ unread }}" hint-placeholder-val="{{ true }}"><span style="position:absolute;top:11px;right:12px;width:7px;height:7px;border-radius:50%;background:#F15B40"></span></sc-if></button>
+<sc-if value="{{ bell }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;top:54px;width:350px;background:#fff;border-radius:24px;box-shadow:0 24px 64px rgba(0,0,0,.14);padding:10px">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px"><span style="font-weight:500">Recent activity</span><button onClick="{{ markRead }}" style="border:0;background:none;font:500 12px Inter,sans-serif;color:#6E6E73;cursor:pointer">Mark read</button></div>
+<sc-for list="{{ notes }}" as="n" hint-placeholder-count="3"><a href="{{ n.href }}" style="display:flex;gap:12px;padding:12px;border-radius:16px;text-decoration:none;color:#1D1D1F"><dc-import name="v3-portrait" who="{{ n.who }}" size="36" hint-size="36px,36px"></dc-import><span style="font-size:14px;line-height:1.4"><strong style="font-weight:500">{{ n.name }}</strong> <span style="color:#424245">{{ n.t }}</span><span style="display:block;font-size:12px;color:#6E6E73;margin-top:2px">{{ n.when }}</span></span></a></sc-for>
+</div>
+</sc-if>
+</div>
+<div style="position:relative">
+<button onClick="{{ toggleMenu }}" aria-label="Account and workspace" aria-expanded="{{ menu }}" style="width:44px;height:44px;border-radius:50%;border:0;padding:0;background:none;cursor:pointer;box-shadow:0 0 0 2px #fff,0 1px 6px rgba(0,0,0,.12)"><dc-import name="v3-portrait" who="{{ meWho }}" size="44" hint-size="44px,44px"></dc-import></button>
+<sc-if value="{{ menu }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;top:54px;width:280px;background:#fff;border-radius:24px;box-shadow:0 24px 64px rgba(0,0,0,.14);padding:10px">
+<div style="padding:12px"><div style="font-weight:500">{{ me.n }}</div><div style="font-size:13px;color:#6E6E73">{{ me.role }}</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:#F5F5F7;border-radius:999px;margin:4px 4px 8px">
+<a href="v4-home.dc.html" style="height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;text-decoration:none;background:{{ sBg }};color:#1D1D1F;box-shadow:{{ sSh }}">Staffing</a>
+<a href="v4-me.dc.html" style="height:36px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;text-decoration:none;background:{{ pBg }};color:#1D1D1F;box-shadow:{{ pSh }}">My space</a>
+</div>
+<a href="{{ passHref }}" style="display:block;padding:10px 12px;border-radius:12px;font-size:14px;text-decoration:none;color:#1D1D1F">{{ passLabel }}</a>
+</div>
+</sc-if>
+</div>
+</div>
+</header>
+
+<sc-if value="{{ showFab }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ openAi }}" aria-label="Ask Sparq about {{ ctx.short }}" title="Ask Sparq" style="position:fixed;right:20px;bottom:20px;z-index:45;width:52px;height:52px;padding:0;border-radius:50%;border:3px solid #fff;cursor:pointer;background:#F15B40;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(241,91,64,.35),0 2px 6px rgba(0,0,0,.08)"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></button>
+</sc-if>
+
+<sc-if value="{{ isMin }}" hint-placeholder-val="{{ false }}">
+<div role="dialog" aria-label="Ask Sparq, minimized" style="position:fixed;right:28px;bottom:28px;z-index:45;width:380px;border-radius:26px;padding:16px 16px 16px 18px;display:flex;gap:12px;align-items:flex-start;background:radial-gradient(120% 140% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),#FFF8F5;box-shadow:0 18px 50px rgba(241,91,64,.18),0 2px 6px rgba(0,0,0,.06)">
+<span style="width:34px;height:34px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span>
+<div style="flex:1;min-width:0"><div style="font-size:12px;color:#6E6E73">Ask Sparq · {{ ctx.short }}</div><div style="font-size:14px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ minText }}</div></div>
+<button onClick="{{ restore }}" aria-label="Expand Ask Sparq" style="width:32px;height:32px;border-radius:50%;border:0;background:#fff;cursor:pointer;flex:none"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+<button onClick="{{ closeAi }}" aria-label="Close Ask Sparq" style="width:32px;height:32px;border-radius:50%;border:0;background:#fff;cursor:pointer;flex:none;font-size:12px">✕</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isOpen }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ minimize }}" style="position:fixed;inset:0;background:rgba(0,0,0,.14);z-index:58"></div>
+<aside role="dialog" aria-label="Ask Sparq" style="position:fixed;top:16px;right:16px;bottom:16px;width:{{ aiW }};max-width:calc(100vw - 32px);z-index:60;border-radius:32px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.2);background:radial-gradient(100% 45% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 65%),radial-gradient(80% 40% at 0% 100%, #FFEDE5 0%, rgba(255,237,229,0) 70%),#FFF9F7;transition:width .25s ease">
+<svg width="300" height="200" viewBox="0 0 300 200" aria-hidden="true" style="position:absolute;top:-30px;right:-50px;pointer-events:none"><g fill="none" stroke="#F15B40" transform="rotate(-18 170 100)"><ellipse cx="170" cy="100" rx="130" ry="46" stroke-opacity=".16"/><ellipse cx="170" cy="100" rx="86" ry="30" stroke-opacity=".24"/></g><circle cx="200" cy="86" r="26" fill="#FF9B7C" opacity=".5"/><circle cx="96" cy="128" r="4" fill="#F15B40"/></svg>
+<div style="display:flex;align-items:center;gap:10px;padding:20px 20px 8px;position:relative">
+<span style="width:40px;height:40px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span>
+<div style="flex:1"><div style="font-weight:500">Ask Sparq</div><div style="font-size:12px;color:#6E6E73">Looking at {{ ctx.short }}</div></div>
+<button onClick="{{ minimize }}" aria-label="Minimize" style="width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.85);cursor:pointer;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 12h12"/></svg></button>
+<button onClick="{{ toggleWide }}" aria-label="{{ wideLabel }}" style="width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.85);cursor:pointer;display:inline-flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{ wideIcon }}"/></svg></button>
+<button onClick="{{ closeAi }}" aria-label="Close" style="width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.85);cursor:pointer;font-size:13px">✕</button>
+</div>
+<div style="flex:1;overflow:auto;padding:14px 22px;display:flex;flex-direction:column;gap:16px;position:relative">
+<sc-if value="{{ fresh }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;min-height:40px"></div>
+<h2 style="margin:0;font-size:28px;font-weight:300;line-height:1.2;letter-spacing:-0.025em">{{ ctx.hello }}</h2>
+<p style="margin:0;font-size:14px;color:#6E6E73">{{ ctx.intro }}</p>
+<div style="display:grid;grid-template-columns:{{ sugCols }};gap:8px">
+<sc-for list="{{ prompts }}" as="p" hint-placeholder-count="2"><button onClick="{{ p.ask }}" style="text-align:left;border:0;border-radius:20px;background:rgba(255,255,255,.88);padding:14px 16px;cursor:pointer;font:500 14px Inter,sans-serif;color:#1D1D1F;display:flex;gap:10px;align-items:center"><span style="color:#F15B40">✦</span>{{ p.q }}</button></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ hasAns }}" hint-placeholder-val="{{ false }}">
+<div style="align-self:flex-end;max-width:85%;background:#1D1D1F;color:#fff;padding:12px 18px;border-radius:22px 22px 6px 22px;font-size:14px">{{ a.q }}</div>
+<sc-if value="{{ thinking }}" hint-placeholder-val="{{ false }}">
+<div aria-label="Loading" style="background:rgba(255,255,255,.9);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:10px">
+<span style="font-size:13px;color:#6E6E73">Reading documented profiles and staffing data…</span>
+<span style="height:12px;width:92%;border-radius:6px;background:linear-gradient(90deg,#F5F5F7,#FFE9E1,#F5F5F7)"></span><span style="height:12px;width:78%;border-radius:6px;background:linear-gradient(90deg,#F5F5F7,#FFE9E1,#F5F5F7)"></span><span style="height:12px;width:60%;border-radius:6px;background:linear-gradient(90deg,#F5F5F7,#FFE9E1,#F5F5F7)"></span>
+</div>
+</sc-if>
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+<div style="background:rgba(255,255,255,.94);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:12px">
+<span style="align-self:flex-start;font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;background:{{ a.tagBg }};color:{{ a.tagFg }}">{{ a.tag }}</span>
+<p style="margin:0;font-size:17px;line-height:1.45;font-weight:300">{{ a.a }}</p>
+<sc-for list="{{ a.bullets }}" as="b" hint-placeholder-count="2"><div style="display:flex;gap:10px;font-size:14px"><span style="color:#F15B40;flex:none">●</span><span>{{ b }}</span></div></sc-for>
+<sc-for list="{{ a.refs }}" as="r" hint-placeholder-count="2"><a href="{{ r.href }}" style="display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:16px;background:#F5F5F7;text-decoration:none;color:#1D1D1F"><dc-import name="v3-portrait" who="{{ r.id }}" size="36" hint-size="36px,36px"></dc-import><span style="flex:1;font-size:14px"><span style="display:block;font-weight:500">{{ r.n }}</span><span style="display:block;font-size:13px;color:#6E6E73">{{ r.ev }}</span></span><span style="color:#AEAEB2">→</span></a></sc-for>
+<div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ a.acts }}" as="x" hint-placeholder-count="2"><a href="{{ x.href }}" style="display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;background:{{ x.bg }};color:{{ x.fg }};font-size:13px;font-weight:500;text-decoration:none">{{ x.l }}</a></sc-for><button onClick="{{ reset }}" style="height:36px;padding:0 16px;border-radius:999px;border:0;background:#F5F5F7;font:500 13px Inter,sans-serif;cursor:pointer;color:#1D1D1F">Ask something else</button></div>
+<span style="font-size:12px;color:#6E6E73">Based on documented skills, projects and availability · fictional, illustrative</span>
+</div>
+</sc-if>
+</sc-if>
+</div>
+<div style="padding:12px 18px 18px;display:flex;gap:8px;align-items:center;position:relative">
+<label for="nav-ai-q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Ask Sparq</label>
+<div style="flex:1;display:flex;align-items:center;height:52px;padding:0 18px;background:#fff;border-radius:999px"><input id="nav-ai-q" value="{{ dq }}" onChange="{{ onDq }}" onKeyDown="{{ dqKey }}" placeholder="Ask anything…" style="flex:1;border:0;outline:none;background:transparent;font:400 15px Inter,sans-serif;color:#1D1D1F;min-width:0"></div>
+<button onClick="{{ send }}" aria-label="Send" style="width:52px;height:52px;border-radius:50%;border:0;background:#F15B40;cursor:pointer;display:inline-flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+</div>
+</aside>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["home","people","opps","planning","insights","me","passport"],"default":"home"},"mode":{"editor":"enum","options":["staff","personal"],"default":"staff"},"context":{"editor":"enum","options":["home","people","passport","mypassport","opps","role","team","planning","insights","me"],"default":"home"},"liveQ":{"editor":null},"liveItems":{"editor":null},"liveHello":{"editor":null},"liveIntro":{"editor":null},"liveA":{"editor":null},"liveBullets":{"editor":null},"aiState":{"editor":"enum","options":["closed","empty","loading","response","wide","min"],"default":"closed"},"$preview":{"width":1440,"height":84}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const s = (this.props && this.props.aiState) || 'closed';
+    this.state = { bell: false, menu: false, newOpen: false, read: false, ai: s === 'closed' ? 'closed' : s === 'min' ? 'min' : 'open', wide: s === 'wide', ans: ['loading','response','wide','min'].includes(s) ? 0 : -1, thinking: s === 'loading', dq: '', lastQ: '' };
+  }
+  ask(i, q) { this.setState({ ans: i, thinking: true, dq: '', lastQ: q || '', ai: 'open' }); setTimeout(() => this.setState({ thinking: false }), 900); }
+  renderVals() {
+    const S = this.state, personal = (this.props.mode ?? 'staff') === 'personal', active = this.props.active ?? 'home';
+    const I = { home:'M4 11l8-6.5 8 6.5V20h-5v-5H9v5H4z', people:'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 20a6 6 0 0 1 12 0M16 4.5a3.5 3.5 0 0 1 0 6.5M18 14.5a6 6 0 0 1 3 5.5', opps:'M4 8h16v11H4zM9 8V5.5h6V8', plan:'M5 7h8M8 12h11M5 17h7', ins:'M12 3a9 9 0 1 0 9 9h-9z', me:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM5 20a7 7 0 0 1 14 0', pass:'M5 4h14v16H5zM12 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5zM8.5 16a3.5 3.5 0 0 1 7 0' };
+    const list = personal
+      ? [['me','My space','v4-me.dc.html',I.me],['passport','My passport','v4-mypassport.dc.html',I.pass]]
+      : [['home','Home','v4-home.dc.html',I.home],['people','People','v4-people.dc.html',I.people],['opps','Opportunities','v4-opportunities.dc.html',I.opps],['planning','Planning','v4-planning.dc.html',I.plan],['insights','Insights','v4-insights.dc.html',I.ins]];
+    const items = list.map(([id, label, href, d]) => { const on = id === active; return { label, href, d, cur: on ? 'page' : 'false', bg: on ? '#1D1D1F' : 'transparent', fg: on ? '#fff' : '#424245' }; });
+    const me = personal ? { n:'Ana Ruiz', role:'Senior Mobile Engineer' } : { n:'Laura Gómez', role:'Staffing Lead' };
+    const notes = personal
+      ? [{ who:'laura', name:'Laura Gómez', t:'viewed your passport for a mobile team', when:'Yesterday', href:'v4-mypassport.dc.html' }]
+      : [{ who:'daniel', name:'Daniel Okafor', t:'availability from Feb 2 is pending confirmation', when:'1 hour ago', href:'v4-planning.dc.html' }, { who:'lucia', name:'Lucía Fernández', t:'updated her Talent Passport', when:'Yesterday', href:'v4-people.dc.html' }, { who:'ana', name:'Ana Ruiz', t:'shared interest in Vela Bank', when:'Yesterday', href:'v4-opportunities.dc.html' }];
+    const R = (id, n, ev, href) => ({ id, n, ev, href: href || (id === 'ana' ? 'v4-passport.dc.html' : 'v4-people.dc.html') });
+    const P = (l, href) => ({ l, href, bg:'#1D1D1F', fg:'#fff' }), G = (l, href) => ({ l, href, bg:'#F5F5F7', fg:'#1D1D1F' });
+    const CTX = {
+      home: { short:'Home', hello:'Good morning, Laura.', intro:'I can help you start something new or see what needs attention.', qa:[
+        { q:'What needs my attention this week?', a:'Two things stand out in the documented staffing data.', bullets:['Vela Bank has 2 open seats and kicks off Jan 12','Daniel Okafor’s availability from Feb 2 is not confirmed yet'], refs:[], acts:[P('Open Vela Bank','v4-opportunities.dc.html'), G('Open Planning','v4-planning.dc.html')] },
+        { q:'Who’s free for mobile work in January?', a:'Three engineers with documented mobile experience, all confirmed.', bullets:[], refs:[R('ana','Ana Ruiz','React Native, Swift · Jan 5'), R('javier','Javier Morales','Swift, SwiftUI · Jan 5'), R('ethan','Ethan Brooks','Kotlin, React Native · Jan 19')], acts:[P('Build a team with them','v4-team.dc.html')] } ] },
+      people: { short:'People', hello:'Looking for someone specific?', intro:'Ask in plain words. I answer from documented experience only.', qa:[
+        { q:'Who knows React Native and native iOS?', a:'Ana Ruiz has professional experience in both. Javier and Ethan each cover one.', bullets:[], refs:[R('ana','Ana Ruiz','Both · 5 RN and 3 iOS projects'), R('javier','Javier Morales','Native iOS · RN in training'), R('ethan','Ethan Brooks','React Native · iOS not documented')], acts:[P('Fill a role with this','v4-role.dc.html')] },
+        { q:'Who has grown into AI recently?', a:'Two people added AI training or independent work this quarter.', bullets:[], refs:[R('ana','Ana Ruiz','LLM prototype + RAG course, 2026'), R('priya','Priya Nair','MLOps course, 2026')], acts:[G('Open Insights','v4-insights.dc.html')] } ] },
+      passport: { short:'Ana’s passport', hello:'Want the short version of Ana?', intro:'I summarize from her documented projects, with sources.', qa:[
+        { q:'Summarize Ana’s experience for a mobile AI team', a:'A mobile lead with deep React Native and iOS work and an emerging AI focus.', bullets:['Led React Native delivery on Meridian Health (2025–26)','On-device text recognition in production on Helix Insurance','LLM visit-notes prototype and RAG course in 2026'], refs:[], acts:[P('Add Ana to a team','v4-team.dc.html')] },
+        { q:'What isn’t documented yet?', a:'Two gaps you may want to ask Ana about.', bullets:['No production LLM project yet','Years of GraphQL experience differ between her CV and passport'], refs:[], acts:[G('Back to the passport','v4-passport.dc.html')] } ] },
+      opps: { short:'Opportunities', hello:'Need a quick read on demand?', intro:'I can summarize opportunities and spot the hard-to-staff ones.', qa:[
+        { q:'Summarize Vela Bank’s requirements', a:'Four roles starting Jan 12 for six months; two are already proposed.', bullets:['Open: Senior Mobile Engineer (React Native, accessibility)','Open: Backend Engineer (Node.js or Go, PostgreSQL)','Proposed: Lucía Fernández (AI) and Camila Duarte (QA)'], refs:[], acts:[P('Fill the mobile role','v4-role.dc.html')] },
+        { q:'Which opportunity is hardest to staff?', a:'Cobalt Mobility: 3 mobile seats from Jan 19, while January mobile capacity is already tight.', bullets:['Only Ethan Brooks has documented Android experience','No one with Mobile Tech Lead experience is free before Jan 5'], refs:[], acts:[G('Open Insights','v4-insights.dc.html')] } ] },
+      role: { short:'Fill a role', hello:'Let’s find the right person.', intro:'Describe the role and I’ll draft the requirements with you.', qa:[
+        { q:'Who else could fill this role?', a:'Beyond the top matches, two people have partial documented experience.', bullets:[], refs:[R('sofia','Sofía Martínez','TypeScript, accessibility · RN training'), R('mateo','Mateo Silva','TypeScript, GraphQL · RN independent')], acts:[G('Compare side by side','v4-compare.dc.html')] },
+        { q:'Is anyone also interested in this role?', a:'Ana Ruiz shared interest in the Vela Bank mobile role yesterday.', bullets:[], refs:[R('ana','Ana Ruiz','Shared interest · free Jan 5')], acts:[] } ] },
+      team: { short:'Build a Team', hello:'Let’s shape this team.', intro:'I can check coverage, conflicts and availability as you compose.', qa:[
+        { q:'What do similar teams usually include?', a:'Past consumer-app teams at Sparq usually added two seats this brief doesn’t mention.', bullets:['QA automation from the first sprint (Meridian Health, Helix Insurance)','Someone owning accessibility and app-store release','Your live coverage check is below the canvas'], refs:[R('camila','Camila Duarte','QA automation · free Dec 8, proposed for Vela Bank')], acts:[P('Add a QA role','v4-team.dc.html')] },
+        { q:'How should I choose between two people?', a:'Compare their documented experience side by side. I show evidence and availability, never a score; the delivery lead decides.', bullets:['Open a seat to see who has documented experience','Use “Compare side by side” for the details'], refs:[], acts:[G('Compare side by side','v4-compare.dc.html')] } ] },
+      planning: { short:'Planning', hello:'Want this period explained?', intro:'I explain availability from documented assignments.', qa:[
+        { q:'Explain January availability', a:'Three mobile engineers free up in January; everyone else stays on projects until February.', bullets:['Ana Ruiz and Javier Morales: Jan 5, after Meridian Health','Ethan Brooks: Jan 19, after Lumen Retail','Lucía Fernández is free now but proposed for Vela Bank'], refs:[], acts:[P('Build a team','v4-team.dc.html')] },
+        { q:'Whose dates are unconfirmed?', a:'Five end dates are still pending with delivery leads.', bullets:['Daniel Okafor, Mateo Silva and Marcus Chen · Feb 2','Priya Nair · Feb 16 · Tomás Herrera · Mar 2'], refs:[], acts:[G('Stay on Planning','v4-planning.dc.html')] } ] },
+      insights: { short:'Insights', hello:'What would you like to understand?', intro:'I read capability patterns, never individual performance.', qa:[
+        { q:'Where are we short on capacity?', a:'Cloud and mobile, in that order.', bullets:['No cloud engineer free before Feb 2; 2 cloud roles open','January: 4 mobile roles, 3 mobile engineers free'], refs:[], acts:[P('Open Planning','v4-planning.dc.html')] },
+        { q:'What skills are growing?', a:'AI is growing through training and independent work.', bullets:['2 people added AI work this quarter','React Native has 3 people in training'], refs:[], acts:[G('Explore People','v4-people.dc.html')] } ] },
+      me: { short:'My space', hello:'Hi Ana. Planning your next step?', intro:'I only use your own passport and open opportunities.', qa:[
+        { q:'Which opportunities fit my interests?', a:'Three openings match your documented skills; two also match your stated interests.', bullets:['Vela Bank · Senior Mobile Engineer · applied AI','Cobalt Mobility · Mobile Tech Lead · leadership','Cobalt Mobility · iOS Engineer · skills match'], refs:[], acts:[P('See opportunities','v4-me.dc.html')] },
+        { q:'What should I add to my passport?', a:'Three small updates would make your experience easier to find.', bullets:['An outcome for Meridian Health','Your years of GraphQL experience','Your Kestrel Travel discovery work'], refs:[], acts:[G('Update now','v4-me.dc.html')] } ] },
+    };
+    CTX.mypassport = { short:'My passport', hello:'Your passport, your words.', intro:'I can suggest what to add. You decide what goes in.', qa:[
+        { q:'What would make my passport easier to find?', a:'Three small additions would help staffing leads find your recent work.', bullets:['Add your Kestrel Travel discovery sprint as experience','Add an outcome to Meridian Health','Confirm your years of GraphQL'], refs:[], acts:[P('Back to my passport','v4-mypassport.dc.html')] },
+        { q:'What do staffing leads see?', a:'The same passport you see here, plus your availability. No ratings, scores or performance data.', bullets:['Use “Preview & export” to see the shared version'], refs:[], acts:[G('Back to my space','v4-me.dc.html')] } ] };
+    const key = this.props.context && CTX[this.props.context] ? this.props.context : (personal ? 'me' : 'home');
+    const ctx0 = CTX[key];
+    const live = this.props.liveQ ? [{ q: this.props.liveQ, a: this.props.liveA || '', bullets: this.props.liveBullets || [], refs: [], acts: [], live: true }] : [];
+    const liveIt = (Array.isArray(this.props.liveItems) ? this.props.liveItems : []).map(x => ({ q: x.q, a: x.a || '', bullets: x.bullets || [], refs: x.refs || [], acts: x.acts || [], live: true }));
+    const ctx = { ...ctx0, hello: this.props.liveHello || ctx0.hello, intro: this.props.liveIntro || ctx0.intro, qa: live.concat(liveIt).concat(ctx0.qa).slice(0, 6) };
+    const generic = { q: S.lastQ, a:'In this prototype I answer a few example questions for each page. Try one of the suggestions.', bullets:[], refs:[], acts:[] };
+    const a = S.ans >= 0 && S.ans < ctx.qa.length ? ctx.qa[S.ans] : S.ans >= 0 ? generic : ctx.qa[0];
+    const send = () => { const t = S.dq.trim(); if (!t) return; const l = t.toLowerCase(); const hit = ctx.qa.findIndex(x => x.q.toLowerCase().split(' ').filter(w => w.length > 4).some(w => l.includes(w))); this.ask(hit >= 0 ? hit : 9, t); };
+    return {
+      items, homeHref: personal ? 'v4-me.dc.html' : 'v4-home.dc.html', isStaff: !personal, me, meWho: personal ? 'ana' : 'laura',
+      bell: S.bell, menu: S.menu, unread: !S.read, notes, newOpen: S.newOpen,
+      toggleNew: () => this.setState({ newOpen: !S.newOpen, bell: false, menu: false }),
+      toggleBell: () => this.setState({ bell: !S.bell, menu: false, newOpen: false }), toggleMenu: () => this.setState({ menu: !S.menu, bell: false, newOpen: false }), markRead: () => this.setState({ read: true }),
+      sBg: personal ? 'transparent' : '#fff', pBg: personal ? '#fff' : 'transparent', sSh: personal ? 'none' : '0 1px 3px rgba(0,0,0,.1)', pSh: personal ? '0 1px 3px rgba(0,0,0,.1)' : 'none',
+      passLabel: personal ? 'My Talent Passport' : 'Sample passport: Ana Ruiz', passHref: personal ? 'v4-mypassport.dc.html' : 'v4-passport.dc.html',
+      ctx, showFab: S.ai === 'closed', isMin: S.ai === 'min', isOpen: S.ai === 'open',
+      openAi: () => this.setState({ ai: 'open', bell: false, menu: false, newOpen: false }), closeAi: () => this.setState({ ai: 'closed', ans: -1 }),
+      minimize: () => this.setState({ ai: 'min' }), restore: () => this.setState({ ai: 'open' }),
+      minText: S.ans >= 0 ? (S.thinking ? 'Working on it…' : a.a) : ctx.intro,
+      aiW: S.wide ? '900px' : '440px', toggleWide: () => this.setState({ wide: !S.wide }), wideLabel: S.wide ? 'Collapse' : 'Expand', wideIcon: S.wide ? 'M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7' : 'M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7',
+      sugCols: S.wide ? 'repeat(2,minmax(0,1fr))' : '1fr',
+      prompts: ctx.qa.map((p, i) => ({ q: p.q, ask: () => this.ask(i) })),
+      fresh: S.ans < 0, hasAns: S.ans >= 0, thinking: S.thinking, ready: S.ans >= 0 && !S.thinking, a: { ...a, q: a.q || S.lastQ, tag: a.live ? 'Live from this page' : 'Illustrative example', tagBg: a.live ? '#E3F3E8' : '#F5F5F7', tagFg: a.live ? '#1F7A4A' : '#6E6E73' }, reset: () => this.setState({ ans: -1 }),
+      dq: S.dq, onDq: e => this.setState({ dq: e.target.value }), dqKey: e => { if (e.key === 'Enter') send(); }, send,
+    };
+  }
+}
+</script>
+</body>
+</html>

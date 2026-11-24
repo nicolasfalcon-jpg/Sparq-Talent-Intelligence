@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.wh{background:#fff;border-radius:28px;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.pill:hover{background:#F5F5F7}
+.p-ink{background:#1D1D1F;color:#fff;box-shadow:none}.p-ink:hover{background:#333336;color:#fff}
+.p-glass{background:rgba(255,255,255,.72);box-shadow:none;backdrop-filter:blur(8px)}.p-glass:hover{background:#fff}
+.p-sm{height:34px;padding:0 14px;font-size:13px}
+.lift{transition:transform .2s ease,box-shadow .2s ease}.lift:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(0,0,0,.03),0 20px 44px rgba(0,0,0,.07)}
+.circ{width:40px;height:40px;border-radius:50%;background:#F5F5F7;display:inline-flex;align-items:center;justify-content:center;flex:none;transition:background .15s,color .15s}
+.lift:hover .circ{background:#1D1D1F;color:#fff}
+.sug{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.66);cursor:pointer;font-size:14px;transition:background .15s}
+.sug:hover{background:#fff}
+.sug:focus-visible{outline:2px solid #F15B40}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="home" mode="staff" context="home" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:12px 40px 96px;display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+
+<section aria-label="Ask Sparq" style="flex:1 1 380px;max-width:440px;min-height:640px;border-radius:36px;padding:28px;display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden;background:radial-gradient(120% 70% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),radial-gradient(90% 60% at 0% 100%, #FFEDE5 0%, rgba(255,237,229,0) 70%),#FFF8F5;box-shadow:0 1px 2px rgba(241,91,64,.06),0 20px 50px rgba(241,91,64,.10)">
+<svg width="420" height="250" viewBox="0 0 420 250" aria-hidden="true" style="position:absolute;top:-10px;right:-40px;pointer-events:none">
+<defs>
+<radialGradient id="hs-a"><stop offset="0" stop-color="#FFB08C" stop-opacity=".95"/><stop offset="1" stop-color="#FFB08C" stop-opacity="0"/></radialGradient>
+<radialGradient id="hs-b"><stop offset="0" stop-color="#F15B40" stop-opacity=".55"/><stop offset="1" stop-color="#F15B40" stop-opacity="0"/></radialGradient>
+<linearGradient id="hs-c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE0D2"/><stop offset=".55" stop-color="#FF9B7C"/><stop offset="1" stop-color="#F15B40"/></linearGradient>
+</defs>
+<circle cx="270" cy="120" r="130" fill="url(#hs-a)" opacity=".55"/>
+<circle cx="300" cy="96" r="80" fill="url(#hs-b)"/>
+<g fill="none" stroke="#F15B40" transform="rotate(-18 260 120)"><ellipse cx="260" cy="120" rx="170" ry="62" stroke-opacity=".18"/><ellipse cx="260" cy="120" rx="122" ry="44" stroke-opacity=".24"/><ellipse cx="260" cy="120" rx="78" ry="28" stroke-opacity=".3"/></g>
+<circle cx="302" cy="98" r="36" fill="url(#hs-c)"/>
+<circle cx="290" cy="86" r="10" fill="#fff" opacity=".45"/>
+<circle cx="118" cy="160" r="6" fill="#F15B40"/>
+<circle cx="392" cy="58" r="4" fill="#F15B40" opacity=".7"/>
+<circle cx="208" cy="58" r="5" fill="#fff" stroke="#F15B40" stroke-opacity=".5"/>
+</svg>
+<div style="display:flex;align-items:center;justify-content:space-between;position:relative">
+<div style="display:flex;align-items:center;gap:12px"><span style="width:44px;height:44px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(241,91,64,.35)"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span><span style="font-weight:500">Ask Sparq</span></div>
+<sc-if value="{{ hasAns }}" hint-placeholder-val="{{ false }}"><button class="pill p-sm p-glass" onClick="{{ reset }}">New question</button></sc-if>
+</div>
+<div style="flex:1;min-height:110px"></div>
+
+<sc-if value="{{ noAns }}" hint-placeholder-val="{{ true }}">
+<h2 style="font-size:34px;line-height:1.15;font-weight:300;letter-spacing:-0.03em;position:relative">What should we <span style="font-weight:500">build today?</span></h2>
+<div style="display:flex;flex-direction:column;gap:8px">
+<a class="sug" href="v4-role.dc.html"><span style="width:32px;height:32px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span><span style="flex:1"><span style="display:block;font-weight:500">Fill a role</span><span class="mute" style="font-size:13px">Find documented expertise for one position</span></span><span class="mute">→</span></a>
+<a class="sug" href="v4-team.dc.html"><span style="width:32px;height:32px;border-radius:50%;background:#1D1D1F;color:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="20" r="2"/><path d="M7 7l3 3M17 7l-3 3M12 15v3"/></svg></span><span style="flex:1"><span style="display:block;font-weight:500">Build a team</span><span class="mute" style="font-size:13px">Compose a whole project team</span></span><span class="mute">→</span></a>
+<sc-for list="{{ sugg }}" as="g" hint-placeholder-count="2"><button class="sug" onClick="{{ g.ask }}"><span style="width:32px;height:32px;border-radius:50%;background:#fff;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="{{ g.icon }}"/></svg></span><span style="flex:1;font-weight:500">{{ g.q }}</span></button></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ thinking }}" hint-placeholder-val="{{ false }}"><p class="mute" style="position:relative">Looking through documented profiles…</p></sc-if>
+<sc-if value="{{ ready }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:14px;position:relative">
+<span class="mute" style="font-size:13px">{{ a.q }}</span>
+<p style="font-size:22px;line-height:1.3;font-weight:300;letter-spacing:-0.02em">{{ a.a }}</p>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ a.refs }}" as="r" hint-placeholder-count="3"><a href="{{ r.href }}" style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:20px;background:rgba(255,255,255,.8)"><dc-import name="v3-portrait" who="{{ r.id }}" size="40" hint-size="40px,40px"></dc-import><span style="flex:1;min-width:0"><span style="display:block;font-weight:500;font-size:14px">{{ r.n }}</span><span class="mute" style="display:block;font-size:13px">{{ r.ev }}</span></span><span style="font-size:12px;color:{{ r.c }}">{{ r.when }}</span></a></sc-for>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{ a.acts }}" as="x" hint-placeholder-count="2"><a class="{{ x.cls }}" href="{{ x.href }}">{{ x.l }}</a></sc-for></div>
+<span class="mute" style="font-size:12px">From documented skills and availability · illustrative</span>
+</div>
+</sc-if>
+
+<div style="display:flex;gap:8px;align-items:center;position:relative">
+<label for="ask" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Ask Sparq</label>
+<div style="flex:1;display:flex;align-items:center;height:54px;padding:0 18px;background:#fff;border-radius:999px;box-shadow:0 4px 16px rgba(241,91,64,.08)"><input id="ask" value="{{ q }}" onChange="{{ onQ }}" onKeyDown="{{ qKey }}" placeholder="Ask anything…" style="flex:1;border:0;outline:none;background:transparent;font:400 15px Inter,system-ui,sans-serif;color:#1D1D1F;min-width:0"></div>
+<button onClick="{{ send }}" aria-label="Ask" style="width:54px;height:54px;border-radius:50%;border:0;background:#F15B40;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:none;box-shadow:0 6px 16px rgba(241,91,64,.35)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+</div>
+</section>
+
+<div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:44px">
+<header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;padding-top:20px">
+<div style="display:flex;flex-direction:column;gap:10px">
+<span style="display:flex;flex-wrap:wrap;align-items:center;gap:10px"><span class="mute" style="font-size:14px">Tuesday, November 24</span><span style="display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 11px;border-radius:999px;background:#F5F5F7;color:#6E6E73;font-size:12px;font-weight:500;white-space:nowrap"><span style="width:6px;height:6px;border-radius:50%;background:#AEAEB2"></span>Illustrative organizational snapshot · not updated by this session</span></span>
+<h1 style="font-size:56px;line-height:1.02;font-weight:300;letter-spacing:-0.04em">Good morning, <span style="font-weight:500">Laura.</span></h1>
+</div>
+<div style="display:flex;gap:40px">
+<sc-for list="{{ stats }}" as="t" hint-placeholder-count="3"><a href="{{ t.href }}" style="display:flex;flex-direction:column;gap:6px"><span style="font-size:44px;font-weight:300;letter-spacing:-0.045em;line-height:1">{{ t.v }}</span><span class="mute" style="font-size:13px">{{ t.l }}</span></a></sc-for>
+</div>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:24px;font-weight:400;letter-spacing:-0.02em">Teams in the making</h2><a href="v4-opportunities.dc.html" class="pill p-sm">All opportunities</a></div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px">
+<sc-for list="{{ opps }}" as="o" hint-placeholder-count="4">
+<a href="v4-opportunities.dc.html" class="wh lift" style="padding:26px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px"><span class="mute" style="font-size:14px">{{ o.client }}</span><h3 style="font-size:24px;font-weight:400;letter-spacing:-0.02em;line-height:1.2">{{ o.name }}</h3></div>
+<div style="text-align:right;flex:none"><div style="font-size:30px;font-weight:300;letter-spacing:-0.03em;line-height:1">{{ o.day }}</div><div class="mute" style="font-size:12px;margin-top:4px">{{ o.mon }} kick-off</div></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div style="display:flex;align-items:center;gap:6px">
+<sc-for list="{{ o.seats }}" as="s" hint-placeholder-count="3"><span style="width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;border:{{ s.bd }};background:#fff;overflow:hidden"><sc-if value="{{ s.filled }}" hint-placeholder-val="{{ false }}"><dc-import name="v3-portrait" who="{{ s.who }}" size="38" hint-size="38px,38px"></dc-import></sc-if></span></sc-for>
+<span class="mute" style="font-size:13px;margin-left:8px">{{ o.seatsLabel }}</span>
+</div>
+<span class="circ" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></svg></span>
+</div>
+</a>
+</sc-for>
+</div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:24px;font-weight:400;letter-spacing:-0.02em">Ready for their next team</h2><a href="v4-people.dc.html" class="pill p-sm">All people</a></div>
+<div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px">
+<sc-for list="{{ people }}" as="p" hint-placeholder-count="5">
+<a href="{{ p.href }}" class="wh lift" style="padding:20px 18px;display:flex;flex-direction:column;align-items:flex-start;gap:14px;border-radius:24px">
+<dc-import name="v3-portrait" who="{{ p.id }}" size="72" hint-size="72px,72px"></dc-import>
+<div><div style="font-weight:500;font-size:15px">{{ p.n }}</div><div class="mute" style="font-size:13px">{{ p.role }}</div></div>
+<div style="display:flex;align-items:center;gap:7px;font-size:13px"><span style="width:7px;height:7px;border-radius:50%;background:#34A065"></span>{{ p.when }}</div>
+</a>
+</sc-for>
+</div>
+</section>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { q: '', ans: -1, thinking: false, lastQ: '' }; }
+  ask(i, q) { this.setState({ ans: i, thinking: true, q: '', lastQ: q || '' }); setTimeout(() => this.setState({ thinking: false }), 850); }
+  renderVals() {
+    const S = this.state;
+    const ok = '#1F7A4A';
+    const A = [
+      { q:'Who’s free for mobile work in January?', a:'Three engineers with documented mobile experience are free in January, all confirmed.',
+        refs:[{ id:'ana', n:'Ana Ruiz', ev:'React Native · Swift', when:'Jan 5', c:ok, href:'v4-passport.dc.html' },{ id:'javier', n:'Javier Morales', ev:'Swift · SwiftUI', when:'Jan 5', c:ok, href:'v4-people.dc.html' },{ id:'ethan', n:'Ethan Brooks', ev:'Kotlin · React Native', when:'Jan 19', c:ok, href:'v4-people.dc.html' }],
+        acts:[{ l:'Build a team with them', href:'v4-team.dc.html', cls:'pill p-sm p-ink' },{ l:'Open Planning', href:'v4-planning.dc.html', cls:'pill p-sm p-glass' }] },
+      { q:'Who knows React Native and native iOS?', a:'Ana Ruiz is the only one with professional experience in both. Two others cover one of them.',
+        refs:[{ id:'ana', n:'Ana Ruiz', ev:'Both · 5 RN and 3 iOS projects', when:'Both', c:ok, href:'v4-passport.dc.html' },{ id:'javier', n:'Javier Morales', ev:'Native iOS · RN in training', when:'iOS', c:'#6E6E73', href:'v4-people.dc.html' },{ id:'ethan', n:'Ethan Brooks', ev:'React Native · no iOS documented', when:'RN', c:'#6E6E73', href:'v4-people.dc.html' }],
+        acts:[{ l:'Open Ana’s passport', href:'v4-passport.dc.html', cls:'pill p-sm p-ink' },{ l:'Search in People', href:'v4-people.dc.html', cls:'pill p-sm p-glass' }] },
+      { q:'', a:'That sounds like a new team. I can draft the roles and find people with documented experience for each one.', refs:[],
+        acts:[{ l:'Build a team', href:'v4-team.dc.html', cls:'pill p-sm p-ink' },{ l:'Just one role', href:'v4-role.dc.html', cls:'pill p-sm p-glass' }] },
+      { q:'', a:'I can answer questions about skills, availability and open roles. Try one of these, or build a team.', refs:[],
+        acts:[{ l:'Build a team', href:'v4-team.dc.html', cls:'pill p-sm p-ink' },{ l:'Browse people', href:'v4-people.dc.html', cls:'pill p-sm p-glass' }] },
+    ];
+    const route = t => { const l = t.toLowerCase(); return /team|project|build|staff/.test(l) ? 2 : /react|ios|swift|mobile skill/.test(l) ? 1 : /free|availab|january|who can/.test(l) ? 0 : 3; };
+    const send = () => { const t = S.q.trim(); if (!t) return; this.ask(route(t), t); };
+    const a = S.ans >= 0 ? { ...A[S.ans], q: A[S.ans].q || S.lastQ } : A[0];
+    const seat = who => who ? { filled: true, who, bd: '0' } : { filled: false, who: '', bd: '1.5px dashed #C7C7CC' };
+    return {
+      q: S.q, onQ: e => this.setState({ q: e.target.value }), qKey: e => { if (e.key === 'Enter') send(); }, send,
+      noAns: S.ans < 0, hasAns: S.ans >= 0, thinking: S.thinking, ready: S.ans >= 0 && !S.thinking, a, reset: () => this.setState({ ans: -1 }),
+      sugg: [{ q: A[0].q, icon:'M12 3v3M12 18v3M3 12h3M18 12h3M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z', ask: () => this.ask(0) }],
+      stats: [{ v:'4', l:'Opportunities', href:'v4-opportunities.dc.html' }, { v:'10', l:'Open seats', href:'v4-opportunities.dc.html' }, { v:'6', l:'Free in 60 days', href:'v4-planning.dc.html' }],
+      opps: [
+        { client:'Vela Bank', name:'AI-assisted onboarding', day:'12', mon:'Jan', seats:[seat('lucia'), seat('camila'), seat(''), seat('')], seatsLabel:'2 of 4 seats proposed' },
+        { client:'Cobalt Mobility', name:'Fleet driver app rebuild', day:'19', mon:'Jan', seats:[seat(''), seat(''), seat('')], seatsLabel:'3 open seats' },
+        { client:'Terra Foods', name:'Snowflake data platform', day:'9', mon:'Feb', seats:[seat(''), seat(''), seat('')], seatsLabel:'3 open seats' },
+        { client:'Nimbus Health', name:'AWS cloud migration', day:'2', mon:'Mar', seats:[seat(''), seat('')], seatsLabel:'2 open seats' },
+      ],
+      people: [
+        { id:'lucia', n:'Lucía Fernández', role:'AI Engineer', when:'Free now', href:'v4-people.dc.html' },
+        { id:'camila', n:'Camila Duarte', role:'QA Automation Lead', when:'Dec 8', href:'v4-people.dc.html' },
+        { id:'sofia', n:'Sofía Martínez', role:'Frontend Engineer', when:'Dec 15', href:'v4-people.dc.html' },
+        { id:'ana', n:'Ana Ruiz', role:'Senior Mobile Engineer', when:'Jan 5', href:'v4-passport.dc.html' },
+        { id:'javier', n:'Javier Morales', role:'iOS Engineer', when:'Jan 5', href:'v4-people.dc.html' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

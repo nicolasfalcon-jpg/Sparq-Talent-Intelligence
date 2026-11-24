@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build a Team</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.wh{background:#fff;border-radius:32px;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.pill:hover{background:#F5F5F7}
+.p-ink,.pill.on{background:#1D1D1F;color:#fff;box-shadow:none}.p-ink:hover,.pill.on:hover{background:#333336;color:#fff}
+.p-coral{background:#CF4529;color:#fff;box-shadow:none}.p-coral:hover{background:#B83C23;color:#fff}
+.p-soft{background:#F5F5F7;box-shadow:none}.p-soft:hover{background:#EBEBF0}
+.p-sm{height:32px;padding:0 13px;font-size:13px}
+.pill:disabled{opacity:.4;cursor:not-allowed}
+.seat{all:unset;box-sizing:border-box;position:absolute;width:212px;transform:translate(-50%,-50%);background:#fff;border-radius:26px;padding:16px;display:flex;flex-direction:column;gap:10px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 28px rgba(0,0,0,.06);transition:box-shadow .2s,transform .2s}
+@media (max-width:900px){.seat{width:170px!important;padding:12px!important}}
+.seat:hover{box-shadow:0 2px 4px rgba(0,0,0,.05),0 18px 40px rgba(0,0,0,.1)}
+.seat:focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.chip{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:#F5F5F7;font-size:12px;color:#424245;white-space:nowrap}
+.dm{width:11px;height:11px;border-radius:50%;display:inline-block;flex:none}
+.segb{height:32px;padding:0 14px;border:0;border-radius:999px;background:transparent;font:500 13px Inter,sans-serif;color:#424245;cursor:pointer}
+.segb.on{background:#fff;color:#1D1D1F;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="opps" mode="staff" context="team" live-q="Summarize this team as it stands" live-a="{{ liveA }}" live-bullets="{{ liveBullets }}" live-items="{{ liveItems }}" live-hello="{{ liveHello }}" live-intro="{{ liveIntro }}" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:12px 40px 120px;display:flex;flex-direction:column;gap:24px">
+
+<sc-if value="{{ isDescribe }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-wrap:wrap;gap:28px;align-items:stretch">
+<section style="flex:1 1 420px;max-width:540px;min-height:660px;border-radius:36px;padding:32px;display:flex;flex-direction:column;gap:18px;position:relative;overflow:hidden;background:radial-gradient(120% 70% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),radial-gradient(90% 60% at 0% 100%, #FFEDE5 0%, rgba(255,237,229,0) 70%),#FFF8F5;box-shadow:0 20px 50px rgba(241,91,64,.10)">
+<svg width="420" height="240" viewBox="0 0 420 240" aria-hidden="true" style="position:absolute;top:-20px;right:-60px;pointer-events:none"><g fill="none" stroke="#F15B40" transform="rotate(-18 260 120)"><ellipse cx="260" cy="120" rx="160" ry="58" stroke-opacity=".18"/><ellipse cx="260" cy="120" rx="112" ry="40" stroke-opacity=".26"/></g><circle cx="300" cy="100" r="34" fill="#FF9B7C" opacity=".6"/><circle cx="292" cy="90" r="9" fill="#fff" opacity=".5"/><circle cx="140" cy="164" r="5" fill="#F15B40"/><circle cx="384" cy="64" r="4" fill="#F15B40" opacity=".6"/></svg>
+<div style="display:flex;align-items:center;gap:12px;position:relative"><span style="width:44px;height:44px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span><span style="font-weight:500">Ask Sparq</span></div>
+<div style="flex:1;min-height:80px"></div>
+<h1 style="font-size:40px;line-height:1.1;font-weight:300;letter-spacing:-0.035em;position:relative">Describe the project. <span style="font-weight:500">I’ll compose the team.</span></h1>
+<div style="background:#fff;border-radius:26px;padding:18px 20px;position:relative">
+<label for="brief" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Project description</label>
+<textarea id="brief" rows="6" value="{{ brief }}" onChange="{{ onBrief }}" style="width:100%;border:0;outline:none;resize:none;background:transparent;font:400 16px/1.6 Inter,system-ui,sans-serif;color:#1D1D1F"></textarea>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;position:relative">
+<a href="v4-role.dc.html" class="mute" style="font-size:13px;text-decoration:underline;text-underline-offset:3px">Only need one person? Fill a role</a>
+<button class="pill p-coral" style="height:52px;padding:0 26px;font-size:15px" onClick="{{ compose }}">{{ composeLabel }}</button>
+</div>
+</section>
+<section class="wh" style="flex:999 1 520px;min-height:660px;position:relative;overflow:hidden;background:#fff radial-gradient(#E8E8ED 1.2px, transparent 1.2px) 0 0/24px 24px">
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+<div style="display:flex;gap:18px">
+<span style="width:72px;height:72px;border-radius:50%;border:1.5px dashed #C7C7CC;background:#fff"></span><span style="width:72px;height:72px;border-radius:50%;border:1.5px dashed #C7C7CC;background:#fff;margin-top:-26px"></span><span style="width:72px;height:72px;border-radius:50%;border:1.5px dashed #C7C7CC;background:#fff"></span>
+</div>
+<p style="font-size:24px;font-weight:300;letter-spacing:-0.02em;margin-top:10px">Your team canvas</p>
+<p class="mute" style="max-width:340px">Roles appear as seats. Click a seat to explore people with documented experience and place them.</p>
+</div>
+</section>
+</div>
+</sc-if>
+
+<sc-if value="{{ isCanvas }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+<div style="display:flex;flex-direction:column;gap:8px"><button onClick="{{ toDescribe }}" style="all:unset;cursor:pointer;font-size:14px;color:#6E6E73">← Edit the brief</button><h1 style="font-size:44px;font-weight:300;letter-spacing:-0.035em;line-height:1.05">Kestrel Travel <span style="font-weight:500">team</span></h1><p class="mute" style="font-size:16px">{{ summary }}</p></div>
+<div style="display:flex;gap:8px;align-items:center;position:relative">
+<button class="pill" onClick="{{ toggleAdd }}" aria-expanded="{{ addOpen }}">+ Add a role</button>
+<sc-if value="{{ addOpen }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:50px;left:0;width:260px;background:#fff;border-radius:22px;box-shadow:0 24px 64px rgba(0,0,0,.14);padding:8px;z-index:20"><sc-for list="{{ addable }}" as="r" hint-placeholder-count="3"><button onClick="{{ r.add }}" style="all:unset;box-sizing:border-box;display:block;width:100%;padding:12px 14px;border-radius:14px;cursor:pointer;font-size:14px"><span style="display:block;font-weight:500">{{ r.title }}</span><span style="display:block;font-size:12px;color:#6E6E73">{{ r.capsLabel }}</span></button></sc-for></div></sc-if>
+<button class="pill" onClick="{{ saveDraft }}">{{ saveLabel }}</button><button class="pill p-ink" onClick="{{ openProposal }}" disabled="{{ cantPropose }}">{{ proposeLabel }}</button>
+</div>
+</div>
+
+<sc-if value="{{ isSent }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:16px 20px;border-radius:24px;background:#EEF7F1"><span style="width:32px;height:32px;border-radius:50%;background:#34A065;color:#fff;display:inline-flex;align-items:center;justify-content:center">✓</span><span style="flex:1;font-size:15px">Proposal sent to <strong style="font-weight:500">Inés Vidal</strong> for review. No one has been assigned; people are contacted only after review.</span><a href="v4-planning.dc.html" class="pill p-sm">See availability</a><a href="v4-home.dc.html" class="pill p-sm">Back home</a></div>
+</sc-if>
+
+<section class="wh" aria-label="Team canvas" style="position:relative;height:600px;overflow:hidden;background:#fff radial-gradient(#E8E8ED 1.2px, transparent 1.2px) 0 0/24px 24px">
+<svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="position:absolute;inset:0">
+<path d="{{ linesOpen }}" fill="none" stroke="#D2D2D7" stroke-width="1.5" stroke-dasharray="4 5" vector-effect="non-scaling-stroke"/>
+<path d="{{ linesFilled }}" fill="none" stroke="#1D1D1F" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+</svg>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:250px;border-radius:30px;padding:22px;background:#1D1D1F;color:#fff;display:flex;flex-direction:column;gap:6px;box-shadow:0 20px 50px rgba(0,0,0,.18)">
+<span style="font-size:12px;color:#AEAEB2">Travel &amp; hospitality</span>
+<span style="font-size:22px;font-weight:400;letter-spacing:-0.02em;line-height:1.2">AI trip companion</span>
+<span style="font-size:13px;color:#D2D2D7">Kick-off Jan 12 · 6 months</span>
+<div style="display:flex;gap:4px;margin-top:8px"><sc-for list="{{ seats }}" as="s" hint-placeholder-count="4"><span style="flex:1;height:4px;border-radius:2px;background:{{ s.prog }}"></span></sc-for></div>
+</div>
+<sc-for list="{{ seats }}" as="s" hint-placeholder-count="4">
+<button class="seat" onClick="{{ s.open }}" aria-label="{{ s.aria }}" style="left:{{ s.x }}%;top:{{ s.y }}%;box-shadow:{{ s.ring }}">
+<div style="display:flex;align-items:center;gap:12px">
+<sc-if value="{{ s.filled }}" hint-placeholder-val="{{ false }}"><span style="position:relative;display:inline-flex"><dc-import name="v3-portrait" who="{{ s.who }}" size="48" hint-size="48px,48px"></dc-import><span style="position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;background:{{ s.dot }};border:2.5px solid #fff"></span></span></sc-if>
+<sc-if value="{{ s.empty }}" hint-placeholder-val="{{ true }}"><span style="width:48px;height:48px;border-radius:50%;border:1.5px dashed #C7C7CC;display:inline-flex;align-items:center;justify-content:center;color:#AEAEB2;font-size:20px;flex:none">+</span></sc-if>
+<span style="min-width:0"><span style="display:block;font-weight:500;font-size:15px;line-height:1.25">{{ s.title }}</span><span style="display:block;font-size:13px;color:{{ s.subC }}">{{ s.sub }}</span></span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:4px"><span class="chip" style="background:{{ s.stBg }};color:{{ s.stFg }};font-weight:600">{{ s.stLabel }}</span><sc-for list="{{ s.caps }}" as="c" hint-placeholder-count="2"><span class="chip">{{ c }}</span></sc-for></div>
+</button>
+</sc-for>
+<div class="mute" style="position:absolute;left:24px;bottom:18px;font-size:13px;display:flex;gap:16px"><span style="display:inline-flex;align-items:center;gap:6px"><span class="dm" style="background:#34A065"></span>Free before kick-off</span><span style="display:inline-flex;align-items:center;gap:6px"><span class="dm" style="background:#E3A33B"></span>Pending or late</span><span style="display:inline-flex;align-items:center;gap:6px"><span class="dm" style="background:#F15B40"></span>Overlaps another team</span></div>
+<div style="position:absolute;right:24px;bottom:18px;display:flex;gap:8px"><span class="chip" style="background:#E3F3E8;color:#1F7A4A;font-weight:600">Confirmed</span><span class="chip" style="background:#FFF0EB;color:#B83C23;font-weight:600">Proposed</span><span class="chip" style="font-weight:600">Open</span></div>
+</section>
+
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start">
+<section style="border-radius:28px;padding:22px 24px;display:flex;flex-direction:column;gap:14px;background:radial-gradient(90% 120% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),#FFF8F5">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:30px;height:30px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span><span style="font-weight:500">Coverage</span><span class="mute" style="font-size:12px;margin-left:auto">From documented capabilities · illustrative</span></div>
+<sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="3"><div style="display:flex;flex-direction:column;gap:6px"><span style="font-size:13px;font-weight:600;color:{{ g.c }}">{{ g.title }}</span><span class="mute" style="font-size:12px">{{ g.hint }}</span><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ g.items }}" as="u" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:#fff;font-size:13px;font-weight:500">{{ u }}</span></sc-for></div></div></sc-for>
+<button class="pill p-sm" style="align-self:flex-start;background:rgba(255,255,255,.85);box-shadow:none" onClick="{{ toggleAdd }}">+ Add a role</button>
+</section>
+<section class="wh" style="padding:22px 24px;display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:500">Availability conflicts</span><span class="mute" style="font-size:13px">{{ openSeatsLabel }}</span></div>
+<sc-for list="{{ conflicts }}" as="c" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;background:#F5F5F7"><span style="width:10px;height:10px;border-radius:50%;background:{{ c.c }};flex:none"></span><span style="flex:1;min-width:0"><span style="display:block;font-size:14px;font-weight:500">{{ c.t }}</span><span class="mute" style="font-size:13px">{{ c.d }}</span></span><button class="pill p-sm" onClick="{{ c.open }}">Find alternative</button></div></sc-for>
+<sc-if value="{{ noConflicts }}" hint-placeholder-val="{{ false }}"><p class="mute" style="font-size:14px">No conflicts. Everyone placed is free before kick-off.</p></sc-if>
+</section>
+</div>
+<section class="wh" style="padding:26px 28px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="font-size:22px;font-weight:400;letter-spacing:-0.015em">Availability against kick-off</h2><a href="v4-planning.dc.html" class="mute" style="font-size:14px">Open Planning →</a></div>
+<div style="display:grid;grid-template-columns:240px minmax(0,1fr);gap:16px"><span></span><div style="position:relative;height:18px"><sc-for list="{{ ticks }}" as="t" hint-placeholder-count="4"><span class="mute" style="position:absolute;left:{{ t.l }}%;font-size:12px">{{ t.n }}</span></sc-for><span style="position:absolute;left:{{ kickL }}%;transform:translateX(-50%);font-size:12px;font-weight:600;color:#CF4529">Kick-off</span></div></div>
+<sc-for list="{{ seats }}" as="s" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:240px minmax(0,1fr);gap:16px;align-items:center">
+<div style="display:flex;flex-direction:column"><span style="font-size:14px;font-weight:500">{{ s.title }}</span><span class="mute" style="font-size:13px">{{ s.person }}</span></div>
+<div style="position:relative;height:28px;border-radius:999px;background:#F5F5F7">
+<span style="position:absolute;top:-4px;bottom:-4px;left:{{ kickL }}%;width:2px;background:#F15B40;opacity:.7"></span>
+<sc-if value="{{ s.filled }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:4px;bottom:4px;left:{{ s.barL }}%;right:4px;border-radius:999px;background:{{ s.barBg }};border:{{ s.barBd }};display:flex;align-items:center;padding:0 10px;font-size:12px;color:{{ s.barFg }};white-space:nowrap;overflow:hidden">{{ s.barLabel }}</span></sc-if>
+</div>
+</div>
+</sc-for>
+</section>
+</sc-if>
+</div>
+
+<sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+<div onClick="{{ closeSel }}" style="position:fixed;inset:0;background:rgba(0,0,0,.16);z-index:58"></div>
+<aside role="dialog" aria-label="Position details" class="s" style="position:fixed;top:16px;right:16px;bottom:16px;width:500px;max-width:calc(100vw - 32px);z-index:60;background:#fff;border-radius:32px;box-shadow:0 30px 80px rgba(0,0,0,.2);display:flex;flex-direction:column;overflow:hidden">
+<div style="padding:26px 26px 6px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><div><span class="mute" style="font-size:13px">Seat on the Kestrel Travel team</span><h2 style="font-size:30px;font-weight:300;letter-spacing:-0.03em;line-height:1.1;margin-top:4px">{{ r.title }}</h2></div><button class="pill p-sm p-soft" style="width:34px;padding:0" onClick="{{ closeSel }}" aria-label="Close">✕</button></div>
+<div style="flex:1;overflow:auto;padding:12px 26px 20px;display:flex;flex-direction:column;gap:22px">
+<sc-if value="{{ r.hasWho }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:22px;background:{{ r.curBg }}"><dc-import name="v3-portrait" who="{{ r.curWho }}" size="44" hint-size="44px,44px"></dc-import><div style="flex:1"><div style="font-size:13px;font-weight:600;color:{{ r.curFg }}">{{ r.curLabel }}</div><div style="font-weight:500">{{ r.curName }}</div></div><button class="pill p-sm" onClick="{{ r.clearWho }}">Remove</button></div></sc-if>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span class="mute" style="font-size:13px">Needs</span>
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><sc-for list="{{ r.capItems }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 6px 0 14px;border-radius:999px;background:#1D1D1F;color:#fff;font-size:14px;font-weight:500">{{ c.n }}<button onClick="{{ c.remove }}" aria-label="Remove {{ c.n }}" style="width:24px;height:24px;border-radius:50%;border:0;background:#333336;color:#fff;cursor:pointer;font-size:10px">✕</button></span></sc-for>
+<input aria-label="Add a capability" value="{{ nc }}" onChange="{{ onNc }}" onKeyDown="{{ ncKey }}" placeholder="+ Add" style="height:36px;width:120px;border:0;border-radius:999px;background:#F5F5F7;padding:0 14px;font:500 14px Inter,sans-serif;color:#1D1D1F;outline:none"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+<div style="display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#F5F5F7"><sc-for list="{{ levels }}" as="l" hint-placeholder-count="3"><button class="{{ l.cls }}" onClick="{{ l.pick }}">{{ l.n }}</button></sc-for></div>
+<div style="display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#F5F5F7"><sc-for list="{{ allocs }}" as="l" hint-placeholder-count="2"><button class="{{ l.cls }}" onClick="{{ l.pick }}">{{ l.n }}</button></sc-for></div>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span class="mute" style="font-size:13px">{{ r.peopleLabel }}</span><span class="mute" style="font-size:12px;display:flex;gap:10px"><span style="display:inline-flex;align-items:center;gap:5px"><span class="dm" style="background:#1D1D1F"></span>Professional</span><span style="display:inline-flex;align-items:center;gap:5px"><span class="dm" style="background:linear-gradient(90deg,#1D1D1F 50%,#fff 50%);border:1.5px solid #1D1D1F"></span>Training</span></span></div>
+<sc-for list="{{ cands }}" as="c" hint-placeholder-count="3">
+<div style="border-radius:24px;padding:16px;background:{{ c.bg }};display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:12px;align-items:center">
+<dc-import name="v3-portrait" who="{{ c.id }}" size="48" hint-size="48px,48px"></dc-import>
+<div style="flex:1;min-width:0"><div style="font-weight:500">{{ c.n }}<sc-if value="{{ c.onSl }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:#B83C23;margin-left:8px">On your shortlist</span></sc-if></div><div style="font-size:13px;color:{{ c.avC }}">{{ c.avText }}</div></div>
+<button class="{{ c.btnCls }}" onClick="{{ c.place }}">{{ c.btn }}</button>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:12px"><sc-for list="{{ c.levels }}" as="x" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:{{ x.fg }}"><span class="dm" style="background:{{ x.bg }};border:{{ x.bd }}"></span>{{ x.n }}</span></sc-for></div>
+<sc-if value="{{ c.showEv }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;padding-top:4px"><sc-for list="{{ c.ev }}" as="e" hint-placeholder-count="2"><span style="font-size:13px;color:#424245">{{ e }}</span></sc-for><sc-if value="{{ c.isAna }}" hint-placeholder-val="{{ false }}"><a href="v4-passport.dc.html" style="font-size:13px;font-weight:500;color:#CF4529">Open passport →</a></sc-if></div></sc-if>
+<button onClick="{{ c.toggleEv }}" style="all:unset;cursor:pointer;font-size:13px;font-weight:500;color:#424245">{{ c.evLabel }}</button>
+</div>
+</sc-for>
+<sc-if value="{{ noCands }}" hint-placeholder-val="{{ false }}"><p class="mute" style="padding:16px;border-radius:20px;background:#F5F5F7">No one has documented experience with all of these yet. Try removing a capability.</p></sc-if>
+</div>
+</div>
+<div style="padding:16px 26px 24px;display:flex;gap:8px;justify-content:space-between;align-items:center;border-top:1px solid #E8E8ED"><button onClick="{{ removeRole }}" style="all:unset;cursor:pointer;font-size:14px;color:#6E6E73">Remove this role</button><a href="v4-compare.dc.html" class="pill" onClick="{{ goCompare }}">Compare side by side</a></div>
+</aside>
+</sc-if>
+
+<sc-if value="{{ propOpen }}" hint-placeholder-val="{{ false }}">
+<div class="s" style="position:fixed;inset:0;background:rgba(0,0,0,.24);z-index:62;display:flex;align-items:center;justify-content:center;padding:24px">
+<div role="dialog" aria-label="Team proposal" style="width:100%;max-width:760px;max-height:calc(100vh - 48px);overflow:auto;background:#fff;border-radius:36px;padding:36px;display:flex;flex-direction:column;gap:22px;box-shadow:0 30px 80px rgba(0,0,0,.24)">
+<div style="display:flex;justify-content:space-between;align-items:flex-start"><div><span class="mute" style="font-size:14px">Proposal for human review</span><h2 style="font-size:36px;font-weight:300;letter-spacing:-0.035em;line-height:1.1;margin-top:4px">Kestrel Travel <span style="font-weight:500">team</span></h2></div><button class="pill p-sm p-soft" style="width:34px;padding:0" onClick="{{ closeProposal }}" aria-label="Close">✕</button></div>
+<div style="display:grid;grid-template-columns:repeat({{ nSeats }},minmax(0,1fr));gap:12px">
+<sc-for list="{{ seats }}" as="s" hint-placeholder-count="4">
+<div style="border-radius:24px;padding:18px;background:#F5F5F7;display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+<sc-if value="{{ s.filled }}" hint-placeholder-val="{{ false }}"><dc-import name="v3-portrait" who="{{ s.who }}" size="56" hint-size="56px,56px"></dc-import></sc-if>
+<sc-if value="{{ s.empty }}" hint-placeholder-val="{{ true }}"><span style="width:56px;height:56px;border-radius:50%;border:1.5px dashed #C7C7CC"></span></sc-if>
+<div><div style="font-weight:500;font-size:14px">{{ s.title }}</div><div class="mute" style="font-size:13px">{{ s.person }}</div></div>
+<span style="font-size:12px;color:{{ s.subC }}">{{ s.flag }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><span class="mute" style="font-size:13px">To confirm during review</span><sc-for list="{{ notes }}" as="n" hint-placeholder-count="2"><div style="display:flex;gap:10px;font-size:15px"><span style="color:#E3A33B">●</span><span>{{ n }}</span></div></sc-for></div>
+<div style="display:flex;flex-direction:column;gap:8px"><label for="pnote" class="mute" style="font-size:13px">Note for the reviewer</label><textarea id="pnote" rows="3" style="width:100%;border:0;border-radius:20px;background:#F5F5F7;padding:14px 16px;font:400 15px/1.55 Inter,sans-serif;color:#1D1D1F;resize:vertical;outline:none" placeholder="Add context for Inés, for example why a pending date is still the right choice (optional)"></textarea></div>
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><span class="mute" style="font-size:14px">Reviewer: Inés Vidal, delivery lead · nothing is assigned automatically</span><div style="display:flex;gap:8px"><button class="pill p-soft" onClick="{{ closeProposal }}">Keep editing</button><button class="pill" onClick="{{ saveDraft }}">{{ saveLabel }}</button><button class="pill p-coral" onClick="{{ sendProposal }}">Send for review</button></div></div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}"><div role="status" class="s" style="position:fixed;top:100px;left:50%;transform:translateX(-50%);z-index:70;background:#1D1D1F;color:#fff;padding:14px 22px;border-radius:999px;font-size:14px;box-shadow:0 16px 40px rgba(0,0,0,.25)">{{ toastMsg }}</div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"stage":{"editor":"enum","options":["describe","canvas","position","proposal"],"default":"describe"},"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  ld(k, d) { try { const v = window.localStorage.getItem('sti42.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  sv(k, v) { try { window.localStorage.setItem('sti42.' + k, JSON.stringify(v)); } catch (e) {} }
+  componentDidMount() { const p = this.hydrate(); if (p) this.setState(p); }
+  componentDidUpdate() { this.persist(); }
+  hydrate() {
+    const T = this.ld('team', null);
+    if (!T || !T.roles) return null;
+    return { roles: T.roles, sent: !!T.sent, saved: !!T.saved, n: T.n || this.state.n, stage: this.state.stage === 'describe' && T.stage === 'canvas' ? 'canvas' : this.state.stage };
+  }
+  persist() {
+    const S = this.state;
+    this.sv('team', { roles: S.roles, sent: S.sent, saved: S.saved, n: S.n, stage: S.stage });
+  }
+  constructor(p) {
+    super(p);
+    const st = (this.props && this.props.stage) || (p && p.stage) || 'describe';
+    const base = [
+      { id:'r1', kind:'mobile', title:'Mobile Lead', caps:['React Native','TypeScript'], level:'Senior', alloc:'Full-time', who:null },
+      { id:'r2', kind:'ios', title:'iOS Engineer', caps:['Swift','WidgetKit'], level:'Mid', alloc:'Full-time', who:null },
+      { id:'r3', kind:'ai', title:'AI Engineer', caps:['LLM apps','RAG'], level:'Senior', alloc:'Full-time', who:null },
+      { id:'r4', kind:'backend', title:'Backend Engineer', caps:['Node.js','GraphQL'], level:'Mid', alloc:'Full-time', who:null },
+    ];
+    const fill = { canvas:{ r1:'ana', r2:'javier' }, position:{ r1:'ana', r2:'javier' }, proposal:{ r1:'ana', r2:'javier', r3:'lucia', r4:'mateo' } }[st] || {};
+    this.state = { stage: st === 'describe' ? 'describe' : 'canvas', composing: false, sent: false, roles: base.map(r => ({ ...r, who: fill[r.id] || null, conf: r.id === 'r2' && !!fill[r.id] })), saved: false, toast: '', sel: st === 'position' ? 'r3' : null, prop: st === 'proposal', add: false, nc: '', ev: {}, n: 5,
+      brief: 'Kestrel Travel wants an AI trip companion for iOS and Android, built in React Native with native iOS widgets. It answers traveller questions from their bookings, so we need LLM and retrieval experience, plus a small Node.js GraphQL backend on AWS. Kick-off early January, about six months.' };
+  }
+  flash(t) { this.setState({ toast: t }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 2400); }
+  renderVals() {
+    const S = this.state;
+    const SLIST = this.ld('shortlist', []);
+    const PEOPLE = {
+      ana:{ n:'Ana Ruiz', av:65, avl:'Jan 5', ok:true, sk:{ 'React Native':'p','TypeScript':'p','Swift':'p','WidgetKit':'t','LLM apps':'t','RAG':'t','Accessibility':'p' }, ev:['React Native lead on Meridian Health','3 native iOS projects, HealthKit module'] },
+      ethan:{ n:'Ethan Brooks', av:79, avl:'Jan 19', ok:true, sk:{ 'React Native':'p','TypeScript':'p','Kotlin':'p','Compose':'p','GraphQL':'t' }, ev:['React Native and Compose on Lumen Retail'] },
+      sofia:{ n:'Sofía Martínez', av:44, avl:'Dec 15', ok:true, sk:{ 'React Native':'t','TypeScript':'p','Accessibility':'p' }, ev:['Design systems; React Native course, 2025'] },
+      mateo:{ n:'Mateo Silva', av:93, avl:'Feb 2', ok:false, sk:{ 'React Native':'t','TypeScript':'p','Node.js':'p','GraphQL':'p' }, ev:['Node.js and GraphQL APIs on Northwind'] },
+      javier:{ n:'Javier Morales', av:65, avl:'Jan 5', ok:true, sk:{ 'Swift':'p','WidgetKit':'p','React Native':'t','Accessibility':'p' }, ev:['WidgetKit and Live Activities on Meridian Health'] },
+      lucia:{ n:'Lucía Fernández', av:23, avl:'now', ok:true, conflict:'Proposed for Vela Bank from Jan 12', sk:{ 'LLM apps':'p','RAG':'p','Node.js':'t','AWS':'p' }, ev:['RAG on 3 client projects, AWS Bedrock'] },
+      valentina:{ n:'Valentina Rojas', av:93, avl:'Feb 2', ok:true, sk:{ 'LLM apps':'t','MLOps':'p' }, ev:['Forecasting and MLOps on Orbit Energy'] },
+      daniel:{ n:'Daniel Okafor', av:93, avl:'Feb 2', ok:false, sk:{ 'GraphQL':'p','Node.js':'t','AWS':'t' }, ev:['GraphQL APIs in Go on Atlas Payments'] },
+      camila:{ n:'Camila Duarte', av:37, avl:'Dec 8', ok:true, conflict:'Proposed for Vela Bank from Jan 12', sk:{ 'Appium':'p','Playwright':'p' }, ev:['Mobile automation on 3 apps'] },
+      marcus:{ n:'Marcus Chen', av:93, avl:'Feb 2', ok:false, sk:{ 'AWS':'p','Terraform':'p' }, ev:['6 AWS migrations'] },
+      tomas:{ n:'Tomás Herrera', av:120, avl:'Mar 2', ok:false, sk:{ 'Terraform':'p','AWS':'t' }, ev:['Terraform on 5 projects'] },
+    };
+    const POOL = { mobile:['ana','ethan','sofia','mateo'], ios:['javier','ana'], ai:['lucia','valentina','ana'], backend:['mateo','daniel','lucia'], qa:['camila'], android:['ethan'], cloud:['marcus','tomas','daniel'] };
+    const KICK = 72;
+    const fit = id => { const p = PEOPLE[id]; if (p.conflict) return { c:'#F15B40', t: p.conflict, fg:'#B83C23' }; if (p.av > KICK) return { c:'#E3A33B', t:'Free from ' + p.avl + ' · after kick-off' + (p.ok ? '' : ', pending'), fg:'#8A5A12' }; if (!p.ok) return { c:'#E3A33B', t:'Free from ' + p.avl + ' · pending', fg:'#8A5A12' }; return { c:'#34A065', t: p.av <= 23 ? 'Free now' : 'Free from ' + p.avl + ' · confirmed', fg:'#1F7A4A' }; };
+    const setRoles = roles => this.setState({ roles, sent: false });
+    const n = S.roles.length;
+    const pos = i => { const ang = (-90 + i * 360 / n) * Math.PI / 180; return { x: (50 + Math.cos(ang) * 33).toFixed(1), y: (50 + Math.sin(ang) * 34).toFixed(1) }; };
+    const pc = d => Math.max(0, Math.min(100, (d - 30) / 90 * 100));
+    const seats = S.roles.map((r, i) => { const p = pos(i), who = r.who, pe = who ? PEOPLE[who] : null, f = who ? fit(who) : null, on = S.sel === r.id;
+      return { ...r, ...p, filled: !!who, empty: !who, who: who || '', dot: f ? f.c : '', sub: pe ? pe.n : 'Open seat · ' + r.level, stLabel: !who ? 'Open' : r.conf ? 'Confirmed' : 'Proposed', stBg: !who ? '#F5F5F7' : r.conf ? '#E3F3E8' : '#FFF0EB', stFg: !who ? '#6E6E73' : r.conf ? '#1F7A4A' : '#B83C23', subC: pe ? '#424245' : '#6E6E73', aria: r.title + (pe ? ', ' + pe.n : ', open seat'),
+        line: who ? '#1D1D1F' : '#D2D2D7', dash: who ? '0' : '4 4', prog: who ? '#F15B40' : '#424245', ring: on ? '0 0 0 2px #1D1D1F, 0 18px 40px rgba(0,0,0,.1)' : '0 1px 2px rgba(0,0,0,.04),0 10px 28px rgba(0,0,0,.06)',
+        person: pe ? pe.n : 'Open seat', flag: f ? f.t : 'Still open', open: () => this.setState({ sel: r.id, add: false }),
+        barL: pe ? pc(pe.av).toFixed(1) : '0', barBg: f && f.c === '#34A065' ? '#E3F3E8' : f && f.c === '#F15B40' ? '#FFE9E3' : '#FFF4E0', barBd: f && f.c === '#E3A33B' ? '1.5px dashed #E3A33B' : '0', barFg: f ? f.fg : '#424245', barLabel: f ? f.t : '' }; });
+    const filled = S.roles.filter(r => r.who).length;
+    const R = S.roles.find(r => r.id === S.sel);
+    let r = { title: '', capItems: [] }, cands = [];
+    if (R) {
+      const upd = patch => setRoles(S.roles.map(x => x.id === R.id ? { ...x, ...patch } : x));
+      r = { ...R, hasWho: !!R.who, curName: R.who ? PEOPLE[R.who].n : '', curWho: R.who || 'ana', curLabel: R.conf ? 'Confirmed by Inés Vidal' : 'Proposed by you', curBg: R.conf ? '#EEF7F1' : '#FFF3EF', curFg: R.conf ? '#1F7A4A' : '#B83C23', clearWho: () => { upd({ who: null, conf: false }); this.flash('Seat reopened'); }, peopleLabel: R.who ? 'Replace with someone else' : 'People with documented experience', capItems: R.caps.map(c => ({ n: c, remove: () => upd({ caps: R.caps.filter(x => x !== c) }) })) };
+      const score = id => R.caps.reduce((s, c) => s + (PEOPLE[id].sk[c] === 'p' ? 1 : PEOPLE[id].sk[c] === 't' ? .4 : 0), 0);
+      cands = (POOL[R.kind] || []).filter(id => R.caps.some(c => PEOPLE[id].sk[c])).sort((a, b) => score(b) - score(a) || PEOPLE[a].av - PEOPLE[b].av).map(id => { const p = PEOPLE[id], f = fit(id), inSeat = R.who === id, elsewhere = S.roles.find(x => x.who === id && x.id !== R.id), showEv = !!S.ev[id];
+        return { id, onSl: SLIST.includes(id), n: p.n, avText: f.t, avC: f.fg, isAna: id === 'ana', ev: p.ev, showEv, evLabel: showEv ? 'Hide evidence' : 'Show evidence', toggleEv: () => this.setState({ ev: { ...S.ev, [id]: !showEv } }),
+          bg: inSeat ? '#FFF3EF' : '#F5F5F7', btn: inSeat ? '✓ Proposed' : R.who ? 'Propose instead' : elsewhere ? 'Move here' : 'Propose', btnCls: inSeat ? 'pill p-sm p-ink' : 'pill p-sm',
+          place: () => { setRoles(S.roles.map(x => x.id === R.id ? { ...x, who: inSeat ? null : id, conf: false } : (x.who === id ? { ...x, who: null, conf: false } : x))); this.flash(inSeat ? p.n + ' removed from ' + R.title : R.who ? p.n + ' replaces ' + PEOPLE[R.who].n : p.n + ' proposed for ' + R.title); },
+          levels: R.caps.map(c => { const v = p.sk[c]; return v === 'p' ? { n: c, bg:'#1D1D1F', bd:'0', fg:'#1D1D1F' } : v === 't' ? { n: c, bg:'linear-gradient(90deg,#1D1D1F 50%,#fff 50%)', bd:'1.5px solid #1D1D1F', fg:'#1D1D1F' } : { n: c, bg:'#fff', bd:'1.5px solid #D2D2D7', fg:'#8E8E93' }; }) }; });
+    }
+    const addC = () => { const v = S.nc.trim(); if (!v || !R) return; setRoles(S.roles.map(x => x.id === R.id ? { ...x, caps: [...x.caps, v] } : x)); this.setState({ nc: '' }); };
+    const TPL = [['qa','QA Automation',['Appium','Playwright']],['android','Android Engineer',['Kotlin','Compose']],['cloud','Cloud Engineer',['AWS','Terraform']]];
+    const LV = { p: 2, t: 1 };
+    const req = []; S.roles.forEach(x => x.caps.forEach(c => { if (!req.includes(c)) req.push(c); }));
+    const members = S.roles.filter(x => x.who).map(x => PEOPLE[x.who]);
+    const best = c => members.reduce((m, p) => Math.max(m, LV[p.sk[c]] || 0), 0);
+    const inFilled = c => S.roles.some(x => x.who && x.caps.includes(c));
+    const cv = { doc: [], trn: [], gap: [], open: [] };
+    req.forEach(c => { const b = best(c); if (b === 2) cv.doc.push(c); else if (b === 1) cv.trn.push(c); else if (inFilled(c)) cv.gap.push(c); else cv.open.push(c); });
+    const covGroups = [
+      { k:'doc', title:'Documented on this team · ' + cv.doc.length, hint:'Professional project experience recorded in a passport.', c:'#1F7A4A' },
+      { k:'trn', title:'Training or independent work only · ' + cv.trn.length, hint:'Learning is documented, client project experience is not yet.', c:'#8A5A12' },
+      { k:'gap', title:'Not documented · ' + cv.gap.length, hint:'Nobody proposed has a record of this. It may be a real gap or simply undocumented: ask the people involved.', c:'#B83C23' },
+      { k:'open', title:'Waiting on an open seat · ' + cv.open.length, hint:'Propose someone for these roles to see coverage.', c:'#6E6E73' },
+    ].filter(g => cv[g.k].length).map(g => ({ ...g, items: cv[g.k] }));
+    const notes = [];
+    S.roles.forEach(x => { if (!x.who) notes.push(x.title + ' seat is still open'); else { const p = PEOPLE[x.who]; if (p.conflict) notes.push(p.n + ': ' + p.conflict.charAt(0).toLowerCase() + p.conflict.slice(1)); else if (!p.ok) notes.push(p.n + ': availability from ' + p.avl + ' not yet confirmed'); else if (p.av > KICK) notes.push(p.n + ' starts after kick-off (' + p.avl + ')'); } });
+    if (cv.gap.length) notes.push('Not documented on this team: ' + cv.gap.join(', '));
+    if (cv.trn.length) notes.push('Training only: ' + cv.trn.join(', '));
+    if (!notes.length) notes.push('Nothing pending');
+    const conflicts = S.roles.filter(x => x.who).map(x => { const f = fit(x.who); return f.c === '#34A065' ? null : { t: PEOPLE[x.who].n + ' · ' + x.title, d: f.t, c: f.c, open: () => this.setState({ sel: x.id }) }; }).filter(Boolean);
+    const openN = S.roles.filter(x => !x.who).length;
+    return {
+      liveA: n + ' roles · ' + filled + ' proposed · ' + (n - filled) + ' open. ' + (conflicts.length ? conflicts.length + ' availability conflict' + (conflicts.length > 1 ? 's' : '') + '.' : 'No availability conflicts.'),
+      liveBullets: [cv.doc.length + ' of ' + req.length + ' capabilities documented on the team'].concat(cv.gap.length ? ['Not documented: ' + cv.gap.join(', ')] : []).concat(cv.open.length ? ['Waiting on open seats: ' + cv.open.join(', ')] : []).concat(conflicts.map(c => c.t + ': ' + c.d)),
+      goCompare: () => this.sv('compare', { ids: cands.map(c => c.id).slice(0, 3), role: R ? { title: R.title, caps: R.caps } : null, from: { href: this.props.self || 'v4-team.dc.html', label: 'Build a team' } }),
+      liveHello: S.stage === 'describe' ? 'Let’s shape this team.' : 'Here’s your team so far.',
+      liveIntro: S.stage === 'describe' ? 'Describe the project and I’ll compose the roles.' : 'I’m checking coverage, conflicts and availability as you compose.',
+      liveItems: S.stage === 'describe' ? [] : [
+        { q: 'Identify requirements that need confirmation', a: (cv.gap.length + cv.trn.length + members.filter(m => !m.ok).length) ? 'These points need a conversation before review.' : 'Nothing needs confirmation right now.', bullets: cv.gap.map(c => c + ': not documented by anyone proposed').concat(cv.trn.map(c => c + ': training or independent work only')).concat(members.filter(m => !m.ok).map(m => m.n + ': availability from ' + m.avl + ' not confirmed')) },
+        { q: 'Review availability', a: conflicts.length ? conflicts.length + ' proposed ' + (conflicts.length > 1 ? 'people need' : 'person needs') + ' a closer look against the Jan 12 kick-off.' : 'Everyone proposed is free before the Jan 12 kick-off.', bullets: conflicts.map(c => c.t + ': ' + c.d) } ],
+      covGroups, conflicts, noConflicts: conflicts.length === 0, openSeatsLabel: openN ? openN + ' open seat' + (openN > 1 ? 's' : '') : 'All seats proposed',
+      cantPropose: filled === 0 || S.sent, proposeLabel: S.sent ? '✓ Sent for review' : 'Review & propose',
+      saveDraft: () => { this.setState({ saved: true }); this.flash('Draft saved · only visible to you'); }, saveLabel: S.saved ? '✓ Saved' : 'Save draft', toastOn: !!S.toast, toastMsg: S.toast,
+      isDescribe: S.stage === 'describe', isCanvas: S.stage === 'canvas', isSent: S.sent,
+      brief: S.brief, onBrief: e => this.setState({ brief: e.target.value }), composeLabel: S.composing ? 'Composing…' : 'Compose the team',
+      compose: () => { this.setState({ composing: true }); setTimeout(() => this.setState({ composing: false, stage: 'canvas' }), 1100); }, toDescribe: () => this.setState({ stage: 'describe' }),
+      linesOpen: seats.filter(x => !x.filled).map(x => 'M50 50 L' + x.x + ' ' + x.y).join(' ') || 'M0 0',
+      linesFilled: seats.filter(x => x.filled).map(x => 'M50 50 L' + x.x + ' ' + x.y).join(' ') || 'M0 0',
+      summary: n + ' roles · ' + filled + ' placed · kick-off Jan 12', seats, nSeats: n, noneFilled: filled === 0,
+      addOpen: S.add, toggleAdd: () => this.setState({ add: !S.add }),
+      addable: TPL.filter(([k]) => !S.roles.some(x => x.kind === k)).map(([kind, title, caps]) => ({ title, capsLabel: caps.join(' · '), add: () => { const id = 'r' + S.n; this.setState({ roles: [...S.roles, { id, kind, title, caps, level:'Mid', alloc:'Full-time', who:null }], n: S.n + 1, add: false, sel: id }); } })),
+      ticks: [['Dec',30],['Jan',61],['Feb',92],['Mar',120]].map(([n2, d]) => ({ n: n2, l: pc(d).toFixed(1) })), kickL: pc(KICK).toFixed(1),
+      hasSel: !!R, r, cands, noCands: !!R && cands.length === 0, closeSel: () => this.setState({ sel: null }),
+      removeRole: () => this.setState({ roles: S.roles.filter(x => x.id !== S.sel), sel: null }),
+      nc: S.nc, onNc: e => this.setState({ nc: e.target.value }), ncKey: e => { if (e.key === 'Enter') addC(); },
+      levels: ['Mid','Senior','Lead'].map(v => ({ n: v, cls: R && R.level === v ? 'segb on' : 'segb', pick: () => setRoles(S.roles.map(x => x.id === S.sel ? { ...x, level: v } : x)) })),
+      allocs: ['Full-time','Half-time'].map(v => ({ n: v, cls: R && R.alloc === v ? 'segb on' : 'segb', pick: () => setRoles(S.roles.map(x => x.id === S.sel ? { ...x, alloc: v } : x)) })),
+      propOpen: S.prop, openProposal: () => this.setState({ prop: true, sel: null }), closeProposal: () => this.setState({ prop: false }), sendProposal: () => this.setState({ prop: false, sent: true }), notes,
+    };
+  }
+}
+</script>
+</body>
+</html>

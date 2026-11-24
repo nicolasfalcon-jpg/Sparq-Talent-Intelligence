@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Demo guide</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}@media (max-width:960px){.tg-bar{left:122px!important;padding:0 5px!important;gap:4px!important}.tg-lbl{display:none!important}.tg-btn{padding:0 10px!important}.tg-pop{left:122px!important}}</style>
+</helmet>
+<div style="font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased">
+<aside class="tg-bar" role="region" aria-label="Demo guide" style="position:fixed;top:18px;left:max(140px, calc(50vw - 490px));z-index:80;height:48px;display:flex;align-items:center;gap:6px;padding:0 6px 0 14px;background:rgba(29,29,31,.94);color:#fff;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.22);box-sizing:border-box">
+<span class="tg-lbl" style="font-size:12px;font-weight:600;color:#FF8A70;white-space:nowrap;letter-spacing:.02em">{{ s.label }}/10</span>
+<button class="tg-btn" onClick="{{ toggleTip }}" aria-expanded="{{ tip }}" style="height:36px;padding:0 12px;border:0;border-radius:999px;background:{{ tipBg }};color:#fff;font:500 13px Inter,sans-serif;cursor:pointer">Guide</button>
+<a href="{{ s.next }}" style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#CF4529;color:#fff;font-size:13px;font-weight:500;text-decoration:none;white-space:nowrap">{{ s.nextLabel }}</a>
+</aside>
+<sc-if value="{{ tip }}" hint-placeholder-val="{{ false }}">
+<div class="tg-pop" role="dialog" aria-label="Step guide" style="position:fixed;top:74px;left:max(140px, calc(50vw - 490px));z-index:80;width:400px;max-width:calc(100vw - 160px);box-sizing:border-box;background:#1D1D1F;color:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 20px 50px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:8px">
+<span style="font-size:11px;font-weight:600;color:#FF8A70;letter-spacing:.04em">{{ s.chapter }} · STEP {{ s.label }} OF 10</span>
+<span style="font-size:16px;font-weight:500;letter-spacing:-0.01em;line-height:1.3">{{ s.t }}</span>
+<span style="font-size:14px;line-height:1.45;color:#D2D2D7">{{ s.h }}</span>
+<div style="display:flex;gap:8px;align-items:center;margin-top:4px"><a href="{{ s.prev }}" style="display:inline-flex;align-items:center;height:34px;padding:0 14px;border-radius:999px;background:#333336;color:#fff;font-size:13px;font-weight:500;text-decoration:none">← Previous step</a><a href="v4-show-journey.dc.html" style="font-size:13px;color:#AEAEB2;text-decoration:none">All steps</a><span style="flex:1"></span><button onClick="{{ toggleTip }}" style="border:0;background:none;color:#AEAEB2;font:500 13px Inter,sans-serif;cursor:pointer">Close</button></div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"step":{"editor":"int","default":1,"min":1,"max":9},"$preview":{"width":448,"height":260}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { open: true, tip: false }; }
+  renderVals() {
+    const L = [
+      ['v4-show-home','Discover','1','Open the Intelligence Home','Show the greeting, the Ask Sparq card and Teams in the making. Try “Who’s free for mobile work in January?” in the Ask Sparq card.'],
+      ['v4-show-describe','Discover','2','Describe a new project to Ask Sparq','Read the brief aloud (or edit it), then click “Compose the team”. Stop on the canvas; the next step reviews requirements.'],
+      ['v4-show-requirements','Discover','3','Review the extracted requirements','Tap a chip to switch must-have and nice to have, answer the question, then click “Find people with this experience”.'],
+      ['v4-show-people','Discover','4','Discover documented expertise','Click Search, show the interpreted criteria, then click Ana Ruiz to open her preview.'],
+      ['v4-show-passport','Connect','5','Open a Talent Passport','Click “For a mobile lead role” in the Ask Sparq card, then “Add to shortlist” and “Preview profile”.'],
+      ['v4-show-team','Build','6','Build a multidisciplinary team','Click the AI Engineer seat, propose Lucía, close the drawer and scroll to Coverage and Availability conflicts.'],
+      ['v4-show-planning','Build','7','Review upcoming availability','Switch between Weeks and Months, then click Daniel’s dashed “Pending” bar and “Ask Inés Vidal to confirm”.'],
+      ['v4-show-proposal','Build','8','Prepare the proposal for human review','Walk through the team, the open items to confirm, and the reviewer. Click “Send for review”: nobody is assigned automatically.'],
+      ['v4-show-me','Grow','9–10','The engineer’s space, and expressing interest','Show Now / Next, then click “I’m interested” on Vela Bank and “Share interest”. Open Ask Sparq → “What have I shared so far?”.'],
+    ];
+    const i = Math.max(1, Math.min(9, Number(this.props.step ?? 1) || 1)) - 1;
+    const [, chapter, label, t, h] = L[i];
+    const s = { chapter: chapter.toUpperCase(), label, t, h,
+      prev: i === 0 ? 'v4-show-cover.dc.html' : L[i - 1][0] + '.dc.html',
+      next: i === L.length - 1 ? 'v4-show-cover.dc.html' : L[i + 1][0] + '.dc.html',
+      nextLabel: i === L.length - 1 ? 'Finish ✓' : 'Next →' };
+    return { s, dots: L.map((_, j) => j <= i ? '#F15B40' : '#424245'), open: this.state.open, closed: !this.state.open,
+      hide: () => this.setState({ open: false }), tip: this.state.tip, tipBg: this.state.tip ? '#CF4529' : '#333336', toggleTip: () => this.setState({ tip: !this.state.tip }), show: () => this.setState({ open: true }) };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>People</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.sf{background:#FFFFFF;border-radius:28px}
+.wh{background:#fff;border-radius:24px}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 18px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.pill:hover{background:#EBEBF0}
+.p-ink,.pill.on{background:#1D1D1F;color:#fff}.p-ink:hover,.pill.on:hover{background:#2E2F32;color:#fff}
+.p-coral{background:#CF4529;color:#fff}.p-coral:hover{background:#B83C23;color:#fff}
+.p-soft{background:#F5F5F7}.p-soft:hover{background:#EBEBF0}
+.p-sm{height:34px;padding:0 14px;font-size:13px}
+.tag{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:#F5F5F7;font-size:13px;color:#424245;white-space:nowrap}
+.av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:500;color:#1D1D1F;flex:none}
+.card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:16px;padding:22px;background:#fff;border-radius:24px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(24,25,27,.07)}
+.card:focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.sf,.wh,.card,.oc{box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.p-ink,.pill.on,.p-coral,.p-soft{box-shadow:none}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="people" mode="staff" context="people" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:24px 40px 120px;display:flex;flex-direction:column;gap:28px">
+
+<header style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+<div style="display:flex;flex-direction:column;gap:10px"><h1 style="font-size:52px;line-height:1.05;font-weight:300;letter-spacing:-0.035em">Find the right <span style="font-weight:500">expertise.</span></h1><p class="mute" style="font-size:17px">12 professionals · matched on documented experience, never on scores.</p></div>
+</header>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:12px;height:68px;padding:0 10px 0 12px;background:#fff;border-radius:999px;box-shadow:0 8px 30px rgba(24,25,27,.05)">
+<span style="width:46px;height:46px;border-radius:50%;background:#F15B40;display:inline-flex;align-items:center;justify-content:center;flex:none"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2.5l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></svg></span>
+<label for="nl" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Describe who you are looking for</label>
+<input id="nl" value="{{ nl }}" onChange="{{ onNl }}" onKeyDown="{{ nlKey }}" placeholder="Describe who you’re looking for…" style="flex:1;border:0;outline:none;background:transparent;font:400 17px Inter,system-ui,sans-serif;color:#1D1D1F;min-width:0">
+<sc-if value="{{ searched }}" hint-placeholder-val="{{ false }}"><button class="pill p-soft" onClick="{{ clear }}">Clear</button></sc-if>
+<button class="pill p-ink" style="height:48px;padding:0 24px" onClick="{{ run }}">Search</button>
+</div>
+<sc-if value="{{ showSugg }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-left:20px"><span class="mute" style="font-size:13px">Try</span><sc-for list="{{ trySugg }}" as="t" hint-placeholder-count="3"><button class="pill p-sm" onClick="{{ t.go }}">{{ t.q }}</button></sc-for></div></sc-if>
+<sc-if value="{{ searching }}" hint-placeholder-val="{{ false }}"><p class="mute" style="padding-left:24px">Reading documented skills and availability…</p></sc-if>
+<sc-if value="{{ showCrit }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:14px 18px;border-radius:24px;background:#FFF1E9">
+<span style="font-size:14px;color:#424245;margin-right:4px">I looked for</span>
+<sc-for list="{{ crit }}" as="c" hint-placeholder-count="3"><span style="display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 6px 0 14px;border-radius:999px;background:#fff;font-size:14px;font-weight:500">{{ c.v }}<button onClick="{{ c.remove }}" aria-label="Remove {{ c.v }}" style="width:24px;height:24px;border-radius:50%;border:0;background:#F5F5F7;cursor:pointer;font-size:11px;color:#424245">✕</button></span></sc-for>
+<span class="mute" style="font-size:13px;margin-left:auto">Ordered by documented matches, then availability</span>
+</div>
+</sc-if>
+<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+<sc-for list="{{ discs }}" as="d" hint-placeholder-count="9"><button class="{{ d.cls }}" onClick="{{ d.pick }}" aria-pressed="{{ d.on }}">{{ d.label }}</button></sc-for>
+<span style="width:1px;height:24px;background:#E8E8ED;margin:0 6px"></span>
+<button class="{{ soonCls }}" onClick="{{ toggleSoon }}" aria-pressed="{{ soon }}">Available by January</button>
+<sc-if value="{{ hasFilters }}" hint-placeholder-val="{{ false }}"><button class="pill p-sm p-soft" onClick="{{ clearFilters }}">Clear filters ✕</button></sc-if>
+</div>
+</div>
+
+<div style="display:flex;gap:24px;align-items:flex-start">
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:14px">
+<span class="mute" style="font-size:14px">{{ count }}</span>
+<div style="display:grid;grid-template-columns:{{ cols }};gap:16px">
+<sc-for list="{{ people }}" as="p" hint-placeholder-count="6">
+<button class="card" onClick="{{ p.select }}" aria-pressed="{{ p.on }}" style="box-shadow:{{ p.ring }}">
+<div style="display:flex;gap:14px;align-items:center;width:100%">
+<span style="border-radius:50%;box-shadow:0 0 0 3px #fff,0 0 0 5px {{ p.ringC }};display:inline-flex;flex:none"><dc-import name="v3-portrait" who="{{ p.id }}" size="60" hint-size="60px,60px"></dc-import></span>
+<div style="flex:1;min-width:0"><div style="font-weight:500;font-size:17px;letter-spacing:-0.01em">{{ p.n }}</div><div class="mute" style="font-size:14px">{{ p.role }}</div></div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ p.top }}" as="s" hint-placeholder-count="3"><span class="tag">{{ s }}</span></sc-for></div>
+<sc-if value="{{ p.hasMatch }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;gap:12px;font-size:13px"><sc-for list="{{ p.match }}" as="m" hint-placeholder-count="2"><span style="display:inline-flex;align-items:center;gap:6px"><span style="width:8px;height:8px;border-radius:50%;background:{{ m.bg }};border:1.5px solid {{ m.bd }}"></span><span style="color:{{ m.c }}">{{ m.k }}</span></span></sc-for></div></sc-if>
+<div style="display:flex;align-items:center;gap:8px;font-size:14px;margin-top:auto"><span style="width:8px;height:8px;border-radius:50%;background:{{ p.dot }};border:1.5px solid {{ p.dotBd }}"></span>{{ p.avText }}</div>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div class="sf" style="padding:48px;text-align:center"><p style="font-size:18px">No documented matches yet.</p><p class="mute">Remove a criterion or try another capability.</p></div></sc-if>
+</div>
+
+<sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+<aside aria-label="Profile preview" style="flex:0 0 380px;position:sticky;top:16px;border-radius:32px;padding:28px;display:flex;flex-direction:column;gap:20px;background:#FFFFFF;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)">
+<div style="display:flex;justify-content:space-between;align-items:flex-start"><dc-import name="v3-portrait" who="{{ sel.id }}" size="96" hint-size="96px,96px"></dc-import><button class="pill p-sm" onClick="{{ closeSel }}" aria-label="Close preview" style="width:36px;padding:0">✕</button></div>
+<div><h2 style="font-size:28px;font-weight:400;letter-spacing:-0.025em">{{ sel.n }}</h2><p class="mute">{{ sel.role }} · {{ sel.loc }}</p></div>
+<div style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:20px;background:#fff"><span style="width:9px;height:9px;border-radius:50%;background:{{ sel.dot }};border:1.5px solid {{ sel.dotBd }}"></span><span style="flex:1;font-size:14px">{{ sel.avText }}</span><span class="mute" style="font-size:13px">{{ sel.avSub }}</span></div>
+<p style="font-size:16px;line-height:1.55">{{ sel.sum }}</p>
+<div style="display:flex;flex-direction:column;gap:10px">
+<span class="mute" style="font-size:13px">Documented experience</span>
+<sc-for list="{{ sel.ev }}" as="e" hint-placeholder-count="3"><div style="display:flex;flex-direction:column"><span style="font-weight:500;font-size:14px">{{ e.k }}</span><span class="mute" style="font-size:13px">{{ e.v }}</span></div></sc-for>
+<sc-if value="{{ more }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:6px;padding-top:6px"><span class="mute" style="font-size:13px">Recent projects</span><sc-for list="{{ sel.proj }}" as="pj" hint-placeholder-count="2"><span style="font-size:14px">{{ pj }}</span></sc-for></div></sc-if>
+<button onClick="{{ toggleMore }}" style="align-self:flex-start;border:0;background:none;padding:0;font:500 14px Inter,sans-serif;color:#1D1D1F;cursor:pointer;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#D2D2D7">{{ moreLabel }}</button>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<sc-if value="{{ sel.full }}" hint-placeholder-val="{{ true }}"><a class="pill p-ink" href="v4-passport.dc.html" style="height:46px">Open Talent Passport</a></sc-if>
+<sc-if value="{{ sel.notFull }}" hint-placeholder-val="{{ false }}"><span class="mute" style="font-size:13px;text-align:center">Full passport in this prototype: Ana Ruiz</span></sc-if>
+<button class="{{ sel.slCls }}" style="height:46px" onClick="{{ sel.toggleSl }}">{{ sel.slLabel }}</button>
+<button class="pill" style="height:46px" onClick="{{ sel.toggleCmp }}">{{ sel.cmpLabel }}</button>
+</div>
+</aside>
+</sc-if>
+</div>
+</div>
+
+<sc-if value="{{ tray }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:44;display:flex;align-items:center;gap:14px;height:60px;padding:0 8px 0 12px;background:#1D1D1F;color:#fff;border-radius:999px;box-shadow:0 16px 40px rgba(24,25,27,.25);font-family:Inter,sans-serif">
+<div style="display:flex"><sc-for list="{{ cmpList }}" as="c" hint-placeholder-count="2"><span style="display:inline-flex;border-radius:50%;border:2px solid #1D1D1F;margin-right:-10px"><dc-import name="v3-portrait" who="{{ c.id }}" size="36" hint-size="36px,36px"></dc-import></span></sc-for></div>
+<span style="font-size:14px;margin-left:12px">{{ cmpCount }} selected</span>
+<button onClick="{{ clearCmp }}" style="border:0;background:none;color:#AEAEB2;font:500 13px Inter,sans-serif;cursor:pointer">Clear</button>
+<a href="v4-compare.dc.html" class="pill p-coral" onClick="{{ goCompare }}" style="height:44px">Compare</a>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  ld(k, d) { try { const v = window.localStorage.getItem('sti42.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  sv(k, v) { try { window.localStorage.setItem('sti42.' + k, JSON.stringify(v)); } catch (e) {} }
+  componentDidMount() { const p = this.hydrate(); if (p) this.setState(p); }
+  componentDidUpdate() { this.persist(); }
+  hydrate() {
+    return { sl: this.ld('shortlist', []) };
+  }
+  persist() {
+    this.sv('shortlist', this.state.sl);
+  }
+  constructor(p) { super(p); this.state = { sl: [], nl: 'Engineers with React Native and native iOS experience', searched: false, searching: false, crit: { rn: true, ios: true }, disc: 'All', soon: false, sel: null, more: false, cmp: [] }; }
+  renderVals() {
+    const S = this.state;
+    const P = [
+      ['ana','Ana Ruiz','AR','#FFE4D6','Senior Mobile Engineer','Mobile','Medellín',65,'Jan 5',true,['React Native','Swift','TypeScript'],'p','p','Leads cross-platform and native iOS delivery in healthcare and fintech.',[['React Native','5 projects · lead on Meridian Health'],['Swift / SwiftUI','3 projects · HealthKit native module'],['Offline-first architecture','Meridian Health sync layer']],['Meridian Health · 2025–26','Helix Insurance · 2023–24','Atlas Payments · 2021–22']],
+      ['lucia','Lucía Fernández','LF','#E9E2F3','AI Engineer','AI','Mexico City',23,'now',true,['LLM apps','RAG','Python'],'','','Builds production LLM applications with retrieval, evaluation and guardrails.',[['RAG systems','3 client projects'],['AWS Bedrock','Helix claims assistant'],['LangGraph','Independent project, 2026']],['Helix Insurance assistant · 2026','Orbit Energy copilot · 2025']],
+      ['javier','Javier Morales','JM','#DCEBEC','iOS Engineer','Mobile','Medellín',65,'Jan 5',true,['Swift','SwiftUI','XCTest'],'t','p','Native iOS engineer focused on performance, accessibility and health.',[['Swift / SwiftUI','4 projects · 6 years'],['WidgetKit, Live Activities','Meridian Health'],['React Native','Internal training, 2026']],['Meridian Health · 2025–26','Orbit Energy field app · 2023']],
+      ['ethan','Ethan Brooks','EB','#DEE6F2','Android Engineer','Mobile','Austin',79,'Jan 19',true,['Kotlin','Compose','React Native'],'p','','Android and cross-platform engineer for commerce apps.',[['React Native','2 projects · 3 years'],['Jetpack Compose','Lumen Retail app'],['GraphQL','Client caching layer']],['Lumen Retail · 2025–26','Northwind driver app · 2023']],
+      ['sofia','Sofía Martínez','SM','#F2E8D6','Senior Frontend Engineer','Frontend','Buenos Aires',44,'Dec 15',true,['React','Next.js','Design systems'],'t','','Builds design systems and accessible web products.',[['Design systems','2 enterprise libraries'],['Next.js','Helix claims portal'],['React Native','Training course, 2025']],['Helix Insurance portal · 2024–26']],
+      ['camila','Camila Duarte','CD','#E1EFE5','QA Automation Lead','Quality','Bogotá',37,'Dec 8',true,['Appium','Playwright','Test strategy'],'','','Leads test strategy and automation for web and mobile.',[['Appium','Mobile automation on 3 apps'],['Playwright','Helix claims portal'],['ISTQB Advanced','Certified Nov 2026']],['Helix Insurance · 2024–26']],
+      ['daniel','Daniel Okafor','DO','#DEE6F2','Staff Backend Engineer','Backend','Bogotá',93,'Feb 2',false,['Go','PostgreSQL','Event-driven'],'','','Backend lead for high-throughput payment systems.',[['Go','4 projects · 7 years'],['Event-driven architecture','Atlas Payments ledger']],['Atlas Payments · 2024–27']],
+      ['mateo','Mateo Silva','MS','#F2E8D6','Full-stack Engineer','Backend','Mexico City',93,'Feb 2',false,['Node.js','React','.NET'],'t','','Full-stack engineer across Node.js and .NET with React.',[['Node.js','3 projects'],['React Native','Independent project']],['Northwind Logistics · 2024–27']],
+      ['valentina','Valentina Rojas','VR','#FFE4D6','ML Engineer','AI','Santiago',93,'Feb 2',true,['PyTorch','MLOps','Vertex AI'],'','','Builds forecasting models and the pipelines that run them.',[['Forecasting','Orbit Energy'],['MLOps','Vertex AI pipelines']],['Orbit Energy · 2025–27']],
+      ['marcus','Marcus Chen','MC','#E1EFE5','Solutions Architect','Architecture','Toronto',93,'Feb 2',false,['AWS','Kubernetes','Terraform'],'','','Designs cloud migrations and platform architectures.',[['AWS','6 migrations'],['Microservices','Northwind modernization']],['Northwind Logistics · 2024–27']],
+      ['priya','Priya Nair','PN','#F5E3EC','Data Engineer','Data','Lisbon',107,'Feb 16',false,['Snowflake','dbt','Spark'],'','','Builds analytics platforms on modern cloud warehouses.',[['Snowflake','3 platform builds'],['dbt','Lumen Retail analytics']],['Lumen Retail · 2025–27']],
+      ['tomas','Tomás Herrera','TH','#E6E5E1','DevOps Engineer','Cloud','Lima',120,'Mar 2',false,['Azure','Terraform','Kubernetes'],'','','Platform engineer for regulated cloud environments.',[['Terraform','5 projects'],['Azure','Atlas Payments landing zone']],['Atlas Payments · 2024–27']],
+    ].map(([id,n,i,t,role,disc,loc,av,avl,ok,top,rn,ios,sum,ev,proj]) => ({ id,n,i,t,role,disc,loc,av,avl,ok,top,rn,ios,sum,ev:ev.map(([k,v]) => ({k,v})),proj }));
+    const C = S.crit, srch = S.searched && !S.searching;
+    const mm = (k, lv) => lv === 'p' ? { k, bg:'#1D1D1F', bd:'#1D1D1F', c:'#1D1D1F' } : lv === 't' ? { k: k + ' · training', bg:'#fff', bd:'#1D1D1F', c:'#424245' } : { k, bg:'#fff', bd:'#D2D2D7', c:'#8E8E93' };
+    let list = P.map(p => { const m = []; if (srch && C.rn) m.push({ ...mm('React Native', p.rn), sc: p.rn === 'p' ? 1 : p.rn === 't' ? .5 : 0 }); if (srch && C.ios) m.push({ ...mm('Native iOS', p.ios), sc: p.ios === 'p' ? 1 : 0 }); return { ...p, m }; });
+    if (srch && (C.rn || C.ios)) list = list.filter(p => p.m.some(x => x.sc > 0));
+    if (S.disc !== 'All') list = list.filter(p => p.disc === S.disc);
+    if (S.soon) list = list.filter(p => p.av <= 91);
+    if (srch) list.sort((a, b) => b.m.reduce((s, x) => s + x.sc, 0) - a.m.reduce((s, x) => s + x.sc, 0) || a.av - b.av);
+    const cmp = S.cmp, inC = id => cmp.includes(id);
+    const tog = id => { if (!inC(id) && cmp.length >= 3) return; this.setState({ cmp: inC(id) ? cmp.filter(x => x !== id) : [...cmp, id] }); };
+    const avInfo = p => ({ dot: p.ok ? '#3E9B6A' : '#fff', dotBd: p.ok ? '#3E9B6A' : '#C98A1E', avText: p.av <= 23 ? 'Available now' : 'Available from ' + p.avl, avSub: p.ok ? 'Confirmed' : 'Pending confirmation', ringC: p.ok ? '#BFE3CC' : '#F1D4A0' });
+    const people = list.map(p => { const on = S.sel === p.id; return { ...p, ...avInfo(p), match: p.m, hasMatch: p.m.length > 0, on, ring: on ? '0 0 0 2px #1D1D1F' : 'none', select: () => this.setState({ sel: on ? null : p.id, more: false }) }; });
+    const sp = P.find(p => p.id === S.sel);
+    const run = () => { this.setState({ searched: true, searching: true, crit: { rn: true, ios: true } }); setTimeout(() => this.setState({ searching: false }), 800); };
+    const crit = []; if (C.rn) crit.push({ v:'React Native', remove: () => this.setState({ crit: { ...C, rn: false } }) }); if (C.ios) crit.push({ v:'Native iOS', remove: () => this.setState({ crit: { ...C, ios: false } }) });
+    const DL = [['All','All'],['Mobile','Mobile'],['Frontend','Frontend'],['Backend','Backend'],['AI','AI'],['Data','Data'],['Cloud','Cloud'],['Architecture','Architecture'],['Quality','Quality']];
+    return {
+      goCompare: () => this.sv('compare', { ids: S.cmp.length ? S.cmp : ['ana','javier','ethan'], role: { title: 'the selected profiles', caps: (S.cmp.length ? S.cmp : ['ana','javier','ethan']).map(id => (P.find(x => x.id === id) || { top: [] }).top).reduce((a, t) => a.concat(t.filter(x => !a.includes(x))), []).slice(0, 6).map(c => c === 'Swift' || c === 'SwiftUI' ? 'Swift' : c === 'LLM apps' ? 'LLM apps' : c) }, from: { href: this.props.self || 'v4-people.dc.html', label: 'People' } }),
+      showSugg: !S.searched, trySugg: [{ q:'React Native and native iOS', go: () => { this.setState({ nl:'Engineers with React Native and native iOS experience' }); run(); } }, { q:'AI engineers free soon', go: () => this.setState({ disc:'AI', soon:true }) }, { q:'Mobile, free by January', go: () => this.setState({ disc:'Mobile', soon:true }) }],
+      hasFilters: S.disc !== 'All' || S.soon, clearFilters: () => this.setState({ disc:'All', soon:false }),
+      nl: S.nl, onNl: e => this.setState({ nl: e.target.value }), nlKey: e => { if (e.key === 'Enter') run(); }, run, clear: () => this.setState({ searched: false, nl: '' }),
+      searched: S.searched, searching: S.searching, showCrit: srch, crit,
+      discs: DL.map(([v, label]) => ({ label, on: S.disc === v, cls: S.disc === v ? 'pill p-sm on' : 'pill p-sm', pick: () => this.setState({ disc: v }) })),
+      soon: S.soon, soonCls: S.soon ? 'pill p-sm on' : 'pill p-sm', toggleSoon: () => this.setState({ soon: !S.soon }),
+      people, empty: people.length === 0, count: people.length + (srch ? ' people with documented matches' : ' people'),
+      cols: sp ? 'repeat(2,minmax(0,1fr))' : 'repeat(3,minmax(0,1fr))',
+      hasSel: !!sp, sel: sp ? { ...sp, ...avInfo(sp), full: sp.id === 'ana', notFull: sp.id !== 'ana', cmpLabel: inC(sp.id) ? '✓ Added to compare' : 'Add to compare', toggleCmp: () => tog(sp.id), slLabel: S.sl.includes(sp.id) ? '✓ On your shortlist' : 'Add to shortlist', slCls: S.sl.includes(sp.id) ? 'pill p-ink' : 'pill', toggleSl: () => this.setState({ sl: S.sl.includes(sp.id) ? S.sl.filter(x => x !== sp.id) : S.sl.concat(sp.id) }) } : { ev: [], proj: [] },
+      closeSel: () => this.setState({ sel: null }), more: S.more, toggleMore: () => this.setState({ more: !S.more }), moreLabel: S.more ? 'Show less' : 'Show more experience',
+      tray: cmp.length > 0, cmpList: cmp.map(id => P.find(p => p.id === id)), cmpCount: cmp.length, clearCmp: () => this.setState({ cmp: [] }),
+    };
+  }
+}
+</script>
+</body>
+</html>

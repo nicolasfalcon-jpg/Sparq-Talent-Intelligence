@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Compare profiles</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAFAFA}
+a{color:inherit;text-decoration:none}
+.s,.s *{box-sizing:border-box}
+.s{font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;letter-spacing:-0.006em}
+.s h1,.s h2,.s h3,.s p{margin:0}
+.s :focus-visible{outline:2px solid #F15B40;outline-offset:3px}
+.mute{color:#6E6E73}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:0;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;color:#1D1D1F;font:500 14px/1 Inter,system-ui,sans-serif;cursor:pointer;white-space:nowrap;transition:background .15s}
+.pill:hover{background:#EBEBF0}
+.p-ink,.pill.on{background:#1D1D1F;color:#fff}.p-ink:hover,.pill.on:hover{background:#2E2F32;color:#fff}
+.p-coral{background:#CF4529;color:#fff}.p-coral:hover{background:#B83C23;color:#fff}
+.p-soft{background:#F5F5F7}.p-soft:hover{background:#EBEBF0}
+.p-sm{height:34px;padding:0 14px;font-size:13px}
+.av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;font-weight:500;color:#1D1D1F;flex:none}
+.dotm{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;margin-top:4px}
+.lab{font-size:13px;color:#6E6E73;padding-top:6px}
+.sf,.wh,.card,.oc{box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)}
+.p-ink,.pill.on,.p-coral,.p-soft{box-shadow:none}
+</style>
+</helmet>
+<div class="s" style="min-height:100vh;background:#FAFAFA">
+<dc-import name="v4-nav" active="opps" mode="staff" context="team" hint-size="100%,84px"></dc-import>
+<div style="max-width:1360px;margin:0 auto;padding:16px 40px 120px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+<div style="display:flex;flex-direction:column;gap:10px"><a href="{{ fromHref }}" class="mute" style="font-size:14px">← {{ fromLabel }}</a><h1 style="font-size:48px;font-weight:300;letter-spacing:-0.035em;line-height:1.05">Side by side, <span style="font-weight:500">on the evidence.</span></h1><p class="mute" style="font-size:16px">{{ ctxLine }} Documented experience only; nothing is ranked and people make the decision.</p></div>
+<div style="display:flex;gap:8px"><button class="{{ evCls }}" onClick="{{ toggleEv }}">{{ evLabel }}</button><a href="v4-planning.dc.html" class="pill">See availability</a></div>
+</div>
+
+<div style="display:grid;grid-template-columns:{{ cols }};gap:16px;align-items:stretch">
+<sc-for list="{{ people }}" as="p" hint-placeholder-count="3">
+<article class="wh" style="border-radius:32px;padding:28px;display:flex;flex-direction:column;gap:22px;background:{{ p.bg }}">
+<div style="display:flex;justify-content:space-between;align-items:flex-start"><dc-import name="v3-portrait" who="{{ p.id }}" size="76" hint-size="76px,76px"></dc-import><button class="pill p-sm" style="width:34px;padding:0" onClick="{{ p.remove }}" aria-label="Remove {{ p.n }}">✕</button></div>
+<div><h2 style="font-size:26px;font-weight:400;letter-spacing:-0.02em">{{ p.n }}</h2><p class="mute">{{ p.role }} · {{ p.yrs }} years</p></div>
+<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:18px;background:#F5F5F7;font-size:14px"><span style="width:8px;height:8px;border-radius:50%;background:#3E9B6A"></span><span style="flex:1">From {{ p.av }}</span><span class="mute" style="font-size:13px">{{ p.avBy }}</span></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<span class="lab">Must-haves</span>
+<sc-for list="{{ p.caps }}" as="c" hint-placeholder-count="5"><div style="display:flex;gap:12px;align-items:flex-start"><span class="dotm" style="background:{{ c.bg }};border:1.5px solid {{ c.bd }}"></span><div style="min-width:0"><div style="font-size:15px;color:{{ c.fg }}">{{ c.n }}</div><sc-if value="{{ c.showEv }}" hint-placeholder-val="{{ false }}"><div class="mute" style="font-size:13px">{{ c.ev }}</div></sc-if></div></div></sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px"><span class="lab">Relevant work</span><sc-for list="{{ p.work }}" as="w" hint-placeholder-count="2"><div style="font-size:15px">{{ w }}</div></sc-for></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span class="lab">Architecture</span><div style="font-size:15px">{{ p.arch }}</div></div>
+<div style="display:flex;flex-direction:column;gap:8px"><span class="lab">Still to confirm</span><div style="font-size:15px;color:{{ p.pendC }}">{{ p.pend }}</div></div>
+<div style="flex:1"></div>
+<div style="display:flex;gap:8px"><button class="{{ p.slCls }}" style="flex:1" onClick="{{ p.toggleSl }}">{{ p.slLabel }}</button><sc-if value="{{ p.full }}" hint-placeholder-val="{{ false }}"><a href="v4-passport.dc.html" class="pill">Passport</a></sc-if></div>
+</article>
+</sc-for>
+<sc-if value="{{ canAdd }}" hint-placeholder-val="{{ false }}">
+<div style="border-radius:32px;border:1.5px dashed #D2D2D7;padding:28px;display:flex;flex-direction:column;gap:12px;justify-content:center">
+<p style="font-size:20px;font-weight:300;letter-spacing:-0.015em">Add someone to compare</p>
+<sc-for list="{{ addable }}" as="a" hint-placeholder-count="2"><button class="pill" style="justify-content:flex-start;padding-left:6px" onClick="{{ a.add }}"><dc-import name="v3-portrait" who="{{ a.id }}" size="28" hint-size="28px,28px"></dc-import>{{ a.n }}</button></sc-for>
+</div>
+</sc-if>
+</div>
+<p class="mute" style="font-size:13px;text-align:center">{{ slCount }} on your shortlist · <a href="{{ fromHref }}" style="text-decoration:underline;text-underline-offset:3px">back to {{ fromLabel }}</a></p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1150}}'>
+class Component extends DCLogic {
+  ld(k, d) { try { const v = window.localStorage.getItem('sti42.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  sv(k, v) { try { window.localStorage.setItem('sti42.' + k, JSON.stringify(v)); } catch (e) {} }
+  componentDidMount() { const p = this.hydrate(); if (p) this.setState(p); }
+  componentDidUpdate() { this.persist(); }
+  hydrate() {
+    const C = this.ld('compare', null);
+    const patch = { sl: this.ld('shortlist', []), from: (C && C.from) || null };
+    if (C && C.role && Array.isArray(C.role.caps) && C.role.caps.length) patch.role = { title: C.role.title || 'Selected role', caps: C.role.caps.slice(0, 6) };
+    if (C && Array.isArray(C.ids)) { const ids = C.ids.filter(x => Component.DATA[x]).slice(0, 3); if (ids.length) patch.ids = ids; }
+    return patch;
+  }
+  persist() { this.sv('shortlist', this.state.sl); }
+  constructor(p) { super(p); this.state = { ids: ['ana','javier','ethan'], sl: [], ev: true, role: { title: 'Senior Mobile Engineer', caps: ['React Native','Swift','TypeScript','LLM integration','Accessibility'] } }; }
+  renderVals() {
+    const S = this.state, D = Component.DATA;
+    const lvOf = (p, c) => { const x = p.sk[c] || (c === 'LLM integration' ? p.sk['LLM apps'] : c === 'LLM apps' ? p.sk['LLM integration'] : null); return x || null; };
+    const known = S.role.caps.filter((c, i, a) => a.indexOf(c) === i && Object.keys(D).some(k => lvOf(D[k], c)));
+    const caps = known.length ? known : ['React Native','Swift','TypeScript','LLM integration','Accessibility'];
+    const st = v => v === 'p' ? { bg:'#1D1D1F', bd:'#1D1D1F', fg:'#1D1D1F', t:'Professional experience' } : v === 't' ? { bg:'linear-gradient(90deg,#1D1D1F 50%,#fff 50%)', bd:'#1D1D1F', fg:'#1D1D1F', t:'Training or partial' } : { bg:'#fff', bd:'#D2D2D7', fg:'#8E8E93', t:'Not documented' };
+    const relevant = id => caps.some(c => lvOf(D[id], c));
+    const ids0 = S.ids.filter(id => D[id] && relevant(id));
+    const ids = ids0.length ? ids0 : Object.keys(D).filter(relevant).slice(0, 2);
+    const inSl = id => S.sl.includes(id);
+    const people = ids.map(id => { const p = D[id];
+      return { ...p, id,
+        caps: caps.map(c => { const x = lvOf(p, c), s = st(x ? x[0] : null); return { n: c, ev: x ? x[1] : 'Not documented', showEv: S.ev, bg: s.bg, bd: s.bd, fg: s.fg }; }),
+        bg: '#FFFFFF', pendC: p.pend === 'Nothing pending' ? '#6E6E73' : '#8A5A12',
+        slCls: inSl(id) ? 'pill p-ink' : 'pill p-coral', slLabel: inSl(id) ? '✓ On shortlist' : 'Add to shortlist',
+        toggleSl: () => this.setState({ sl: inSl(id) ? S.sl.filter(x => x !== id) : [...S.sl, id] }),
+        remove: () => this.setState({ ids: ids.filter(x => x !== id) }) }; });
+    const canAdd = ids.length < 3;
+    const addable = Object.keys(D).filter(k => !ids.includes(k) && relevant(k)).map(k => ({ ...D[k], id: k, add: () => this.setState({ ids: [...ids, k] }) }));
+    return {
+      fromHref: (S.from && S.from.href) || 'v4-people.dc.html', fromLabel: (S.from && S.from.label) || 'People',
+      ctxLine: 'Comparing for ' + S.role.title + ' · ' + caps.join(', ') + '.',
+      people, n: ids.length, canAdd: canAdd && addable.length > 0, addable,
+      cols: 'repeat(' + (ids.length + (canAdd && addable.length ? 1 : 0)) + ',minmax(0,1fr))', showEv: S.ev,
+      evCls: S.ev ? 'pill on' : 'pill', evLabel: S.ev ? 'Hide evidence' : 'Show evidence', toggleEv: () => this.setState({ ev: !S.ev }), slCount: S.sl.length,
+    };
+  }
+}
+Component.DATA = {
+  ana: { n:'Ana Ruiz', role:'Senior Mobile Engineer', yrs:9, av:'Jan 5', avBy:'Confirmed', full:true, sk:{ 'React Native':['p','5 projects · Meridian Health lead'], 'TypeScript':['p','6 projects'], 'Swift':['p','3 projects · HealthKit module'], 'WidgetKit':['t','Course, 2026'], 'LLM apps':['t','Prototype and RAG course, 2026'], 'RAG':['t','Course, Sep 2026'], 'Accessibility':['p','WCAG 2.2 AA on Meridian Health'], 'GraphQL':['p','3 projects'], 'AWS':['t','Developer Associate certification'] }, work:['Meridian Health · 2025–26','Helix Insurance · 2023–24'], arch:'Offline-first sync; modular monorepo', pend:'Years of GraphQL experience' },
+  javier: { n:'Javier Morales', role:'iOS Engineer', yrs:6, av:'Jan 5', avBy:'Confirmed', full:false, sk:{ 'Swift':['p','4 projects · 6 years'], 'WidgetKit':['p','Widgets and Live Activities, Meridian Health'], 'React Native':['t','Internal training, 2026'], 'Accessibility':['p','VoiceOver audits on Meridian Health'], 'GraphQL':['t','Consumed APIs on Meridian Health'] }, work:['Meridian Health · 2025–26','Orbit Energy field app · 2023'], arch:'SwiftUI modularization', pend:'Nothing pending' },
+  ethan: { n:'Ethan Brooks', role:'Android Engineer', yrs:5, av:'Jan 19', avBy:'Confirmed', full:false, sk:{ 'React Native':['p','2 projects · Lumen Retail'], 'TypeScript':['p','3 projects'], 'Kotlin':['p','Lumen Retail app'], 'Compose':['p','Lumen Retail app'], 'GraphQL':['p','Client caching layer'], 'Accessibility':['t','TalkBack basics, self-reported'] }, work:['Lumen Retail · 2025–26','Northwind driver app · 2023'], arch:'GraphQL client caching', pend:'Lumen Retail end date could move' },
+  sofia: { n:'Sofía Martínez', role:'Senior Frontend Engineer', yrs:8, av:'Dec 15', avBy:'Confirmed', full:false, sk:{ 'React Native':['t','Course, 2025'], 'TypeScript':['p','7 projects'], 'Accessibility':['p','Accessible design systems'], 'GraphQL':['t','One project, client side'] }, work:['Helix claims portal · 2024–26','Lumen Retail storefront · 2022'], arch:'Design system architecture', pend:'No production mobile work documented' },
+  mateo: { n:'Mateo Silva', role:'Full-stack Engineer', yrs:4, av:'Feb 2', avBy:'Pending', full:false, sk:{ 'React Native':['t','Independent project'], 'TypeScript':['p','3 projects'], 'Node.js':['p','3 projects · Northwind APIs'], 'GraphQL':['p','Northwind APIs'] }, work:['Northwind Logistics · 2024–27'], arch:'Node.js service design', pend:'Availability not yet confirmed' },
+  lucia: { n:'Lucía Fernández', role:'AI Engineer', yrs:7, av:'Now', avBy:'Proposed for Vela Bank', full:false, sk:{ 'LLM apps':['p','3 client projects'], 'RAG':['p','Helix claims assistant'], 'AWS':['p','AWS Bedrock'], 'Node.js':['t','One project; mostly Python'] }, work:['Helix Insurance assistant · 2026','Orbit Energy copilot · 2025'], arch:'Retrieval and evaluation pipelines', pend:'Proposed for Vela Bank from Jan 12' },
+  valentina: { n:'Valentina Rojas', role:'ML Engineer', yrs:6, av:'Feb 2', avBy:'Confirmed', full:false, sk:{ 'LLM apps':['t','LLM course in progress'], 'MLOps':['p','Vertex AI pipelines'] }, work:['Orbit Energy forecasting · 2025–27'], arch:'Forecasting pipelines', pend:'Starts after the Jan 12 kick-off' },
+  daniel: { n:'Daniel Okafor', role:'Staff Backend Engineer', yrs:12, av:'Feb 2', avBy:'Pending', full:false, sk:{ 'GraphQL':['p','GraphQL APIs in Go, Atlas Payments'], 'Node.js':['t','Go, not Node.js'], 'AWS':['t','Training'] }, work:['Atlas Payments · 2024–27'], arch:'Event-driven payments ledger', pend:'Availability not yet confirmed' },
+  camila: { n:'Camila Duarte', role:'QA Automation Lead', yrs:10, av:'Dec 8', avBy:'Proposed for Vela Bank', full:false, sk:{ 'Appium':['p','Mobile automation on 3 apps'], 'Playwright':['p','Helix claims portal'] }, work:['Helix Insurance · 2024–26'], arch:'Test strategy for web and mobile', pend:'Proposed for Vela Bank from Jan 12' },
+  marcus: { n:'Marcus Chen', role:'Solutions Architect', yrs:14, av:'Feb 2', avBy:'Pending', full:false, sk:{ 'AWS':['p','6 migrations'], 'Terraform':['p','Northwind modernization'] }, work:['Northwind Logistics · 2024–27'], arch:'Cloud migrations and platform design', pend:'Availability not yet confirmed' },
+  tomas: { n:'Tomás Herrera', role:'DevOps Engineer', yrs:7, av:'Mar 2', avBy:'Pending', full:false, sk:{ 'Terraform':['p','5 projects'], 'AWS':['t','Azure mainly'] }, work:['Atlas Payments · 2024–27'], arch:'Regulated cloud landing zones', pend:'Availability not yet confirmed' },
+};
+</script>
+</body>
+</html>

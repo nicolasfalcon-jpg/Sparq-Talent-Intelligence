@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Guided demo journey</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#FAFAFA}a{text-decoration:none;color:inherit}.st{transition:transform .2s ease,box-shadow .2s ease}.st:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(0,0,0,.03),0 20px 44px rgba(0,0,0,.08)}.st:focus-visible{outline:2px solid #F15B40;outline-offset:3px}</style>
+</helmet>
+<div style="width:1440px;min-height:1000px;box-sizing:border-box;padding:80px 96px;background:#FAFAFA;font-family:Inter,system-ui,-apple-system,sans-serif;color:#1D1D1F;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;gap:48px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end">
+<div style="display:flex;flex-direction:column;gap:12px"><span style="font-size:15px;color:#6E6E73">Guided demonstration · about 8 minutes</span><h1 style="margin:0;font-size:60px;font-weight:300;letter-spacing:-0.045em;line-height:1">Ten steps, <span style="font-weight:500">one story.</span></h1></div>
+<a href="v4-show-cover.dc.html" style="display:inline-flex;align-items:center;height:46px;padding:0 22px;border-radius:999px;background:#fff;box-shadow:inset 0 0 0 1px #E8E8ED;font-size:15px;font-weight:500">← Cover</a>
+</div>
+<section aria-label="Why this matters" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px">
+<sc-for list="{{ why }}" as="w" hint-placeholder-count="5"><div style="border-radius:24px;padding:20px;background:{{ w.bg }};display:flex;flex-direction:column;gap:8px;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.04)"><span style="font-size:12px;font-weight:600;letter-spacing:.06em;color:#CF4529">{{ w.k }}</span><span style="font-size:16px;line-height:1.4;letter-spacing:-0.01em">{{ w.t }}</span></div></sc-for>
+</section>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;align-items:start">
+<sc-for list="{{ chapters }}" as="c" hint-placeholder-count="4">
+<section style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:baseline;gap:10px;padding:0 4px"><span style="width:10px;height:10px;border-radius:50%;background:#F15B40"></span><h2 style="margin:0;font-size:30px;font-weight:400;letter-spacing:-0.03em">{{ c.n }}</h2></div>
+<p style="margin:0 4px 6px;font-size:14px;color:#6E6E73;line-height:1.45">{{ c.d }}</p>
+<sc-for list="{{ c.steps }}" as="s" hint-placeholder-count="3">
+<a class="st" href="{{ s.href }}" style="display:flex;flex-direction:column;gap:10px;padding:22px;border-radius:26px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.03),0 12px 32px rgba(0,0,0,.045)">
+<span style="font-size:13px;font-weight:600;color:#CF4529">Step {{ s.i }}</span>
+<span style="font-size:19px;font-weight:400;letter-spacing:-0.015em;line-height:1.25">{{ s.t }}</span>
+<span style="font-size:13px;color:#6E6E73;line-height:1.45">{{ s.h }}</span>
+<span style="font-size:13px;font-weight:500;color:#1D1D1F">Open →</span>
+</a>
+</sc-for>
+</section>
+</sc-for>
+</div>
+<p style="margin:0;font-size:13px;color:#6E6E73;text-align:center">Every staffing step ends in human review. Ask Sparq answers are illustrative and use fictional data only.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    let i = 0;
+    const S = (t, h, href) => ({ i: ++i, t, h, href });
+    const W = '#fff', A = 'radial-gradient(100% 120% at 100% 0%, #FFE2D4 0%, rgba(255,226,212,0) 60%),#FFF8F5';
+    return { why: [
+      { k:'THE OPPORTUNITY', t:'Expertise is hard to see. Staffing still relies on memory, spreadsheets and outdated CVs.', bg: W },
+      { k:'FOR STAFFING & DELIVERY', t:'Find documented experience, compose teams and check availability in minutes.', bg: W },
+      { k:'FOR ENGINEERS', t:'Own your passport, say what you want to do next, and raise your hand for new work.', bg: W },
+      { k:'CONTEXTUAL AI', t:'Ask Sparq summarizes and suggests where you are working, and shows what each answer is based on.', bg: A },
+      { k:'PEOPLE DECIDE', t:'Documented experience, never scores. Every proposal goes to a person for review.', bg: W },
+    ], chapters: [
+      { n:'Discover', d:'Start from a need, not a form.', steps:[
+        S('Open the Intelligence Home', 'Greeting, teams in the making and people about to be free.', 'v4-show-home.dc.html'),
+        S('Describe a new project to Ask Sparq', 'Use “New opportunity → Build a team” and write the brief.', 'v4-show-describe.dc.html'),
+        S('Review the extracted requirements', 'Tap capabilities to switch must-have and nice to have.', 'v4-show-requirements.dc.html'),
+        S('Discover documented expertise', 'Search in plain words, then open a preview.', 'v4-show-people.dc.html') ] },
+      { n:'Connect', d:'See the person behind the skills.', steps:[
+        S('Open a Talent Passport', 'Ask Sparq summarizes; “Preview & export” shows the shareable profile.', 'v4-show-passport.dc.html') ] },
+      { n:'Build', d:'Compose a team on a canvas, then hand it to people.', steps:[
+        S('Build a multidisciplinary team', 'Click a seat, propose someone, replace them, add a role.', 'v4-show-team.dc.html'),
+        S('Review upcoming availability', 'Weeks or months; click a bar for context.', 'v4-show-planning.dc.html'),
+        S('Prepare the proposal for human review', 'Review the composition, then send it to the delivery lead.', 'v4-show-proposal.dc.html') ] },
+      { n:'Grow', d:'The same product, from the engineer’s side.', steps:[
+        S('Switch to the engineer’s space', 'Ana’s assignment and goals; open My passport to add experience.', 'v4-show-me.dc.html'),
+        S('Express interest in an opportunity', 'Tap “I’m interested”, then review what you shared.', 'v4-show-me.dc.html') ] },
+    ] };
+  }
+}
+</script>
+</body>
+</html>
