@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { clsx } from "clsx";
+import { guardPage } from "@/lib/access";
 import { getSessionUser } from "@/lib/session";
 import { getHomeView } from "@/features/home/queries";
 import { HomeAskCard } from "@/features/home/HomeAskCard";
@@ -10,7 +11,8 @@ import { InfoChip, liftCard, pillClass } from "@/design-system/primitives";
 export const metadata = { title: "Home" };
 
 export default async function HomePage() {
-  const [user, view] = await Promise.all([getSessionUser(), getHomeView()]);
+  const user = await getSessionUser();
+  const view = await guardPage(user, () => getHomeView(user));
   const firstName = user.name.split(" ")[0];
 
   return (

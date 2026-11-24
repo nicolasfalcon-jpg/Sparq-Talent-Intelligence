@@ -4,6 +4,7 @@
  * "Illustrative example" in the UI. Phase 3 replaces them with the LLM gateway
  * (see docs/handoff/05-gap-analysis.md → Ask Sparq).
  */
+import type { PolicyCategory } from "@/domain/talent-policy";
 import type { AssistantContext } from "@/domain/schemas";
 
 export type AssistantAction = { label: string; href: string; variant: "ink" | "soft" };
@@ -16,6 +17,8 @@ export type AssistantAnswer = {
   actions: AssistantAction[];
   /** computed = derived from repository data by deterministic code; illustrative = predefined example text. */
   provenance: "computed" | "illustrative" | "fallback";
+  /** Set when the request was declined by the responsible-use policy (see domain/talent-policy.ts). */
+  policy?: PolicyCategory;
 };
 
 export type ContextContent = {
@@ -44,7 +47,7 @@ export const ASSISTANT_CONTENT: Record<AssistantContext, ContextContent> = {
   ] },
   mypassport: { short: "My passport", hello: "Your passport, your words.", intro: "I can suggest what to add. You decide what goes in.", prompts: [
     { id: "mypassport-find", q: "What would make my passport easier to find?", a: "Three small additions would help staffing leads find your recent work.", bullets: ["Add your Kestrel Travel discovery sprint as experience", "Add an outcome to Meridian Health", "Confirm your years of GraphQL"], actions: [P("Back to my passport", "/me/passport")] },
-    { id: "mypassport-visible", q: "What do staffing leads see?", a: "The same passport you see here, plus your availability. No ratings, scores or performance data.", bullets: ["Use “Preview & export” to see the shared version"], actions: [G("Back to my space", "/me")] },
+    { id: "mypassport-visible", q: "What do staffing leads see?", a: "Staffing leads see your passport and your availability. They don’t see your private career goals or learning interests unless you choose to share them. No ratings, scores or performance data.", bullets: ["Use “Preview & export” to see the shared version", "In “Edit my passport” → Interests you choose what is shared"], actions: [G("Back to my space", "/me")] },
   ] },
   opps: { short: "Opportunities", hello: "Need a quick read on demand?", intro: "I can summarize opportunities and spot the hard-to-staff ones.", prompts: [
     { id: "opps-vela", q: "Summarize Vela Bank’s requirements", a: "Four roles starting Jan 12 for six months; two are already proposed.", bullets: ["Open: Senior Mobile Engineer (React Native, accessibility)", "Open: Backend Engineer (Node.js or Go, PostgreSQL)", "Proposed: Lucía Fernández (AI) and Camila Duarte (QA)"], actions: [P("Fill the mobile role", "/opportunities/new/role")] },

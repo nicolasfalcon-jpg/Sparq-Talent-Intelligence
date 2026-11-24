@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { clsx } from "clsx";
-import { getRepositories } from "@/data/repositories";
 import { formatShortDate } from "@/domain/dates";
 import { requirementSummary, seatCounts } from "@/domain/rules";
 import { OpportunityStatus } from "@/domain/schemas";
 import { Icon, RoleGlyph, TeamGlyph } from "@/design-system/icons";
 import { DisplayTitle, pillClass, Tag } from "@/design-system/primitives";
 import { OpportunityDrawer, type OpportunityDetail } from "@/features/opportunities/OpportunityDrawer";
+import { getOpportunitiesData } from "@/features/opportunities/queries";
+import { guardPage } from "@/lib/access";
+import { getSessionUser } from "@/lib/session";
 
 export const metadata = { title: "Opportunities" };
 
@@ -15,13 +17,12 @@ const card = "flex flex-col rounded-panel bg-white shadow-card transition-[trans
 
 export default async function OpportunitiesPage({ searchParams }: { searchParams: Promise<{ status?: string; open?: string }> }) {
   const sp = await searchParams;
-  const repos = getRepositories();
-  const [all, people] = await Promise.all([repos.opportunities.list(), repos.talent.listPeople()]);
+  const user = await getSessionUser();
+  const { all, nameOf } = await guardPage(user, () => getOpportunitiesData(user));
   const status = OpportunityStatus.safeParse(sp.status);
   const list = status.success ? all.filter((o) => o.status === status.data) : all;
   const openRoles = all.reduce((n, o) => n + seatCounts(o).open, 0);
   const first = [...all].sort((a, b) => a.kickoff.localeCompare(b.kickoff))[0];
-  const nameOf = (id: string) => people.find((p) => p.person.id === id)?.person.name ?? id;
   const href = (patch: { status?: string | null; open?: string | null }) => {
     const p = new URLSearchParams();
     const s = patch.status === undefined ? sp.status : patch.status;

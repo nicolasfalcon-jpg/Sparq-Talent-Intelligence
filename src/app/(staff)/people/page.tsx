@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { clsx } from "clsx";
+import { guardPage } from "@/lib/access";
 import { getSessionUser } from "@/lib/session";
 import { getPeopleView, type PeopleSearchParams } from "@/features/people/queries";
 import { AddToCompareButton, CompareTray, MoreExperience, PeopleSearchBar } from "@/features/people/client";
 import { ShortlistButton } from "@/features/shortlist/ShortlistButton";
 import { Portrait } from "@/design-system/Portrait";
-import { AvailabilityDot, DisplayTitle, EvidenceDot, pillClass, Tag } from "@/design-system/primitives";
+import { AvailabilityDot, DisplayTitle, EvidenceDot, pillClass, Tag, VerificationBadge } from "@/design-system/primitives";
+import { describeEvidence, sourceWord } from "@/domain/rules";
 import { DISCIPLINES } from "@/domain/schemas";
 
 export const metadata = { title: "People" };
@@ -27,7 +29,7 @@ function withParams(sp: PeopleSearchParams, patch: Partial<Record<keyof PeopleSe
 export default async function PeoplePage({ searchParams }: { searchParams: Promise<PeopleSearchParams> }) {
   const sp = await searchParams;
   const user = await getSessionUser();
-  const v = await getPeopleView(sp, user.id);
+  const v = await guardPage(user, () => getPeopleView(sp, user));
   const hasFilters = v.discipline !== "All" || v.soonOn;
   const sel = v.selected;
 
@@ -55,7 +57,7 @@ export default async function PeoplePage({ searchParams }: { searchParams: Promi
                 <Link href={withParams(sp, { caps: v.criteria.filter((x) => x.id !== c.id).map((x) => x.id).join(",") || "-", sel: null })} aria-label={`Remove ${c.name}`} className="inline-flex size-6 items-center justify-center rounded-full bg-surface-muted text-[11px] text-ink-2">✕</Link>
               </span>
             ))}
-            <span className="ml-auto text-[13px] text-mute">Ordered by documented matches, then availability</span>
+            <span className="ml-auto text-[13px] text-mute" title="Per requested capability: verified experience first (professional before independent), then experience that needs confirmation, then training or learning, then earlier availability. Nothing is scored.">Ordered by verified evidence for these requirements, then availability</span>
           </div>
         )}
         {v.unmatchedQuery && (
@@ -89,9 +91,10 @@ export default async function PeoplePage({ searchParams }: { searchParams: Promi
                   {matches.length > 0 && (
                     <div className="flex flex-wrap gap-3 text-[13px]">
                       {matches.map((m) => (
-                        <span key={m.capabilityId} className="inline-flex items-center gap-1.5">
+                        <span key={m.capabilityId} className="inline-flex items-center gap-1.5" title={describeEvidence(m.level, m.verification).text}>
                           <EvidenceDot level={m.level} size={8} />
-                          <span className={m.level === "professional" ? "text-ink" : m.level ? "text-ink-2" : "text-mute-2"}>{m.name}{m.level && m.level !== "professional" ? ` · ${m.level}` : ""}{!m.level ? " · not documented" : ""}</span>
+                          <span className={m.level === "professional" ? "text-ink" : m.level ? "text-ink-2" : "text-mute-2"}>{m.name}{m.level && m.level !== "professional" ? ` · ${sourceWord(m.level)}` : ""}{!m.level ? " · not documented" : ""}</span>
+                          {m.needsConfirmation && m.verification && <VerificationBadge verification={m.verification} />}
                         </span>
                       ))}
                     </div>
@@ -124,7 +127,7 @@ export default async function PeoplePage({ searchParams }: { searchParams: Promi
             <p className="text-base leading-[1.55]">{sel.person.summary}</p>
             <div className="flex flex-col gap-2.5">
               <span className="text-[13px] text-mute">Documented experience</span>
-              {sel.evidence.map((e) => <div key={e.id} className="flex flex-col"><span className="text-sm font-medium">{e.label}</span><span className="text-[13px] text-mute">{e.detail}</span></div>)}
+              {sel.evidence.map((e) => <div key={e.id} className="flex flex-col"><span className="flex items-center gap-2 text-sm font-medium">{e.label}<VerificationBadge verification={e.verification} /></span><span className="text-[13px] text-mute">{e.detail}</span></div>)}
               <MoreExperience projects={sel.projects} />
             </div>
             <div className="flex flex-col gap-2">

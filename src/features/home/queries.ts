@@ -1,16 +1,20 @@
 import "server-only";
 import { getRepositories } from "@/data/repositories";
+import { scopedTalent } from "@/data/repositories/scoped";
 import { dayAndMonth, formatWeekdayDate } from "@/domain/dates";
+import { assertAllowed } from "@/domain/policy";
 import { describeAvailability, freeWithin, seatCounts, seatsLabel } from "@/domain/rules";
+import type { AppUser } from "@/domain/schemas";
 
 /**
  * Home view-model. Every number is computed from the repository (no hard-coded snapshot),
- * so Home stays consistent with People, Opportunities and the passport.
+ * so Home stays consistent with People, Opportunities and the passport. AUTHORIZED: staffing workspace only.
  */
-export async function getHomeView() {
+export async function getHomeView(viewer: AppUser) {
+  assertAllowed(viewer, "workspace:staff");
   const repos = getRepositories();
   const today = repos.clock.today();
-  const [people, opportunities] = await Promise.all([repos.talent.listPeople(), repos.opportunities.list()]);
+  const [people, opportunities] = await Promise.all([scopedTalent(repos, viewer).listPeople(), repos.opportunities.list()]);
 
   const free60 = freeWithin(people, today, 60);
   const openSeats = opportunities.reduce((n, o) => n + seatCounts(o).open, 0);

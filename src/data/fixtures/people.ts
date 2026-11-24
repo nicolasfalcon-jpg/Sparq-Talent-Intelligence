@@ -23,7 +23,7 @@ export const people: Person[] = [
       { name: "Sparq AI Foundations", date: "2026" },
       { name: "Building RAG applications", date: "Sep 2026" },
     ],
-    workPreferences: "Open to travel up to 20% · enjoys teams of 4–8",
+    workPreferences: "Open to travel up to 20% · enjoys teams of 4–8", workPreferencesShared: true,
     passportUpdated: "Updated Nov 18, 2026 by Ana · project evidence confirmed by delivery leads",
     passportGroups: [
       { title: "Mobile engineering", description: "Cross-platform and native", groups: ["mobile"] },
@@ -56,9 +56,23 @@ export const people: Person[] = [
     summary: "Platform engineer for regulated cloud environments.", topSkills: ["Azure", "Terraform", "Kubernetes"], journey: [], certifications: [] },
 ];
 
-type Ev = [capabilityId: string, label: string, level: SkillEvidence["level"], detail: string];
+type Ev = [capabilityId: string, label: string, level: SkillEvidence["level"], detail: string, verification?: SkillEvidence["verification"]];
+/**
+ * Fictional verification states, assigned consistently:
+ *  - professional work was confirmed by a delivery lead → "verified" (stamped "Delivery lead review", Nov 2026);
+ *  - certifications ("Certified …") are verified against the certificate;
+ *  - everything else (independent projects, courses, growth areas) is "self_reported" unless stated otherwise.
+ * A row can override the default with a 5th tuple element (used once, for a "pending" verification request).
+ */
 const ev = (personId: string, rows: Ev[]): SkillEvidence[] =>
-  rows.map(([capabilityId, label, level, detail], i) => ({ id: `${personId}-ev-${i + 1}`, personId, capabilityId, label, level, detail, selfReported: false }));
+  rows.map(([capabilityId, label, level, detail, explicit], i) => {
+    const certified = level === "training" && /certified/i.test(detail);
+    const verification: SkillEvidence["verification"] = explicit ?? (level === "professional" || certified ? "verified" : "self_reported");
+    return {
+      id: `${personId}-ev-${i + 1}`, personId, capabilityId, label, level, detail, verification,
+      ...(verification === "verified" ? { verifiedBy: certified ? "Certificate on file" : "Delivery lead review", verifiedOn: "2026-11" } : {}),
+    };
+  });
 
 export const evidence: SkillEvidence[] = [
   ...ev("ana", [
@@ -126,7 +140,7 @@ export const evidence: SkillEvidence[] = [
     ["graphql", "GraphQL", "professional", "Northwind APIs"],
     ["react", "React", "professional", "Northwind dispatch console"],
     ["dotnet", ".NET", "professional", "2 projects"],
-    ["react-native", "React Native", "independent", "Independent project"],
+    ["react-native", "React Native", "independent", "Independent project", "pending"],
   ]),
   ...ev("valentina", [
     ["forecasting", "Forecasting", "professional", "Orbit Energy"],
@@ -163,35 +177,35 @@ export const projects: ProjectExperience[] = [
     { id: "meridian", period: "2025 – 2026", client: "Meridian Health", clientCategory: "Healthcare client", role: "Mobile lead", title: "A companion app patients trust offline",
       summary: "React Native app with native iOS modules for appointment prep, reminders and secure messaging.", tags: ["React Native", "Swift", "HealthKit"],
       highlights: ["Designed the offline-first sync layer with conflict resolution", "Built the HealthKit native module and permission flows", "Led accessibility to WCAG 2.2 AA with VoiceOver audits"],
-      source: "Confirmed by Rafael Ortiz, delivery lead · Nov 2026" },
+      verification: "verified", verifiedBy: "Rafael Ortiz, delivery lead", verifiedOn: "2026-11" },
     { id: "helix", period: "2023 – 2024", client: "Helix Insurance", clientCategory: "Insurance client", role: "Senior mobile engineer", title: "Claims captured in seconds, on device",
       summary: "Claim submission with on-device document capture and text recognition, on iOS and Android.", tags: ["React Native", "Vision", "TypeScript"],
       highlights: ["Implemented on-device text recognition for policy documents", "Created a modular monorepo with shared native modules", "Automated releases with Fastlane"],
-      source: "Confirmed by Camila Duarte, QA lead · 2024" },
+      verification: "verified", verifiedBy: "Camila Duarte, QA lead", verifiedOn: "2024" },
     { id: "oss", period: "2024 – now", client: "Open source", role: "Author", title: "rn-offline-queue",
       summary: "A small React Native library for queueing requests offline, extracted from client patterns.", tags: ["React Native", "TypeScript"],
-      highlights: ["Published and maintained publicly", "Used as reference in two internal projects"], source: "Independent project · self-reported" },
+      highlights: ["Published and maintained publicly", "Used as reference in two internal projects"], verification: "self_reported" },
   ]),
   ...pj("lucia", [
-    { period: "2026", client: "Helix Insurance", clientCategory: "Insurance client", role: "AI engineer", title: "Claims assistant with retrieval", summary: "Retrieval-augmented assistant that answers policy questions for claims handlers.", tags: ["LLM apps", "RAG", "AWS Bedrock"], highlights: ["Built retrieval and evaluation pipelines", "Added guardrails and human handoff"], source: "Confirmed by Rafael Ortiz, delivery lead" },
-    { period: "2025", client: "Orbit Energy", clientCategory: "Energy client", role: "AI engineer", title: "Field operations copilot", summary: "Copilot that drafts maintenance reports from technician notes.", tags: ["LLM apps", "Python"], highlights: ["Prompt and evaluation design"], source: "Confirmed by Inés Vidal, delivery lead" },
+    { period: "2026", client: "Helix Insurance", clientCategory: "Insurance client", role: "AI engineer", title: "Claims assistant with retrieval", summary: "Retrieval-augmented assistant that answers policy questions for claims handlers.", tags: ["LLM apps", "RAG", "AWS Bedrock"], highlights: ["Built retrieval and evaluation pipelines", "Added guardrails and human handoff"], verification: "verified", verifiedBy: "Rafael Ortiz, delivery lead" },
+    { period: "2025", client: "Orbit Energy", clientCategory: "Energy client", role: "AI engineer", title: "Field operations copilot", summary: "Copilot that drafts maintenance reports from technician notes.", tags: ["LLM apps", "Python"], highlights: ["Prompt and evaluation design"], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" },
   ]),
   ...pj("javier", [
-    { period: "2025 – 2026", client: "Meridian Health", clientCategory: "Healthcare client", role: "iOS engineer", title: "Native modules for a patient companion app", summary: "Widgets, Live Activities and native iOS modules for the Meridian Health companion app.", tags: ["Swift", "WidgetKit"], highlights: ["Shipped widgets and Live Activities", "Ran VoiceOver audits"], source: "Confirmed by Rafael Ortiz, delivery lead" },
-    { period: "2023", client: "Orbit Energy", clientCategory: "Energy client", role: "iOS engineer", title: "Field app for technicians", summary: "Native iOS field app for inspections.", tags: ["Swift"], highlights: [], source: "Confirmed by Inés Vidal, delivery lead" },
+    { period: "2025 – 2026", client: "Meridian Health", clientCategory: "Healthcare client", role: "iOS engineer", title: "Native modules for a patient companion app", summary: "Widgets, Live Activities and native iOS modules for the Meridian Health companion app.", tags: ["Swift", "WidgetKit"], highlights: ["Shipped widgets and Live Activities", "Ran VoiceOver audits"], verification: "verified", verifiedBy: "Rafael Ortiz, delivery lead" },
+    { period: "2023", client: "Orbit Energy", clientCategory: "Energy client", role: "iOS engineer", title: "Field app for technicians", summary: "Native iOS field app for inspections.", tags: ["Swift"], highlights: [], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" },
   ]),
   ...pj("ethan", [
-    { period: "2025 – 2026", client: "Lumen Retail", clientCategory: "Retail client", role: "Android engineer", title: "Commerce app", summary: "Android and React Native commerce app with a GraphQL client caching layer.", tags: ["Kotlin", "React Native", "GraphQL"], highlights: ["Built the GraphQL client caching layer"], source: "Confirmed by Inés Vidal, delivery lead" },
-    { period: "2023", client: "Northwind Logistics", clientCategory: "Logistics client", role: "Mobile engineer", title: "Driver app", summary: "React Native driver app.", tags: ["React Native"], highlights: [], source: "Confirmed by Inés Vidal, delivery lead" },
+    { period: "2025 – 2026", client: "Lumen Retail", clientCategory: "Retail client", role: "Android engineer", title: "Commerce app", summary: "Android and React Native commerce app with a GraphQL client caching layer.", tags: ["Kotlin", "React Native", "GraphQL"], highlights: ["Built the GraphQL client caching layer"], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" },
+    { period: "2023", client: "Northwind Logistics", clientCategory: "Logistics client", role: "Mobile engineer", title: "Driver app", summary: "React Native driver app.", tags: ["React Native"], highlights: [], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" },
   ]),
-  ...pj("sofia", [{ period: "2024 – 2026", client: "Helix Insurance", clientCategory: "Insurance client", role: "Senior frontend engineer", title: "Claims portal and design system", summary: "Accessible claims portal built on a shared design system.", tags: ["Next.js", "Design systems"], highlights: [], source: "Confirmed by Rafael Ortiz, delivery lead" }]),
-  ...pj("camila", [{ period: "2024 – 2026", client: "Helix Insurance", clientCategory: "Insurance client", role: "QA automation lead", title: "Test strategy for web and mobile", summary: "Appium and Playwright automation across the claims products.", tags: ["Appium", "Playwright"], highlights: [], source: "Confirmed by Rafael Ortiz, delivery lead" }]),
-  ...pj("daniel", [{ period: "2024 – 2027", client: "Atlas Payments", clientCategory: "Payments client", role: "Staff backend engineer", title: "Event-driven payments ledger", summary: "High-throughput ledger in Go with GraphQL APIs.", tags: ["Go", "PostgreSQL"], highlights: [], source: "Confirmed by Inés Vidal, delivery lead" }]),
-  ...pj("mateo", [{ period: "2024 – 2027", client: "Northwind Logistics", clientCategory: "Logistics client", role: "Full-stack engineer", title: "Logistics APIs and dispatch console", summary: "Node.js service design and React dispatch console.", tags: ["Node.js", "GraphQL", "React"], highlights: [], source: "Confirmed by Inés Vidal, delivery lead" }]),
-  ...pj("valentina", [{ period: "2025 – 2027", client: "Orbit Energy", clientCategory: "Energy client", role: "ML engineer", title: "Demand forecasting", summary: "Forecasting models and Vertex AI pipelines.", tags: ["PyTorch", "MLOps"], highlights: [], source: "Confirmed by Inés Vidal, delivery lead" }]),
-  ...pj("marcus", [{ period: "2024 – 2027", client: "Northwind Logistics", clientCategory: "Logistics client", role: "Solutions architect", title: "Platform modernization", summary: "Cloud migration and microservices platform design.", tags: ["AWS", "Terraform"], highlights: [], source: "Confirmed by Inés Vidal, delivery lead" }]),
-  ...pj("priya", [{ period: "2025 – 2027", client: "Lumen Retail", clientCategory: "Retail client", role: "Data engineer", title: "Analytics platform", summary: "Snowflake and dbt analytics platform.", tags: ["Snowflake", "dbt"], highlights: [], source: "Confirmed by Inés Vidal, delivery lead" }]),
-  ...pj("tomas", [{ period: "2024 – 2027", client: "Atlas Payments", clientCategory: "Payments client", role: "DevOps engineer", title: "Regulated landing zone", summary: "Azure landing zone and Terraform modules for a regulated environment.", tags: ["Azure", "Terraform"], highlights: [], source: "Confirmed by Inés Vidal, delivery lead" }]),
+  ...pj("sofia", [{ period: "2024 – 2026", client: "Helix Insurance", clientCategory: "Insurance client", role: "Senior frontend engineer", title: "Claims portal and design system", summary: "Accessible claims portal built on a shared design system.", tags: ["Next.js", "Design systems"], highlights: [], verification: "verified", verifiedBy: "Rafael Ortiz, delivery lead" }]),
+  ...pj("camila", [{ period: "2024 – 2026", client: "Helix Insurance", clientCategory: "Insurance client", role: "QA automation lead", title: "Test strategy for web and mobile", summary: "Appium and Playwright automation across the claims products.", tags: ["Appium", "Playwright"], highlights: [], verification: "verified", verifiedBy: "Rafael Ortiz, delivery lead" }]),
+  ...pj("daniel", [{ period: "2024 – 2027", client: "Atlas Payments", clientCategory: "Payments client", role: "Staff backend engineer", title: "Event-driven payments ledger", summary: "High-throughput ledger in Go with GraphQL APIs.", tags: ["Go", "PostgreSQL"], highlights: [], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" }]),
+  ...pj("mateo", [{ period: "2024 – 2027", client: "Northwind Logistics", clientCategory: "Logistics client", role: "Full-stack engineer", title: "Logistics APIs and dispatch console", summary: "Node.js service design and React dispatch console.", tags: ["Node.js", "GraphQL", "React"], highlights: [], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" }]),
+  ...pj("valentina", [{ period: "2025 – 2027", client: "Orbit Energy", clientCategory: "Energy client", role: "ML engineer", title: "Demand forecasting", summary: "Forecasting models and Vertex AI pipelines.", tags: ["PyTorch", "MLOps"], highlights: [], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" }]),
+  ...pj("marcus", [{ period: "2024 – 2027", client: "Northwind Logistics", clientCategory: "Logistics client", role: "Solutions architect", title: "Platform modernization", summary: "Cloud migration and microservices platform design.", tags: ["AWS", "Terraform"], highlights: [], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" }]),
+  ...pj("priya", [{ period: "2025 – 2027", client: "Lumen Retail", clientCategory: "Retail client", role: "Data engineer", title: "Analytics platform", summary: "Snowflake and dbt analytics platform.", tags: ["Snowflake", "dbt"], highlights: [], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" }]),
+  ...pj("tomas", [{ period: "2024 – 2027", client: "Atlas Payments", clientCategory: "Payments client", role: "DevOps engineer", title: "Regulated landing zone", summary: "Azure landing zone and Terraform modules for a regulated environment.", tags: ["Azure", "Terraform"], highlights: [], verification: "verified", verifiedBy: "Inés Vidal, delivery lead" }]),
 ];
 
 const av = (personId: string, availableFrom: string, status: Availability["status"], currentProject: string | null, currentProjectEnds: string | null, deliveryLead: string | null, proposedFor: Availability["proposedFor"] = null): Availability =>
@@ -213,5 +227,6 @@ export const availability: Availability[] = [
 ];
 
 export const careerInterests: CareerInterests[] = [
-  { personId: "ana", interests: { "Applied AI in mobile": true, "Technical leadership": true, Healthcare: true, Fintech: true, Mentoring: true, "Native iOS depth": false, "Client discovery": false } },
+  // Private by default: only what Ana chose to share is visible to staffing. The rest (career goals, learning interests) stays hers.
+  { personId: "ana", interests: { "Applied AI in mobile": true, "Technical leadership": true, Healthcare: true, Fintech: true, Mentoring: true, "Native iOS depth": false, "Client discovery": false }, shared: ["Applied AI in mobile"] },
 ];

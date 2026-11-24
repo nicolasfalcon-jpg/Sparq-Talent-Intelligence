@@ -17,6 +17,19 @@ const config = [
     },
   },
   { files: ["src/data/**", "tests/**"], rules: { "no-restricted-imports": "off" } },
+  {
+    // Authorization boundary: pages and route handlers read through feature queries / services (which authorize),
+    // never through repositories directly.
+    files: ["src/app/**"],
+    rules: {
+      "no-restricted-imports": ["error", {
+        patterns: [
+          { group: ["@/data/fixtures/*"], message: "Import data through a repository (src/data/repositories), never fixtures directly." },
+          { group: ["@/data/repositories", "@/data/repositories/*"], message: "Pages and routes must not read repositories directly: use a feature query or service, which authorizes the viewer." },
+        ],
+      }],
+    },
+  },
 ];
 
 export default config;

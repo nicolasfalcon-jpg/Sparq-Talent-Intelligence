@@ -9,7 +9,8 @@ import { EvidenceDot, pillClass, SkillChip } from "@/design-system/primitives";
 import { Drawer, Modal, Toast } from "@/design-system/overlays";
 import { ProvenanceTag } from "@/features/ask-sparq/client";
 import { useUi } from "@/lib/ui-store";
-import { addExperience, addSkill, removeSkill, toggleInterest, updateSummary } from "./actions";
+import { projectVerificationText } from "@/domain/rules";
+import { addExperience, addSkill, removeSkill, setInterestVisibility, setWorkPreferencesVisibility, toggleInterest, updateSummary } from "./actions";
 import type { NeedSummary, PassportView } from "./queries";
 
 /* ---------------- Ask Sparq "summarize for a need" ---------------- */
@@ -67,7 +68,7 @@ export function WorkList({ projects }: { projects: ProjectExperience[] }) {
             {isOpen && (
               <div className="ml-[164px] flex flex-col gap-2.5 rounded-lg bg-surface-muted px-6 py-[22px] max-lg:ml-0">
                 {w.highlights.map((e) => <div key={e} className="flex gap-3 text-[15px]"><span className="text-ok" aria-hidden="true">✓</span><span>{e}</span></div>)}
-                <span className="mt-1 text-[13px] text-mute">{w.source}</span>
+                <span className="mt-1 text-[13px] text-mute">{projectVerificationText(w)}</span>
               </div>
             )}
           </article>
@@ -230,12 +231,16 @@ export function OwnerActions({ view }: { view: PassportView }) {
           <>
             <div className="flex flex-wrap gap-2">
               {view.evidence.map((k: SkillEvidence) => (
-                <SkillChip key={k.id} label={k.label} level={k.level} isNew={k.selfReported}>
-                  <button type="button" aria-label={`Remove ${k.label}`} disabled={pending} onClick={() => run(() => removeSkill({ evidenceId: k.id }))} className="-mr-2.5 size-6 cursor-pointer rounded-full border-0 bg-surface-muted text-[11px]">✕</button>
+                <SkillChip key={k.id} label={k.label} level={k.level} verification={k.verification}
+                  title={k.verification === "verified" ? "Verified by a reviewer: it can’t be removed here. Ask a delivery lead to correct it." : undefined}>
+                  {/* Verified evidence and its history are locked for the owner; unverified claims can be withdrawn. */}
+                  {k.verification !== "verified" && (
+                    <button type="button" aria-label={`Remove ${k.label}`} disabled={pending} onClick={() => run(() => removeSkill({ evidenceId: k.id }))} className="-mr-2.5 size-6 cursor-pointer rounded-full border-0 bg-surface-muted text-[11px]">✕</button>
+                  )}
                 </SkillChip>
               ))}
             </div>
-            <form className="flex flex-col gap-2.5 rounded-card bg-white p-[18px] shadow-[inset_0_0_0_1px_var(--color-line)]" onSubmit={(e) => { e.preventDefault(); run(() => addSkill(skill), () => setSkill({ ...skill, label: "" }), "✓ Skill added · now searchable"); }}>
+            <form className="flex flex-col gap-2.5 rounded-card bg-white p-[18px] shadow-[inset_0_0_0_1px_var(--color-line)]" onSubmit={(e) => { e.preventDefault(); run(() => addSkill(skill), () => setSkill({ ...skill, label: "" }), "✓ Skill added · self-reported until a delivery lead confirms it"); }}>
               <label htmlFor="ns" className="font-medium">Add a skill</label>
               <input id="ns" className={input} value={skill.label} onChange={(e) => setSkill({ ...skill, label: e.target.value })} placeholder="e.g. Core ML" />
               <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="How it is documented">
@@ -256,11 +261,31 @@ export function OwnerActions({ view }: { view: PassportView }) {
         )}
         {tab === "int" && (
           <>
-            <p className="text-sm text-mute">Used only to surface opportunities for you.</p>
+            <p className="text-sm text-mute">Private by default, and used only to surface opportunities for you. Staffing leads see nothing unless you share it.</p>
             <div className="flex flex-wrap gap-2">
               {Object.entries(view.interestsAll).map(([n, on]) => <button key={n} type="button" aria-pressed={on} disabled={pending} onClick={() => run(() => toggleInterest({ interest: n }))} className={pillClass(on ? "ink" : "default", "sm")}>{n}</button>)}
               {Object.keys(view.interestsAll).length === 0 && <span className="text-sm text-mute">No interests yet.</span>}
             </div>
+            {(view.interestsOn.length > 0 || view.workPreferences) && (
+              <div className="flex flex-col gap-2.5" role="group" aria-label="Who can see each item">
+                <span className="text-[13px] font-medium">Who can see this</span>
+                {view.interestsOn.map((n) => {
+                  const shared = view.interestsShared.includes(n);
+                  return (
+                    <div key={n} className="flex items-center justify-between gap-3 rounded-lg bg-surface-muted px-4 py-2.5 text-sm">
+                      <span>{n}</span>
+                      <button type="button" aria-pressed={shared} aria-label={`${n}: ${shared ? "shared with staffing" : "private"}`} disabled={pending} onClick={() => run(() => setInterestVisibility({ interest: n, shared: !shared }))} className={pillClass(shared ? "ink" : "default", "sm")}>{shared ? "Shared with staffing" : "Private"}</button>
+                    </div>
+                  );
+                })}
+                {view.workPreferences && (
+                  <div className="flex items-center justify-between gap-3 rounded-lg bg-surface-muted px-4 py-2.5 text-sm">
+                    <span className="min-w-0">{view.workPreferences}</span>
+                    <button type="button" aria-pressed={view.workPreferencesShared} aria-label={`Work preferences: ${view.workPreferencesShared ? "shared with staffing" : "private"}`} disabled={pending} onClick={() => run(() => setWorkPreferencesVisibility({ shared: !view.workPreferencesShared }))} className={pillClass(view.workPreferencesShared ? "ink" : "default", "sm", "flex-none")}>{view.workPreferencesShared ? "Shared with staffing" : "Private"}</button>
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
       </Drawer>

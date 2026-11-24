@@ -14,10 +14,12 @@ npm run dev            # http://localhost:3000
 
 | Script | What it does |
 |---|---|
-| `npm run check` | Typecheck, lint and unit tests (Vitest) |
+| `npm run check` | Typecheck, lint, unit tests and database tests |
 | `npm run build` / `start` | Production build and server |
 | `npm run test:e2e` | Builds an isolated copy of the app, then runs Playwright at 1440 and 1024 (each test gets its own server; never touches `npm run dev` or `.next`). Run `npx playwright install chromium` once per Playwright version. See `docs/handoff/07-testing.md` |
-| `npm run db:check` | Applies `supabase/migrations` to an in-process Postgres (PGlite) |
+| `npm run db:test` | Database tests (migrations, RLS, grants, privileged functions, seed) in an in-process Postgres (PGlite) with emulated Supabase roles |
+| `npm run db:check` | Applies migrations and the seed to a disposable PGlite and prints a structural summary |
+| `npm run db:seed:generate` | Regenerates `supabase/seed.sql` from the fictional fixtures |
 | `npm run snapshot` | Builds and captures a static HTML snapshot of the main screens |
 
 ## What works today (phase 1)
@@ -26,13 +28,15 @@ npm run dev            # http://localhost:3000
 - **Talent Passport:** every person. Evidence grouped by level, need-specific summaries, work with evidence, journey, certifications, interests, preview & export (PDF through the browser's print dialog).
 - **Personal Passport:** the owner edits their summary, skills, experience and interests through validated server actions.
 - **Opportunities:** status tabs and a URL-addressable details drawer with a computed requirement summary.
-- **Ask Sparq:** a global assistant panel. Answers are labelled **Computed from documented data** (deterministic code), **Illustrative example** (predefined V4.2 copy) or **Guidance**. No AI model is called yet.
+- **Authorization and privacy (phase 2B.1):** one policy decides who may read or change what, enforced in the data layer, queries, actions and the assistant (not only in layouts). Career interests are private unless the owner shares them. Skills and projects distinguish their **source** (professional, independent, training, learning) from their **verification** (self-reported, pending, verified); owners cannot verify and cannot remove verified evidence. Search shows the evidence basis and marks what needs confirmation. See `docs/handoff/08-authorization-and-evidence.md`.
+- **Ask Sparq:** a global assistant panel. Answers are labelled **Computed from documented data** (deterministic code), **Illustrative example** (predefined V4.2 copy) or **Guidance**. It requires a session, is scoped to the signed-in user, and declines to rank, score or evaluate people (offering requirement-based alternatives). No AI model is called yet.
 
 ## What is not real yet
-- **Auth** is a demo persona cookie.
+- **Auth** is a demo persona cookie: unsigned and client-settable, **not authentication** (it only lets you explore the two fictional workspaces).
 - **Persistence** is server memory, so it resets on restart.
 - **Fill a Role, Build a Team, Compare, Planning, Insights and My Space** are honest placeholders.
-- **Test coverage is the phase-1 journeys.** Typecheck, lint, 55 unit tests and 34 E2E tests pass (verified 2026-11-24, see `docs/handoff/07-testing.md`). Known limitations are listed there.
+- **The database schema is designed but not used by the app.** `supabase/migrations/0002`–`0009` and `supabase/seed.sql` (phase 2B.2) define RLS, evidence integrity, privacy, staffing and audit, verified in PGlite with emulated Supabase roles. They have **not** been applied to any Supabase project, no app adapter exists, and the schema is **not production-ready** (see `docs/handoff/08-authorization-and-evidence.md` §9–§10). `0001` is the superseded original draft, kept unchanged; do not apply it on its own.
+- **Verified 2026-11-24** (see `docs/handoff/07-testing.md`): typecheck, lint, 265 unit tests, 262 database tests and 62 E2E tests pass.
 
 Details: `docs/handoff/01-capability-assessment.md` and `05-gap-analysis.md`.
 
@@ -43,7 +47,8 @@ src/features/         home · people · passport · opportunities · shortlist �
 src/design-system/    tokens, primitives, overlays, icons, portraits
 src/domain/           Zod schemas + pure rules
 src/data/             fixtures (fictional) + repositories
-supabase/migrations/  proposed schema + RLS (phase 2)
+supabase/migrations/  0001 original draft (history) · 0002-0009 additive schema, RLS, functions; seed.sql generated
+tests/db/             database tests (PGlite)
 tests/                unit (Vitest) · e2e (Playwright)
 docs/handoff/         engineering handoff + screenshots
 design-reference/v4.2 approved prototype source (reference only)

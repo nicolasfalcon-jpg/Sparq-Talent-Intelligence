@@ -10,18 +10,31 @@ import type {
 /** A person with everything needed to render cards and previews. */
 export type PersonAggregate = { person: Person; evidence: SkillEvidence[]; availability: Availability };
 
+/**
+ * UNSCOPED data access: these methods know nothing about who is asking. Server code must reach people data through
+ * `scopedTalent(repos, actor)` (./scoped.ts), which applies authorization and privacy. Importing repositories directly
+ * from a route or page is blocked by ESLint (see eslint.config.mjs).
+ */
 export interface TalentRepository {
   listCapabilities(): Promise<Capability[]>;
   listPeople(): Promise<PersonAggregate[]>;
   getPerson(id: string): Promise<PersonAggregate | null>;
   listProjects(personId: string): Promise<ProjectExperience[]>;
+  /** The owner's full interests (private included). Staffing views must use `getSharedInterests` instead. */
   getCareerInterests(personId: string): Promise<CareerInterests | null>;
+  /** Only the interests the owner voluntarily shared with staffing (selected AND shared). */
+  getSharedInterests(personId: string): Promise<string[]>;
   /* Mutations performed by the profile owner (authorisation is enforced in the server action layer). */
   updateSummary(personId: string, summary: string): Promise<void>;
+  /** Always creates a self-reported row; verification can never be set through this method. Throws DomainRuleError on duplicates. */
   addSkill(personId: string, input: { label: string; level: EvidenceLevel }): Promise<SkillEvidence>;
-  removeSkill(personId: string, evidenceId: string): Promise<void>;
+  /** Removes an unverified row of that person. Throws DomainRuleError("evidence_locked") for verified evidence. Returns false if the row is not theirs. */
+  removeSkill(personId: string, evidenceId: string): Promise<boolean>;
   addProject(personId: string, input: { title: string; role: string; what: string; period: string }): Promise<ProjectExperience>;
   toggleInterest(personId: string, interest: string): Promise<CareerInterests>;
+  /** Share or hide one SELECTED interest. Throws DomainRuleError("interest_not_selected") otherwise. */
+  setInterestShared(personId: string, interest: string, shared: boolean): Promise<CareerInterests>;
+  setWorkPreferencesShared(personId: string, shared: boolean): Promise<void>;
 }
 
 export interface OpportunityRepository {

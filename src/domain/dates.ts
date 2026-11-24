@@ -52,3 +52,11 @@ export function endOfMonth(iso: string): string {
   const d = parseIsoDate(iso);
   return toIsoDate(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)));
 }
+
+/** "2026-11" → "Nov 2026", "2024" → "2024", "2026-11-12" → "Nov 12, 2026". For verification stamps. */
+export function formatPartialDate(partial: string): string {
+  const [y, m, d] = partial.split("-");
+  if (!m) return y ?? partial;
+  const month = MONTHS[Number(m) - 1] ?? m;
+  return d ? `${month} ${Number(d)}, ${y}` : `${month} ${y}`;
+}

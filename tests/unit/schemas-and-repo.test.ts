@@ -38,7 +38,7 @@ describe("memory repository", () => {
     const r = createMemoryRepositories();
     const row = await r.talent.addSkill("ana", { label: "AWS", level: "independent" });
     expect(row.capabilityId).toBe("aws");
-    expect(row.selfReported).toBe(true);
+    expect(row.verification).toBe("self_reported"); // was `selfReported: true`: verification is now an explicit status
     expect((await r.talent.getPerson("ana"))!.evidence.some((e) => e.id === row.id)).toBe(true);
   });
   it("does not leak mutations into the fixtures", async () => {
@@ -51,17 +51,19 @@ describe("memory repository", () => {
 describe("Ask Sparq rule-based gateway", () => {
   beforeEach(() => resetMemoryStore());
   const g = () => new RuleBasedAssistant(createMemoryRepositories());
+  // The gateway is user-aware: it receives the resolved actor and a request whose context/prompt were already authorized.
+  const STAFF = { id: "u-laura", role: "staffing_lead", personId: null } as const;
   it("computes January mobile availability from data", async () => {
-    const a = await g().answer({ context: "home", promptId: "home-mobile-january" });
+    const a = await g().answer({ context: "home", promptId: "home-mobile-january", question: "Who’s free for mobile work in January?" }, STAFF);
     expect(a.provenance).toBe("computed");
     expect(a.refs.map((r) => r.personId)).toEqual(["ana", "javier", "ethan"]);
   });
   it("labels predefined answers as illustrative", async () => {
-    const a = await g().answer({ context: "opps", promptId: "opps-vela" });
+    const a = await g().answer({ context: "opps", promptId: "opps-vela", question: "Summarize Vela Bank’s requirements" }, STAFF);
     expect(a.provenance).toBe("illustrative");
   });
   it("falls back honestly for unknown questions", async () => {
-    const a = await g().answer({ context: "home", question: "what is the weather" });
+    const a = await g().answer({ context: "home", question: "what is the weather" }, STAFF);
     expect(a.provenance).toBe("fallback");
   });
 });

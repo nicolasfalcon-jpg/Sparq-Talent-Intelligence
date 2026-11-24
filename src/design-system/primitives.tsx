@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { clsx } from "clsx";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
-import type { EvidenceLevel } from "@/domain/schemas";
+import type { EvidenceLevel, Verification } from "@/domain/schemas";
 
 /* ---------------- Pill button ---------------- */
 
@@ -98,17 +98,27 @@ export function EvidenceLegend() {
       {(Object.keys(EVIDENCE_LABEL) as EvidenceLevel[]).map((l) => (
         <span key={l} className="inline-flex items-center gap-[7px]"><EvidenceDot level={l} />{EVIDENCE_LABEL[l]}</span>
       ))}
+      {/* The dot is the SOURCE of the evidence. Verification is shown separately, as text, on anything not yet confirmed. */}
+      <span className="inline-flex items-center gap-[7px] text-warn-text">Self-reported or pending: needs confirmation</span>
     </div>
   );
 }
 
+/** Verification as text, only when it needs attention. Verified evidence carries no badge. */
+export function VerificationBadge({ verification, className }: { verification: Verification; className?: string }) {
+  if (verification === "verified") return null;
+  return <span className={clsx("text-[11px] font-semibold text-warn-text", className)}>{verification === "pending" ? "pending" : "self-reported"}</span>;
+}
+
 /** White skill chip with evidence dot (`.sk`). */
-export function SkillChip({ label, level, title, isNew, children }: { label: string; level: EvidenceLevel | null; title?: string; isNew?: boolean; children?: ReactNode }) {
+export function SkillChip({ label, level, title, isNew, verification, children }: { label: string; level: EvidenceLevel | null; title?: string; isNew?: boolean; verification?: Verification; children?: ReactNode }) {
+  const needsConfirmation = verification !== undefined && verification !== "verified";
   return (
     <span title={title} className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-pill bg-surface pl-3 pr-4 text-sm text-ink">
       <EvidenceDot level={level} />
       {label}
-      {isNew && <span className="text-[11px] font-semibold text-coral-strong">new</span>}
+      {verification && <VerificationBadge verification={verification} />}
+      {isNew && !needsConfirmation && <span className="text-[11px] font-semibold text-coral-strong">new</span>}
       {children}
     </span>
   );

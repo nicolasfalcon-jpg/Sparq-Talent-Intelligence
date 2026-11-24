@@ -1,34 +1,49 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { getRepositories } from "@/data/repositories";
+import { ForbiddenError, UnauthenticatedError } from "@/domain/errors";
 import type { AppUser, UserRole } from "@/domain/schemas";
+import { PERSONA_COOKIE, parseDemoPersona } from "./demo-identity";
 
 /**
- * DEMO SESSION — not authentication.
- * The active persona (Staffing Lead "Laura Gómez" or Engineer "Ana Ruiz") is a plain cookie so the
- * two workspaces of the approved design can be explored. Phase 2 replaces this with Supabase Auth
- * (`@supabase/ssr`) and role claims; every caller already goes through `getSessionUser()`.
+ * SESSION — the one place server code asks "who is calling?".
+ *
+ * Today the answer comes from the DEMO persona cookie (see demo-identity.ts): it is not authentication and offers no
+ * security. It is strict on purpose: no cookie, or an invalid value, means NO session. There is no implicit default
+ * role, so routes and actions that require a session really require one. (`src/middleware.ts` hands a demo cookie to
+ * browser page navigations so the demo opens as the staffing lead; API and action requests never get one for free.)
+ *
+ * What is AUTHORIZED is decided elsewhere, by the policy in src/domain/policy.ts, from the user returned here.
+ * Real authentication (phase 2B.2+) replaces only `getSession()`.
  */
-export const PERSONA_COOKIE = "sparq_demo_persona";
+export { ForbiddenError, UnauthenticatedError };
+export { PERSONA_COOKIE };
 
-export async function getSessionUser(): Promise<AppUser> {
+/** The signed-in user, or null when there is no valid session. Never throws, never defaults. */
+export async function getSession(): Promise<AppUser | null> {
   const jar = await cookies();
-  const raw = jar.get(PERSONA_COOKIE)?.value;
-  const role: UserRole = raw === "engineer" ? "engineer" : "staffing_lead";
-  return getRepositories().directory.getUserByRole(role);
+  const role = parseDemoPersona(jar.get(PERSONA_COOKIE)?.value);
+  return role ? getRepositories().directory.getUserByRole(role) : null;
 }
 
-/** Thrown by `requireRole`. Server actions turn it into a typed `{ ok: false }` result instead of letting it escape. */
-export class ForbiddenError extends Error {
-  constructor(message = "Not allowed for the current persona") {
-    super(message);
-    this.name = "ForbiddenError";
-  }
+/** For API routes and server actions: a session is required, otherwise a typed UnauthenticatedError. */
+export async function requireSession(): Promise<AppUser> {
+  const user = await getSession();
+  if (!user) throw new UnauthenticatedError();
+  return user;
 }
 
-/** Server-side authorisation helper for server actions. */
+/** For pages and layouts: no session sends the visitor to the demo sign-in instead of guessing a role. */
+export async function getSessionUser(): Promise<AppUser> {
+  const user = await getSession();
+  if (!user) redirect("/persona?as=staffing_lead");
+  return user;
+}
+
+/** Server-side role check used by server actions. Throws a typed ForbiddenError / UnauthenticatedError. */
 export async function requireRole(role: UserRole): Promise<AppUser> {
-  const user = await getSessionUser();
+  const user = await requireSession();
   if (user.role !== role) throw new ForbiddenError();
   return user;
 }

@@ -3,7 +3,16 @@ import { Portrait } from "@/design-system/Portrait";
 import { EvidenceLegend, pillClass, SkillChip } from "@/design-system/primitives";
 import { ShortlistButton } from "@/features/shortlist/ShortlistButton";
 import { ExportButton, OwnerActions, PassportSummaryCard, StaffCompareLink, WorkList } from "./client";
+import { VERIFICATION_LABEL } from "@/domain/rules";
+import { formatPartialDate } from "@/domain/dates";
+import type { SkillEvidence } from "@/domain/schemas";
 import type { PassportView } from "./queries";
+
+/** Tooltip for a skill chip: the verification state, and for verified evidence who confirmed it and when. */
+function evidenceTitle(e: SkillEvidence): string {
+  if (e.verification !== "verified") return `${VERIFICATION_LABEL[e.verification]}: needs confirmation`;
+  return `verified${e.verifiedBy ? ` by ${e.verifiedBy}` : ""}${e.verifiedOn ? ` · ${formatPartialDate(e.verifiedOn)}` : ""}`;
+}
 
 /**
  * Talent Passport — V4.2 `v4-passport`. One component, two modes:
@@ -67,7 +76,7 @@ export function PassportPage({ view, mode }: { view: PassportView; mode: "staff"
           {view.groups.map((g) => (
             <div key={g.title} className="flex flex-col gap-[18px] rounded-surface bg-white p-7 shadow-card">
               <div><div className="text-xl font-normal tracking-[-0.015em]">{g.title}</div><div className="text-[13px] text-mute">{g.description}</div></div>
-              <div className="flex flex-wrap gap-2">{g.skills.map((k) => <SkillChip key={k.id} label={k.label} level={k.level} title={k.detail} isNew={k.selfReported} />)}</div>
+              <div className="flex flex-wrap gap-2">{g.skills.map((k) => <SkillChip key={k.id} label={k.label} level={k.level} verification={k.verification} title={`${k.detail} · ${evidenceTitle(k)}`} />)}</div>
             </div>
           ))}
         </div>
@@ -105,8 +114,13 @@ export function PassportPage({ view, mode }: { view: PassportView; mode: "staff"
           <h2 className="text-2xl font-normal tracking-[-0.02em]">Looking forward to</h2>
           {view.interestsOn.length === 0
             ? <p className="text-mute">{staff ? `${first} hasn’t shared career interests yet.` : "Add interests in “Edit my passport” to see matching opportunities."}</p>
-            : <div className="flex flex-wrap gap-2">{view.interestsOn.map((i) => <span key={i} className="inline-flex h-9 items-center rounded-pill bg-surface-muted px-4 text-sm">{i}</span>)}</div>}
-          {person.workPreferences && <p className="text-sm text-mute">{person.workPreferences}</p>}
+            : <div className="flex flex-wrap gap-2">{view.interestsOn.map((i) => (
+                <span key={i} className="inline-flex h-9 items-center gap-2 rounded-pill bg-surface-muted px-4 text-sm">
+                  {i}{!staff && !view.interestsShared.includes(i) && <span className="text-[11px] text-mute">private</span>}
+                </span>
+              ))}</div>}
+          {!staff && <p className="text-[13px] text-mute">Your career goals and learning interests are private. Staffing leads only see what you choose to share.</p>}
+          {view.workPreferences && <p className="text-sm text-mute">{view.workPreferences}{!staff && !view.workPreferencesShared && <span className="ml-2 text-[11px]">private</span>}</p>}
         </section>
       </div>
       <p className="text-center text-[13px] text-mute">{person.passportUpdated ?? "Project evidence confirmed by delivery leads"} · fictional demo data</p>

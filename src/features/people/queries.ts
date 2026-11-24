@@ -1,8 +1,10 @@
 import "server-only";
 import { getRepositories } from "@/data/repositories";
+import { scopedTalent } from "@/data/repositories/scoped";
 import { endOfMonth, parseIsoDate } from "@/domain/dates";
 import { applyPeopleFilters, describeAvailability, interpretQuery, matchPeople, type CapabilityMatch } from "@/domain/rules";
-import { DISCIPLINES, type Discipline } from "@/domain/schemas";
+import { assertAllowed } from "@/domain/policy";
+import { DISCIPLINES, type AppUser, type Discipline } from "@/domain/schemas";
 
 export type PeopleSearchParams = { q?: string; caps?: string; disc?: string; soon?: string; sel?: string };
 
@@ -16,10 +18,16 @@ export function soonCutoff(today: string): { iso: string; label: string } {
   return { iso, label: `Available by ${MONTHS_LONG[target.getUTCMonth()]}` };
 }
 
-export async function getPeopleView(sp: PeopleSearchParams, ownerUserId: string) {
+/**
+ * People directory view-model. AUTHORIZED: throws ForbiddenError unless the viewer may browse the directory (staffing
+ * workspace). Reads go through the scoped data layer, so private preferences are already redacted.
+ */
+export async function getPeopleView(sp: PeopleSearchParams, viewer: AppUser) {
+  assertAllowed(viewer, "people:list");
   const repos = getRepositories();
+  const talent = scopedTalent(repos, viewer);
   const today = repos.clock.today();
-  const [rows, catalogue, shortlist] = await Promise.all([repos.talent.listPeople(), repos.talent.listCapabilities(), repos.shortlists.get(ownerUserId)]);
+  const [rows, catalogue, shortlist] = await Promise.all([talent.listPeople(), talent.listCapabilities(), repos.shortlists.get(viewer.id)]);
 
   const q = (sp.q ?? "").trim();
   const searched = q.length > 0;
@@ -48,7 +56,7 @@ export async function getPeopleView(sp: PeopleSearchParams, ownerUserId: string)
     person: selRow.person,
     availability: describeAvailability(selRow.availability, today),
     evidence: selRow.evidence.filter((e) => e.level === "professional").slice(0, 3).concat(selRow.evidence.filter((e) => e.level !== "professional")).slice(0, 3),
-    projects: (await repos.talent.listProjects(selRow.person.id)).map((p) => `${p.client} · ${p.period.replace(/\s/g, "")}`),
+    projects: (await talent.listProjects(selRow.person.id)).map((p) => `${p.client} · ${p.period.replace(/\s/g, "")}`),
     onShortlist: shortlist.includes(selRow.person.id),
   } : null;
 

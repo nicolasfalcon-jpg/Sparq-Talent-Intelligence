@@ -25,7 +25,7 @@ const snapshotAna = async () => {
 
 beforeEach(() => {
   resetMemoryStore();
-  state.persona = undefined; // default persona = staffing lead
+  state.persona = "staffing_lead"; // there is no implicit default role any more: the session is explicit
   state.revalidate.mockClear();
 });
 afterEach(() => vi.restoreAllMocks());
@@ -57,7 +57,7 @@ describe("passport actions", () => {
   ];
 
   it.each(attempts)("%s as a staffing lead returns a typed error, does not throw, and changes nothing", async (_name, attempt) => {
-    state.persona = undefined;
+    state.persona = "staffing_lead";
     const before = await snapshotAna();
     const result = await attempt();
     expect(result).toEqual({ ok: false, error: expect.stringMatching(/only the owner/i) });
@@ -104,7 +104,7 @@ describe("shortlist action", () => {
   it("returns a typed 'staffing leads only' error to an engineer and changes nothing", async () => {
     state.persona = "engineer";
     expect(await toggleShortlist({ personId: "ana" })).toEqual({ ok: false, error: "Only staffing leads can change a shortlist." });
-    state.persona = undefined;
+    state.persona = "staffing_lead";
     expect(await getRepositories().shortlists.get("u-laura")).toEqual([]);
   });
   it("rejects unknown people and malformed input", async () => {

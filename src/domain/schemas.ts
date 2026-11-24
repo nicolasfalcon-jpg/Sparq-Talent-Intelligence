@@ -20,15 +20,35 @@ export type Discipline = z.infer<typeof Discipline>;
 export const DISCIPLINES = Discipline.options;
 
 /**
- * How a capability is documented. Ordered from strongest to weakest evidence.
- * - professional: delivered on a client or internal project
- * - independent: personal / open-source / prototype work
- * - training: course, certification or internal training
- * - emerging: declared growth area without evidence yet
+ * EVIDENCE SOURCE: where a piece of evidence comes from. (The field is still called `level` for historical
+ * reasons; it is NOT a verification state and says nothing about how trustworthy the claim is.)
+ * Ordered from most to least practical:
+ * - professional: professional experience (delivered on a client or internal project)
+ * - independent: independent projects (personal / open-source / prototype work)
+ * - training: education and training (course, certification, internal training)
+ * - emerging: learning and experimentation (declared growth area)
+ * Independent work stays discoverable and valuable; the source never replaces verification.
  */
 export const EvidenceLevel = z.enum(["professional", "independent", "training", "emerging"]);
 export type EvidenceLevel = z.infer<typeof EvidenceLevel>;
+/** Semantic alias: use this name in new code. */
+export type EvidenceSource = EvidenceLevel;
 export const EVIDENCE_ORDER: readonly EvidenceLevel[] = ["professional", "independent", "training", "emerging"];
+
+/**
+ * VERIFICATION STATUS: has someone other than the owner confirmed the claim? Independent of the source.
+ * - self_reported: declared by the person, nobody has confirmed it (the default for anything the owner adds)
+ * - pending: the person asked for confirmation; a reviewer (future delivery-lead role) has not decided yet
+ * - verified: confirmed by a reviewer. Only a reviewer can set it; owners can never set or clear it.
+ * "Not documented" is NOT a verification state: it is the absence of any evidence row, and never means the person
+ * lacks the capability.
+ */
+export const Verification = z.enum(["self_reported", "pending", "verified"]);
+export type Verification = z.infer<typeof Verification>;
+export const VERIFICATION_ORDER: readonly Verification[] = ["verified", "pending", "self_reported"];
+
+/** Partial date used for verification stamps: "2026", "2026-11" or "2026-11-12". */
+export const PartialDate = z.string().regex(/^\d{4}(-\d{2}){0,2}$/, "Expected YYYY, YYYY-MM or YYYY-MM-DD");
 
 export const SkillGroup = z.enum(["mobile", "web", "ai", "data", "cloud", "quality", "architecture"]);
 export type SkillGroup = z.infer<typeof SkillGroup>;
@@ -50,10 +70,13 @@ export const SkillEvidence = z.object({
   /** Display label as the person wrote it, e.g. "Swift / SwiftUI". */
   label: z.string().min(1),
   level: EvidenceLevel,
-  /** Short, human-readable source, e.g. "5 projects · lead on Meridian Health". */
+  /** Short, human-readable description of the evidence, e.g. "5 projects · lead on Meridian Health". */
   detail: z.string(),
-  /** Added by the person and not yet confirmed by a delivery lead. */
-  selfReported: z.boolean().default(false),
+  /** Defaults to the safe value: anything without an explicit reviewer confirmation is self-reported. */
+  verification: Verification.default("self_reported"),
+  /** Who confirmed it and when. Present only when verification is "verified"; part of the verification history. */
+  verifiedBy: z.string().optional(),
+  verifiedOn: PartialDate.optional(),
 });
 export type SkillEvidence = z.infer<typeof SkillEvidence>;
 
@@ -67,8 +90,10 @@ export const ProjectExperience = z.object({
   summary: z.string(),
   tags: z.array(z.string()),
   highlights: z.array(z.string()),
-  /** Who confirmed it, or "self-reported". */
-  source: z.string(),
+  /** Same verification model as skill evidence (replaces the old free-text `source`). */
+  verification: Verification.default("self_reported"),
+  verifiedBy: z.string().optional(),
+  verifiedOn: PartialDate.optional(),
   /** Client category used when client names are hidden on export. */
   clientCategory: z.string().optional(),
 });
@@ -112,7 +137,9 @@ export const Person = z.object({
   topSkills: z.array(z.string()).max(3),
   journey: z.array(CareerTimelineEntry).default([]),
   certifications: z.array(Certification).default([]),
+  /** Professional preferences (e.g. travel, team size). Disclosed to staffing only when `workPreferencesShared` is true (absent = private). */
   workPreferences: z.string().optional(),
+  workPreferencesShared: z.boolean().optional(),
   /**
    * Optional: how the person chooses to group expertise on their passport.
    * When absent, groups are derived from the capability catalogue.
@@ -122,10 +149,17 @@ export const Person = z.object({
 });
 export type Person = z.infer<typeof Person>;
 
+/**
+ * PRIVATE BY DEFAULT. Career goals and learning interests belong to the person. `shared` lists the labels the person
+ * has voluntarily disclosed to staffing; everything else must never reach a staffing view, export, search result or
+ * assistant answer. Interest in a specific opportunity is a different concept (expressions of interest, phase 2).
+ */
 export const CareerInterests = z.object({
   personId: z.string(),
   /** Interest label → selected. Used only to surface opportunities to the person. */
   interests: z.record(z.string(), z.boolean()),
+  /** Selected labels the owner chose to share with staffing. Empty by default. */
+  shared: z.array(z.string()).default([]),
 });
 export type CareerInterests = z.infer<typeof CareerInterests>;
 
@@ -190,10 +224,16 @@ export const ShortlistToggleInput = z.object({ personId: z.string().min(1) });
 
 export const UpdateSummaryInput = z.object({ summary: z.string().trim().min(20, "Write at least 20 characters").max(600) });
 
+/** Strict on purpose: a payload that tries to set `verification` (or anything else) is rejected, not ignored. */
 export const AddSkillInput = z.object({
   label: z.string().trim().min(2).max(60),
   level: EvidenceLevel,
-});
+}).strict();
+
+export const RemoveSkillInput = z.object({ evidenceId: z.string().min(1) }).strict();
+
+export const SetInterestVisibilityInput = z.object({ interest: z.string().min(1), shared: z.boolean() }).strict();
+export const SetWorkPreferencesVisibilityInput = z.object({ shared: z.boolean() }).strict();
 
 export const AddExperienceInput = z.object({
   title: z.string().trim().min(3).max(120),
@@ -206,11 +246,15 @@ export const ToggleInterestInput = z.object({ interest: z.string().min(1) });
 export const AssistantContext = z.enum(["home", "people", "passport", "mypassport", "opps", "role", "team", "planning", "insights", "me", "compare"]);
 export type AssistantContext = z.infer<typeof AssistantContext>;
 
+/**
+ * Untrusted client input. Nothing in it is authoritative: the server resolves the user from the session and
+ * authorizes the context, the suggestion and the subject (see features/ask-sparq/access.ts).
+ */
 export const AssistantRequest = z.object({
   context: AssistantContext,
   /** Either a suggestion id or free text. */
-  promptId: z.string().optional(),
+  promptId: z.string().max(64).optional(),
   question: z.string().trim().max(500).optional(),
-  subjectPersonId: z.string().optional(),
-}).refine((r) => r.promptId || r.question, { message: "promptId or question is required" });
+  subjectPersonId: z.string().max(64).optional(),
+}).strict().refine((r) => r.promptId || r.question, { message: "promptId or question is required" });
 export type AssistantRequest = z.infer<typeof AssistantRequest>;

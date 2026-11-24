@@ -11,7 +11,11 @@ export type AskInput = { context: AssistantContext; promptId?: string; question?
 
 async function postAsk(input: AskInput): Promise<AssistantAnswer> {
   const res = await fetch("/api/assistant", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
-  if (!res.ok) throw new Error("Ask Sparq is unavailable right now.");
+  if (!res.ok) {
+    // Typed error bodies are `{ error: { code, message } }`; the message never carries protected information.
+    const body = (await res.json().catch(() => null)) as { error?: { message?: string } } | null;
+    throw new Error(body?.error?.message ?? "Ask Sparq is unavailable right now.");
+  }
   return (await res.json()) as AssistantAnswer;
 }
 
