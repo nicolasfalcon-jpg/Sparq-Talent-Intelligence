@@ -1,11 +1,11 @@
 /**
  * Who can SEE what, executed under real roles: the row-level half of the access matrix (docs/handoff/08-authorization-and-evidence.md §7).
- * Seed users: laura = staffing lead; ana, lucia = engineers; rafael leads Vela and Terra, ines leads Cobalt and Nimbus (both delivery
- * leads); camila = engineer AND delivery lead (no project assigned); admin = administrator.
+ * Seed users (one role each): laura = staffing lead; ana, lucia, camila = engineers; rafael leads Vela and Terra, ines leads Cobalt and Nimbus (both
+ * delivery leads); admin = administrator. Tests that need an engineer who is also a delivery lead grant the role explicitly.
  */
 import { describe, expect, it } from "vitest";
 import { U, seedId } from "@/data/seed/ids";
-import { denied, seen, tryAs, withDb } from "./setup";
+import { denied, grantRole, seen, tryAs, withDb } from "./setup";
 
 const t = withDb();
 const P = (slug: string) => seedId("person", slug);
@@ -50,8 +50,8 @@ describe("engineer (Ana): her own profile and nothing about anyone else", () => 
     expect(await n(U.ana, "career_interests", "selected and not shared_with_staffing")).toBe(4);
     expect(await n(U.ana, "person_preferences")).toBe(1);
   });
-  it("sees no opportunities, roles, reviewers, proposals, seats, reviews or shortlists", async () => {
-    for (const table of ["opportunities", "role_requirements", "opportunity_delivery_leads", "team_proposals", "proposal_seats", "proposal_reviews", "shortlists"]) expect(await n(U.ana, table), table).toBe(0);
+  it("sees no reviewers, proposals, seats, reviews or shortlists (published opportunities are the only staffing data an engineer reads: see the 0010 tests)", async () => {
+    for (const table of ["opportunity_delivery_leads", "team_proposals", "proposal_seats", "proposal_reviews", "shortlists"]) expect(await n(U.ana, table), table).toBe(0);
   });
   it("sees her own assignment and her own expression of interest, nobody else's", async () => {
     expect(await slugs(U.ana, "assignments")).toEqual(["ana"]);
@@ -157,9 +157,10 @@ describe("delivery lead: scoped to the opportunities and people they actually wo
       expect(await n(who, "shortlists"), who).toBe(0);
     }
   });
-  it("the role alone opens nothing: a delivery lead with no assignments (Camila) sees only herself as an engineer", async () => {
+  it("the role alone opens nothing: a delivery lead with no assignments (Camila, granted the role here) sees only herself as an engineer", async () => {
+    await grantRole(t.db, U.camila, "delivery_lead");
     expect(await slugs(U.camila)).toEqual(["camila"]);
-    expect(await n(U.camila, "opportunities")).toBe(0);
+    expect(await n(U.camila, "opportunities", "status <> 'Open'")).toBe(0); // published (Open) opportunities are visible to her as an engineer, nothing else
     expect(await n(U.camila, "team_proposals")).toBe(0);
   });
   it("their audit view is the verification history of the people they can review, plus their own actions", async () => {
@@ -169,11 +170,11 @@ describe("delivery lead: scoped to the opportunities and people they actually wo
 
 describe("administrator: manages identity and reference data, and reads the audit log; sees no business data", () => {
   it("reads roles, reviewers, opportunities, the basic profile record and the whole audit log", async () => {
-    expect(await n(U.admin, "user_roles")).toBe(8);
+    expect(await n(U.admin, "user_roles")).toBe(7);
     expect(await n(U.admin, "opportunity_delivery_leads")).toBe(4);
     expect(await n(U.admin, "opportunities")).toBe(4);
     expect(await n(U.admin, "people")).toBe(12);
-    expect(await n(U.admin, "audit_log")).toBe(90);
+    expect(await n(U.admin, "audit_log")).toBe(89);
   });
   it("cannot read evidence, experience, interests, preferences, proposals, assignments or shortlists", async () => {
     for (const table of ["skill_evidence", "project_experience", "certifications", "career_journey_entries", "career_interests", "person_preferences", "team_proposals", "proposal_seats", "assignments", "shortlists", "expressions_of_interest"]) {

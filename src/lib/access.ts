@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import { ForbiddenError } from "@/domain/errors";
 import type { AppUser } from "@/domain/schemas";
 
-/** Where a user belongs: staffing leads in the staff workspace, engineers in their own space. */
-export const homeFor = (user: Pick<AppUser, "role">): string => (user.role === "engineer" ? "/me" : "/");
+/** Where a user belongs: staffing leads on Home, engineers in their own space, delivery leads on their opportunities, admins on the admin page. */
+export const homeFor = (user: Pick<AppUser, "role">): string =>
+  user.role === "engineer" ? "/me" : user.role === "delivery_lead" ? "/opportunities" : user.role === "admin" ? "/admin" : "/";
 
 /**
  * Page-level guard. Queries throw a typed `ForbiddenError` when the viewer may not read something; a page turns that

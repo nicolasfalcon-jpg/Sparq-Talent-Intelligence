@@ -5,25 +5,28 @@ import { getRepositories } from "@/data/repositories";
 import { ForbiddenError, UnauthenticatedError } from "@/domain/errors";
 import type { AppUser, UserRole } from "@/domain/schemas";
 import { PERSONA_COOKIE, parseDemoPersona } from "./demo-identity";
+import { dataSource } from "./data-source";
 
 /**
  * SESSION — the one place server code asks "who is calling?".
  *
- * Today the answer comes from the DEMO persona cookie (see demo-identity.ts): it is not authentication and offers no
- * security. It is strict on purpose: no cookie, or an invalid value, means NO session. There is no implicit default
- * role, so routes and actions that require a session really require one. (`src/middleware.ts` hands a demo cookie to
- * browser page navigations so the demo opens as the staffing lead; API and action requests never get one for free.)
+ *  - Supabase mode: the user of the request's Supabase Auth session (verified with the Auth server, never trusted from a
+ *    cookie alone), with the role read from the database (`user_roles`), never from a token claim.
+ *  - Memory mode (local fictional data and isolated tests only): the DEMO persona cookie (see demo-identity.ts). It is not
+ *    authentication and offers no security; a deployed environment refuses it (data-source.ts).
  *
- * What is AUTHORIZED is decided elsewhere, by the policy in src/domain/policy.ts, from the user returned here.
- * Real authentication (phase 2B.2+) replaces only `getSession()`.
+ * Strict in both modes: no valid session means NO session. There is no implicit default role, so routes and actions that
+ * require a session really require one. What is AUTHORIZED is decided elsewhere, by the policy in src/domain/policy.ts
+ * (and, in Supabase mode, by row-level security), from the user returned here.
  */
 export { ForbiddenError, UnauthenticatedError };
 export { PERSONA_COOKIE };
 
-/** The signed-in user, or null when there is no valid session. Never throws, never defaults. */
+/** The signed-in user, or null when there is no valid session. Never throws for a missing session, never defaults. */
 export async function getSession(): Promise<AppUser | null> {
+  if (dataSource() === "supabase") return getRepositories().directory.getCurrentUser();
   const jar = await cookies();
-  const role = parseDemoPersona(jar.get(PERSONA_COOKIE)?.value);
+  const role: UserRole | null = parseDemoPersona(jar.get(PERSONA_COOKIE)?.value);
   return role ? getRepositories().directory.getUserByRole(role) : null;
 }
 
@@ -34,10 +37,10 @@ export async function requireSession(): Promise<AppUser> {
   return user;
 }
 
-/** For pages and layouts: no session sends the visitor to the demo sign-in instead of guessing a role. */
+/** For pages and layouts: no session sends the visitor to sign in instead of guessing a role. */
 export async function getSessionUser(): Promise<AppUser> {
   const user = await getSession();
-  if (!user) redirect("/persona?as=staffing_lead");
+  if (!user) redirect(dataSource() === "supabase" ? "/login" : "/persona?as=staffing_lead");
   return user;
 }
 

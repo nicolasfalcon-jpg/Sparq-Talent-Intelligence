@@ -18,7 +18,7 @@ test.describe("authorization over HTTP (bypassing the UI)", () => {
     expect(anonymous.status()).toBe(401);
     expect(await anonymous.json()).toEqual({ error: { code: "unauthenticated", message: expect.any(String) } });
 
-    expect((await ask({ cookie: "sparq_demo_persona=admin" }, { context: "home", promptId: "home-mobile-january" })).status()).toBe(401); // forged value
+    expect((await ask({ cookie: "sparq_demo_persona=superuser" }, { context: "home", promptId: "home-mobile-january" })).status()).toBe(401); // forged value
 
     for (const data of [
       { context: "people", promptId: "people-rn-ios" },

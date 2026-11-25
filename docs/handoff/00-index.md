@@ -11,6 +11,7 @@ The approved design is **V4.2**. The design phase is closed, and this folder is 
 | 05 | [Prototype-to-production gap analysis](05-gap-analysis.md) | Everything static, simulated, local-only or predefined in V4.2, and its production behavior |
 | 06 | [Status & roadmap](06-roadmap.md) | Phase 1 delivered, phases 2–3 plan, definition of done |
 | 07 | [Testing, environments & verification status](07-testing.md) | What was verified and how, the E2E isolation strategy, Playwright requirements, remaining limitations |
+| 09–12 | [Supabase setup](09-supabase-setup.md) · [adapter](10-supabase-adapter.md) · [Sparq Intelligence](11-sparq-intelligence.md) · [MVP status](12-mvp-status.md) | Accelerated MVP: remote project setup, Supabase adapter, Claude gateway, status and deployment checklist |
 | 08 | [Authorization, evidence integrity, privacy & responsible discovery](08-authorization-and-evidence.md) | The authorization model, demo identity, assistant contract, evidence model and rules, interest privacy, assistant policy, the database access matrix and RLS verification results, remaining risks and phase 2C prerequisites |
 
 **Visual references**

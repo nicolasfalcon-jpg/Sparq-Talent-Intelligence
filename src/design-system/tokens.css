@@ -45,6 +45,8 @@
   --color-warn: #C98A1E;          /* pending availability (outlined dot) */
   --color-warn-text: #8A5A12;
   --color-warn-ring: #F1D4A0;
+  --color-amber: #E3A33B;         /* build-a-team: pending or late availability dot / dashed bar */
+  --color-amber-bg: #FFF4E0;      /* build-a-team: pending or late availability bar */
 
   /* Radii */
   --radius-pill: 999px;

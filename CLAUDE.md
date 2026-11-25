@@ -67,6 +67,12 @@ src/app/           routes. (staff) and (personal) route groups are role-guarded 
 - E2E specs import `test`/`expect` from `tests/e2e/fixtures.ts` (never `@playwright/test`): every test gets its own server, so mutating tests need no cleanup. No `.first()` to hide duplicates; make bounds checks two-sided; wait for visibility before touching streamed content. Details: `docs/handoff/07-testing.md`.
 - Don't run `npm run build` while `npm run dev` is running (both write `.next`); `npm run test:e2e` builds elsewhere and is safe.
 
+## Modes, roles and secrets (accelerated MVP)
+- `SPARQ_DATA_SOURCE=memory` (local/tests only) or `supabase`. A deployed environment refuses memory mode and the persona cookie (`src/lib/data-source.ts`). Four roles: engineer, staffing_lead, delivery_lead, admin (policy in `src/domain/policy.ts`; a role is only the first gate, the database adds the relationship).
+- In Supabase mode every repository call uses the caller's JWT (`createRequestClient`); never use the service role in `src/`. Admin credentials (`SUPABASE_DB_URL`, `SUPABASE_SERVICE_ROLE_KEY`) exist only for `scripts/db` and `tests/remote`, and the scripts refuse to run unless `SPARQ_CONFIRM_FICTIONAL_PROJECT` matches the project ref.
+- Proposed ≠ assigned: review never creates an assignment; `confirmSeat` does, separately. The assistant (`src/features/ask-sparq/llm`) has read-only tools that run as the actor, no write tools, no model fallback, and labels `ai` only for real model output.
+- Status, journey and deployment checklist: `docs/handoff/12-mvp-status.md`.
+
 ## Current state & next tasks
 Built: shell, Home, People, Talent Passport (staff and personal), Opportunities, Ask Sparq (rule-based, user-aware, policy-bound). Phase 2B.1 (authorization, evidence model, privacy, assistant policy) is done in memory. Phase 2B.2 (database schema, RLS, functions, seed, 262 DB tests) is done in PGlite only; the app still uses the memory adapter.
 Placeholders, with honest "Planned" pages: Fill a Role, Build a Team, Compare, Planning, Insights, My Space.

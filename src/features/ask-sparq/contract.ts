@@ -10,7 +10,7 @@
  *    (see docs/handoff/08-authorization-and-evidence.md).
  */
 import type { Actor } from "@/domain/policy";
-import type { AssistantContext } from "@/domain/schemas";
+import type { AssistantContext, AssistantSeatContext } from "@/domain/schemas";
 import type { AssistantAnswer } from "./content";
 
 export type AssistantActor = Actor;
@@ -23,6 +23,10 @@ export type ResolvedAssistantRequest = {
   question: string;
   /** The person this answer is about, already authorized for `actor`. Never client-controlled. */
   subjectPersonId?: string;
+  /** The opportunity the page is about, already authorized (readable by `actor`). Staff pages only. */
+  opportunityId?: string;
+  /** The seats on screen, already authorized (every person is readable by `actor`). role / team / compare / planning only. */
+  seats?: AssistantSeatContext[];
 };
 
 export interface AssistantGateway {

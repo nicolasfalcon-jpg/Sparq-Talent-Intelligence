@@ -40,7 +40,7 @@ describe("no session: every action returns a typed 'signed out' error and change
     expect(state.revalidate).not.toHaveBeenCalled();
   });
   it("a forged persona value is not a session either", async () => {
-    state.persona = "admin";
+    state.persona = "superuser";
     expect(await updateSummary({ summary: "A summary that is long enough to pass." })).toMatchObject({ ok: false });
   });
 });

@@ -274,3 +274,31 @@ export function assessTalentRequest(text: string, personNames: string[] = []): P
   if (asksForDecision(tokens, names)) return decline("autonomous_decision");
   return { allowed: true };
 }
+
+/* ---------------- Post-check of MODEL output (phase C) ---------------- */
+
+/**
+ * The questions are screened BEFORE a model is called (`assessTalentRequest`); this screens what a model WROTE, because a model can
+ * volunteer a score or a ranking nobody asked for. Pure and deterministic. It is intentionally strict: a rejected answer is replaced
+ * by the deterministic fallback, which is always safe, so a false positive costs a plainer answer and a false negative would
+ * break a product rule. The system prompt tells the model not to use these words at all (including to deny them).
+ *
+ * Rejects: percentages and "x/10"-style ratings, the words score / rank / rating, superlatives about people (best candidate,
+ * top performer, weakest, strongest), "#1", and performance-evaluation vocabulary.
+ */
+const OUTPUT_VIOLATIONS: { code: string; pattern: RegExp }[] = [
+  { code: "percentage", pattern: /\d+(?:[.,]\d+)?\s?%/ },
+  { code: "rating", pattern: /\b\d+(?:[.,]\d+)?\s?\/\s?(?:5|10|100)\b/ },
+  { code: "score", pattern: /\b(?:scores?|scored|scoring|ratings?|rated)\b/i },
+  { code: "rank", pattern: /\b(?:rank|ranks|ranked|ranking|rankings|leaderboard)\b|(?:^|\s)#\s?1\b/i },
+  { code: "superlative", pattern: /\b(?:best (?:candidate|fit|person|engineer|choice|match)|top (?:candidate|performer|talent|pick)|weakest|strongest (?:candidate|engineer|person)|worst|underperform\w*|low performer)\b/i },
+  { code: "performance", pattern: /\bperformance (?:review|rating|evaluation|appraisal)\b/i },
+];
+
+export type OutputAssessment = { ok: true } | { ok: false; codes: string[] };
+
+export function assessModelOutput(texts: string[]): OutputAssessment {
+  const joined = texts.join("\n");
+  const codes = OUTPUT_VIOLATIONS.filter((v) => v.pattern.test(joined)).map((v) => v.code);
+  return codes.length === 0 ? { ok: true } : { ok: false, codes };
+}

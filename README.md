@@ -31,6 +31,9 @@ npm run dev            # http://localhost:3000
 - **Authorization and privacy (phase 2B.1):** one policy decides who may read or change what, enforced in the data layer, queries, actions and the assistant (not only in layouts). Career interests are private unless the owner shares them. Skills and projects distinguish their **source** (professional, independent, training, learning) from their **verification** (self-reported, pending, verified); owners cannot verify and cannot remove verified evidence. Search shows the evidence basis and marks what needs confirmation. See `docs/handoff/08-authorization-and-evidence.md`.
 - **Ask Sparq:** a global assistant panel. Answers are labelled **Computed from documented data** (deterministic code), **Illustrative example** (predefined V4.2 copy) or **Guidance**. It requires a session, is scoped to the signed-in user, and declines to rank, score or evaluate people (offering requirement-based alternatives). No AI model is called yet.
 
+## Accelerated MVP (2026-11-25)
+Fill a Role, Build a Team (visual canvas), delivery-lead review with explicit assignment confirmation, Compare, Planning, My Space, basic Insights, four roles, a Supabase adapter with real login, and a Claude-powered Ask Sparq with deterministic fallback. Verified in memory mode; **not yet run against Supabase or the Anthropic API**. See `docs/handoff/12-mvp-status.md`.
+
 ## What is not real yet
 - **Auth** is a demo persona cookie: unsigned and client-settable, **not authentication** (it only lets you explore the two fictional workspaces).
 - **Persistence** is server memory, so it resets on restart.

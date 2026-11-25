@@ -5,7 +5,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { U, seedId } from "@/data/seed/ids";
-import { denied, seen, tryAs, withDb } from "./setup";
+import { denied, grantRole, seen, tryAs, withDb } from "./setup";
 
 const t = withDb();
 const P = (slug: string) => seedId("person", slug);
@@ -221,6 +221,7 @@ describe("approval is NOT assignment: confirming is a separate, explicit act", (
     expect((await confirm(U.ines, d.ios, "2026-12-01", "2027-03-31", "2027-04-01", 0.5)).ok).toBe(true); // 0.5 + 0.5 fits
   });
   it("a delivery lead cannot confirm their own assignment (separation of duties)", async () => {
+    await grantRole(t.db, U.camila, "delivery_lead"); // an engineer who is also a delivery lead: the database supports it, the seed does not create it
     await tryAs(t.db, U.admin, "select public.assign_delivery_lead($1, $2, true)", [COBALT, U.camila]);
     const d = (await q(U.laura, "insert into team_proposals (opportunity_id, title) values ($1, 'Camila on Cobalt') returning id::text id", [COBALT]))[0]!.id;
     const seat = (await q(U.laura, "insert into proposal_seats (proposal_id, title, person_id, seat_state) values ($1, 'QA', $2, 'proposed') returning id::text id", [d, P("camila")]))[0]!.id;

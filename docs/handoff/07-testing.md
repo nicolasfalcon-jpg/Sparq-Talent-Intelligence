@@ -102,6 +102,9 @@ Verified at 1440, 1280, 1024 and 800px: no horizontal page overflow on Home, Peo
 
 **Print gotcha worth remembering:** `translate: none` is rewritten away by the CSS minifier; reset `--tw-translate-x/y` instead. A first version of the print fix and its test were both wrong in the same way (a one-sided `y < 2` assertion passed while the document was shifted off the page).
 
+## 8b. Accelerated MVP additions (2026-11-25)
+Unit 610, DB 318 (`npm run db:test`), e2e 112 over both viewports (including `demo-journey.spec.ts`). `npm run test:remote` (61 tests against a real Supabase project with real tokens) skips without credentials and **has not been run**. A full `npm run check` under heavy machine load once hung and failed one DB runner test; it passed alone and on a quiet machine, so treat it as load flakiness, not a rule change. Persona redirects land on `localhost` while the test server is on 127.0.0.1: specs navigate again after switching persona.
+
 ## 9. Database tests (phase 2B.2)
 
 `vitest.db.config.ts` runs `tests/db/**` in Node (separate from the jsdom unit suite). `tests/db/bootstrap.sql` emulates Supabase in PGlite: roles `anon`, `authenticated`, `service_role` (bypassrls), an `auth` schema with `auth.uid()` reading `request.jwt.claim.sub`, and Supabase's default privileges (so a forgotten REVOKE is caught). `tests/db/harness.ts` gives each test its own transaction, rolled back afterwards, with `as(user, fn)` to switch to a real role and JWT subject, and `attempt()` (savepoint) to assert that a statement fails.

@@ -15,7 +15,7 @@ describe("migration history", () => {
     expect(files.map((f) => f.slice(0, 4))).toEqual(files.map((_, i) => String(i + 1).padStart(4, "0")));
     expect(files).toEqual([
       "0001_initial_schema.sql", "0002_archive_initial_schema.sql", "0003_identity_and_talent.sql", "0004_staffing.sql", "0005_audit.sql",
-      "0006_security_functions.sql", "0007_availability.sql", "0008_rls_and_grants.sql", "0009_copy_legacy_data.sql",
+      "0006_security_functions.sql", "0007_availability.sql", "0008_rls_and_grants.sql", "0009_copy_legacy_data.sql", "0010_published_opportunities.sql", "0011_assistant_usage.sql",
     ]);
   });
   it("preserves 0001 exactly as it was committed in phase 1 (history moves forward, it is never rewritten)", () => {

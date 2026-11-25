@@ -26,8 +26,9 @@ export type SeedRole = "engineer" | "staffing_lead" | "delivery_lead" | "admin";
 /**
  * Fictional authenticated identities. The two domain personas (Laura, Ana) come from the app fixtures; the others exist so the
  * database can be exercised end to end: another engineer (cross-profile isolation), two delivery leads (project-level scope),
- * one person who is both an engineer and a delivery lead (separation of duties), and an administrator.
- * They have no password: nobody can sign in with them, they are rows for tests and local development.
+ * and an administrator. ONE ROLE PER ACCOUNT (the database still supports several roles per user: tests that need an engineer who
+ * is also a delivery lead grant the role explicitly). The auth.users rows are created by scripts/db/provision.mjs (Supabase Auth) or,
+ * for disposable PGlite databases, by tests/db/harness.ts; supabase/seed.sql assumes they exist.
  */
 export const SEED_USERS = [
   { key: "laura", name: "Laura Gómez", title: "Staffing Lead", roles: ["staffing_lead"], person: null },
@@ -35,7 +36,7 @@ export const SEED_USERS = [
   { key: "lucia", name: "Lucía Fernández", title: "AI Engineer", roles: ["engineer"], person: "lucia" },
   { key: "rafael", name: "Rafael Ortiz", title: "Delivery Lead", roles: ["delivery_lead"], person: null },
   { key: "ines", name: "Inés Vidal", title: "Delivery Lead", roles: ["delivery_lead"], person: null },
-  { key: "camila", name: "Camila Duarte", title: "QA Automation Lead", roles: ["engineer", "delivery_lead"], person: "camila" },
+  { key: "camila", name: "Camila Duarte", title: "QA Automation Lead", roles: ["engineer"], person: "camila" },
   { key: "admin", name: "Admin Demo", title: "Administrator", roles: ["admin"], person: null },
 ] as const satisfies readonly { key: string; name: string; title: string; roles: readonly SeedRole[]; person: string | null }[];
 

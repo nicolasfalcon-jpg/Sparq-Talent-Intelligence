@@ -10,6 +10,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { createHash } from "node:crypto";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { demoAuthUsersSql } from "../../scripts/db/seed-users.mjs";
 
 export const ROOT = join(__dirname, "..", "..");
 export const MIGRATIONS_DIR = join(ROOT, "supabase", "migrations");
@@ -85,6 +86,9 @@ export async function createDb(opts: { migrations?: number | "all"; seed?: boole
   const files = migrationFiles();
   const upTo = opts.migrations === undefined || opts.migrations === "all" ? files.length : opts.migrations;
   for (const f of files.slice(0, upTo)) await db.exec(readFileSync(join(MIGRATIONS_DIR, f), "utf8"));
-  if (opts.seed !== false && upTo === files.length) await db.exec(readFileSync(SEED_SQL, "utf8"));
+  if (opts.seed !== false && upTo === files.length) {
+    await db.exec(demoAuthUsersSql()); // stands in for provisioning (GoTrue) in a disposable database; the seed requires these rows
+    await db.exec(readFileSync(SEED_SQL, "utf8"));
+  }
   return db;
 }

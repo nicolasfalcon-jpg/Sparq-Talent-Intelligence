@@ -55,7 +55,20 @@ export function buildSeedSql(): string {
   );
 
   // ---- identities -------------------------------------------------------------------------------------------------
-  insert("auth.users", ["id", "email"], SEED_USERS.map((u) => `${q(userId(u.key))}, ${q(`${u.key}@example.invalid`)}`));
+  // The accounts themselves are created by Supabase Auth (scripts/db/provision.mjs). The seed only attaches application rows to them,
+  // and refuses to run, with a clear message, when an account is missing: a seed must never invent authentication identities.
+  add(
+    "do $$",
+    "declare missing text;",
+    "begin",
+    `  select string_agg(v.k, ', ') into missing from (values ${SEED_USERS.map((u) => `(${q(u.key)}, ${q(userId(u.key))}::uuid)`).join(", ")}) as v(k, id)`,
+    "    where not exists (select 1 from auth.users a where a.id = v.id);",
+    "  if missing is not null then",
+    "    raise exception 'seed: demo account(s) missing from auth.users: %. Provision them first (npm run db:provision), then seed again.', missing using errcode = '23503';",
+    "  end if;",
+    "end $$;",
+    "",
+  );
 
   // ---- reference data and profiles --------------------------------------------------------------------------------
   insert("public.capabilities", ["id", "slug", "name", "grp", "aliases"], capabilities.map((c) => `${q(seedId("capability", c.id))}, ${q(c.id)}, ${q(c.name)}, ${q(c.group)}, ${arr(c.aliases)}`));

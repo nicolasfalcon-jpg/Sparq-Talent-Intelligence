@@ -2,11 +2,11 @@
  * Evidence integrity under real roles: owners add self-reported evidence and can never verify, forge or erase verification; verified
  * evidence is immutable; verification and revocation belong to authorized reviewers only; the history is append-only.
  * Seed: Ana's verified evidence includes React Native (professional); her self-reported rows include Kotlin Multiplatform (independent).
- * Rafael is a delivery lead with a working relationship to Ana (he leads her assignment); Ines and Camila are not related to her.
+ * Rafael is a delivery lead with a working relationship to Ana (he leads her assignment); Ines (delivery lead) and Camila (engineer) are not related to her.
  */
 import { describe, expect, it } from "vitest";
 import { U, seedId } from "@/data/seed/ids";
-import { denied, seen, tryAs, withDb } from "./setup";
+import { denied, grantRole, seen, tryAs, withDb } from "./setup";
 
 const t = withDb();
 const P = (slug: string) => seedId("person", slug);
@@ -141,6 +141,7 @@ describe("only an authorized reviewer can verify, decline or revoke", () => {
     expect((await decide(U.ines, PENDING, "verify")).ok).toBe(true);
   });
   it("a reviewer can never decide on their own evidence (separation of duties)", async () => {
+    await grantRole(t.db, U.camila, "delivery_lead"); // the seed has one role per account; the database still supports an engineer who is also a delivery lead
     await t.db.sql("insert into assignments (person_id, project_name, starts_on, delivery_lead_id, confirmed_by) values ($1, 'Self', '2027-03-01', $2, $2)", [P("camila"), U.camila]);
     const own = E("camila-ev-1");
     await t.db.sql("update skill_evidence set verification = 'self_reported', verified_by = null, verified_at = null, verification_note = null where id = $1", [own]);
@@ -213,7 +214,7 @@ describe("verification history is append-only for application roles", () => {
     await t.db.exec("grant update, delete, truncate on audit_log to authenticated");
     expect((await seen(t.db, U.admin, "update audit_log set action = 'x.y' returning id")).length).toBe(0);
     expect((await seen(t.db, U.admin, "delete from audit_log returning id")).length).toBe(0);
-    expect((await t.db.sql("select count(*)::int n from audit_log"))[0]!.n).toBe(90);
+    expect((await t.db.sql("select count(*)::int n from audit_log"))[0]!.n).toBe(89);
   });
   it("DEFENSE IN DEPTH (2/2): with row security ALSO off, the triggers still refuse UPDATE, DELETE and TRUNCATE", async () => {
     await t.db.exec("grant update, delete, truncate on audit_log to authenticated");
@@ -221,7 +222,7 @@ describe("verification history is append-only for application roles", () => {
     expect(denied(await tryAs(t.db, U.admin, "update audit_log set action = 'x.y'"))).toMatch(/append-only/);
     expect(denied(await tryAs(t.db, U.admin, "delete from audit_log"))).toMatch(/append-only/);
     expect(denied(await tryAs(t.db, U.admin, "truncate audit_log"))).toMatch(/append-only/);
-    expect((await t.db.sql("select count(*)::int n from audit_log"))[0]!.n).toBe(90);
+    expect((await t.db.sql("select count(*)::int n from audit_log"))[0]!.n).toBe(89);
   });
   it("the owner of a profile reads its verification history; others do not read someone else's", async () => {
     await decide(U.rafael, KMP, "verify");

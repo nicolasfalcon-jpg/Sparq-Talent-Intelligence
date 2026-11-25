@@ -29,7 +29,7 @@ beforeEach(() => { resetMemoryStore(); state.persona = undefined; });
 describe("the session is strict: no cookie means no session, never a default role", () => {
   it("getSession returns null without a persona, and for any value that is not a known persona", async () => {
     expect(await getSession()).toBeNull();
-    for (const bad of ["admin", "STAFFING_LEAD", "", "engineer ", "__proto__"]) { state.persona = bad; expect(await getSession()).toBeNull(); }
+    for (const bad of ["superuser", "STAFFING_LEAD", "", "engineer ", "__proto__"]) { state.persona = bad; expect(await getSession()).toBeNull(); }
   });
   it("resolves the two demo personas", async () => {
     state.persona = "staffing_lead"; expect(await getSession()).toMatchObject({ role: "staffing_lead" });

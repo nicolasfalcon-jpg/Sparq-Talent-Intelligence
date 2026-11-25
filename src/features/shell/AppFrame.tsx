@@ -2,25 +2,31 @@ import "server-only";
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getRepositories } from "@/data/repositories";
+import { demoPersonaEnabled } from "@/lib/data-source";
+import { homeFor } from "@/lib/access";
 import { getSessionUser } from "@/lib/session";
 import { AskSparqPanel } from "@/features/ask-sparq/AskSparqPanel";
 import { AppHeader } from "./AppHeader";
 
+export type FrameMode = "staff" | "personal" | "admin";
+
 /**
- * Workspace frame shared by the staff and personal route groups.
- * Enforces the workspace ↔ role rule server-side (staffing leads use the staff workspace,
- * engineers use their personal space). Demo persona today, Supabase Auth in phase 2.
+ * Workspace frame shared by the route groups. Enforces the workspace ↔ role rule server-side (a layout redirect is UX, not
+ * protection: data is protected by the policy and, in Supabase mode, by row-level security).
+ *  - staff: staffing leads (full workspace) and delivery leads (their opportunities and proposals to review)
+ *  - personal: engineers (My space)
+ *  - admin: administrators (a landing page)
  */
-export async function AppFrame({ mode, children }: { mode: "staff" | "personal"; children: ReactNode }) {
+export async function AppFrame({ mode, children }: { mode: FrameMode; children: ReactNode }) {
   const user = await getSessionUser();
-  if (mode === "staff" && user.role !== "staffing_lead") redirect("/me");
-  if (mode === "personal" && user.role !== "engineer") redirect("/");
+  const allowed = mode === "staff" ? user.role === "staffing_lead" || user.role === "delivery_lead" : mode === "personal" ? user.role === "engineer" : user.role === "admin";
+  if (!allowed) redirect(homeFor(user));
   const notifications = await getRepositories().directory.listNotifications(user.role);
   return (
     <div className="min-h-screen bg-canvas">
-      <AppHeader mode={mode} user={{ name: user.name, title: user.title, portraitId: user.portraitId }} notifications={notifications} />
+      <AppHeader role={user.role} demo={demoPersonaEnabled()} user={{ name: user.name, title: user.title, portraitId: user.portraitId }} notifications={notifications} />
       {children}
-      <AskSparqPanel greetingName={user.name.split(" ")[0] ?? user.name} ownPersonId={user.personId} />
+      {user.role !== "admin" && <AskSparqPanel greetingName={user.name.split(" ")[0] ?? user.name} ownPersonId={user.personId} />}
     </div>
   );
 }

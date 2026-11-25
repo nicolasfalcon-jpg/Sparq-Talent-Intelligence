@@ -13,12 +13,14 @@ const API_TABLES = [
   "career_interests", "opportunities", "role_requirements", "opportunity_delivery_leads", "shortlists", "team_proposals", "proposal_seats", "proposal_reviews",
   "assignments", "expressions_of_interest", "audit_log",
 ];
+/** Tables with RLS on, NO policy and NO grant: only SECURITY DEFINER functions touch them. */
+const CLOSED_TABLES = ["assistant_usage"];
 
 describe("row-level security", () => {
   it("is enabled on every table of the API schema, with no exception", async () => {
     const r = await rows("select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r' and not c.relrowsecurity");
     expect(r).toEqual([]);
-    expect((await rows("select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r'")).map((x) => x.relname).sort()).toEqual([...API_TABLES].sort());
+    expect((await rows("select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and c.relkind = 'r'")).map((x) => x.relname).sort()).toEqual([...API_TABLES, ...CLOSED_TABLES].sort());
   });
   it("is also on in the archive schema, which has no policy at all (default deny)", async () => {
     expect(await rows("select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'legacy_0001' and c.relkind = 'r' and not c.relrowsecurity")).toEqual([]);
@@ -35,6 +37,14 @@ describe("row-level security", () => {
     for (const tbl of API_TABLES) expect((await rows("select count(*)::int n from pg_policies where schemaname = 'public' and tablename = $1", [tbl]))[0]!.n, tbl).toBeGreaterThan(0);
     for (const tbl of ["user_roles", "opportunity_delivery_leads", "proposal_reviews", "assignments", "audit_log"]) {
       expect((await rows("select distinct cmd from pg_policies where schemaname = 'public' and tablename = $1", [tbl])), tbl).toEqual([{ cmd: "SELECT" }]);
+    }
+  });
+  it("closed tables have RLS, no policy and no privilege for any API role: only their SECURITY DEFINER function can touch them", async () => {
+    for (const tbl of CLOSED_TABLES) {
+      expect((await rows("select count(*)::int n from pg_policies where schemaname = 'public' and tablename = $1", [tbl]))[0]!.n, tbl).toBe(0);
+      for (const role of ["anon", "authenticated", "service_role"]) {
+        expect((await rows("select has_table_privilege($1, ('public.' || $2)::regclass, 'select, insert, update, delete, truncate') x, has_any_column_privilege($1, ('public.' || $2)::regclass, 'select, insert, update') c", [role, tbl]))[0], `${tbl} for ${role}`).toEqual({ x: false, c: false });
+      }
     }
   });
   it("every policy is restricted to `authenticated` (none applies to anon or PUBLIC)", async () => {
@@ -129,7 +139,7 @@ describe("privileged functions are hardened", () => {
   it("the RPC surface is exactly the reviewed list, and only `authenticated` can execute it", async () => {
     const r = await rows(`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and has_function_privilege('authenticated', p.oid, 'execute') order by 1`);
     expect(r.map((x) => x.proname)).toEqual([
-      "assign_delivery_lead", "confirm_assignment", "decide_evidence_verification", "grant_user_role", "link_user_profile", "my_identity", "person_availability",
+      "assign_delivery_lead", "confirm_assignment", "consume_assistant_quota", "decide_evidence_verification", "grant_user_role", "link_user_profile", "my_identity", "person_availability",
       "record_profile_export", "request_evidence_verification", "review_proposal", "revoke_user_role", "submit_proposal", "withdraw_proposal",
     ]);
   });

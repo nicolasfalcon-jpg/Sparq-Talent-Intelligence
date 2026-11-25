@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import * as Popover from "@radix-ui/react-popover";
 import { useState } from "react";
 import { clsx } from "clsx";
-import type { Notification } from "@/domain/schemas";
+import type { Notification, UserRole } from "@/domain/schemas";
 import { Icon, RoleGlyph, SparkGlyph, TeamGlyph, type IconName } from "@/design-system/icons";
 import { Portrait } from "@/design-system/Portrait";
 
@@ -22,6 +22,12 @@ const STAFF_NAV: NavItem[] = [
   { id: "planning", label: "Planning", href: "/planning", icon: "planning", match: (p) => p.startsWith("/planning") },
   { id: "insights", label: "Insights", href: "/insights", icon: "insights", match: (p) => p.startsWith("/insights") },
 ];
+const DELIVERY_NAV: NavItem[] = [
+  { id: "opps", label: "Opportunities", href: "/opportunities", icon: "opportunities", match: (p) => p.startsWith("/opportunities") },
+];
+const ADMIN_NAV: NavItem[] = [
+  { id: "admin", label: "Administration", href: "/admin", icon: "home", match: (p) => p.startsWith("/admin") },
+];
 const PERSONAL_NAV: NavItem[] = [
   { id: "me", label: "My space", href: "/me", icon: "me", match: (p) => p === "/me" },
   { id: "passport", label: "My passport", href: "/me/passport", icon: "passport", match: (p) => p.startsWith("/me/passport") },
@@ -30,19 +36,27 @@ const PERSONAL_NAV: NavItem[] = [
 const floatBtn = "inline-flex size-11 cursor-pointer items-center justify-center rounded-full border-0 bg-white shadow-nav";
 const panel = "z-50 rounded-card bg-white p-2.5 shadow-popover focus:outline-none";
 
-export function AppHeader({ mode, user, notifications }: {
-  mode: "staff" | "personal";
+const HOME_FOR: Record<UserRole, string> = { staffing_lead: "/", engineer: "/me", delivery_lead: "/opportunities", admin: "/admin" };
+const DEMO_SWITCH: { as: UserRole; label: string }[] = [
+  { as: "staffing_lead", label: "Staffing" }, { as: "delivery_lead", label: "Delivery" }, { as: "engineer", label: "My space" }, { as: "admin", label: "Admin" },
+];
+
+export function AppHeader({ role, demo, user, notifications }: {
+  /** The signed-in user's role: decides the navigation. */
+  role: UserRole;
+  /** Memory mode only: show the demo persona switch. Otherwise the menu offers "Sign out". */
+  demo: boolean;
   user: { name: string; title: string; portraitId: string };
   notifications: Notification[];
 }) {
   const pathname = usePathname();
-  const items = mode === "staff" ? STAFF_NAV : PERSONAL_NAV;
+  const items = role === "staffing_lead" ? STAFF_NAV : role === "delivery_lead" ? DELIVERY_NAV : role === "admin" ? ADMIN_NAV : PERSONAL_NAV;
   const [read, setRead] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
 
   return (
     <header className="relative z-40 mx-auto flex h-header max-w-page items-center gap-5 px-10 max-xl:gap-3 max-xl:px-5">
-      <Link href={mode === "staff" ? "/" : "/me"} className="flex min-w-max flex-1 basis-0 items-center gap-2.5 text-ink">
+      <Link href={HOME_FOR[role]} className="flex min-w-max flex-1 basis-0 items-center gap-2.5 text-ink">
         <span className="inline-flex size-[34px] items-center justify-center rounded-full bg-coral"><SparkGlyph size={16} /></span>
         <span className="text-[17px] font-semibold tracking-[-0.02em]">Sparq</span>
       </Link>
@@ -61,7 +75,7 @@ export function AppHeader({ mode, user, notifications }: {
       </nav>
 
       <div className="flex min-w-max flex-1 basis-0 items-center justify-end gap-2.5">
-        {mode === "staff" && (
+        {role === "staffing_lead" && (
           <Popover.Root open={newOpen} onOpenChange={setNewOpen}>
             <Popover.Trigger aria-label="New opportunity" title="New opportunity" className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-pill border-0 bg-ink px-[18px] text-sm font-medium text-white">
               <span className="text-lg leading-none text-coral-soft" aria-hidden="true">+</span><span className="max-xl:hidden">New opportunity</span>
@@ -110,14 +124,25 @@ export function AppHeader({ mode, user, notifications }: {
           <Popover.Portal>
             <Popover.Content align="end" sideOffset={10} className={clsx(panel, "w-[280px]")}>
               <div className="p-3"><div className="font-medium">{user.name}</div><div className="text-[13px] text-mute">{user.title}</div></div>
-              <div className="mx-1 mt-1 mb-2 grid grid-cols-2 gap-1 rounded-pill bg-surface-muted p-1" role="group" aria-label="Workspace">
-                {/* Persona switch: demo-only route that sets a cookie. Phase 2: role-based access from Supabase Auth. */}
-                <a href="/persona?as=staffing_lead" aria-current={mode === "staff" ? "true" : undefined} className={clsx("flex h-9 items-center justify-center rounded-pill text-[13px] font-medium", mode === "staff" && "bg-white shadow-[0_1px_3px_rgba(0,0,0,.1)]")}>Staffing</a>
-                <a href="/persona?as=engineer" aria-current={mode === "personal" ? "true" : undefined} className={clsx("flex h-9 items-center justify-center rounded-pill text-[13px] font-medium", mode === "personal" && "bg-white shadow-[0_1px_3px_rgba(0,0,0,.1)]")}>My space</a>
-              </div>
-              <Link href={mode === "personal" ? "/me/passport" : "/people/ana"} className="block rounded-sm px-3 py-2.5 text-sm text-ink hover:bg-surface-muted">
-                {mode === "personal" ? "My Talent Passport" : "Sample passport: Ana Ruiz"}
-              </Link>
+              {demo ? (
+                <div className="mx-1 mt-1 mb-2 grid grid-cols-2 gap-1 rounded-card bg-surface-muted p-1" role="group" aria-label="Workspace">
+                  {/* Persona switch: DEMO ONLY (memory mode). It does not exist when the app runs on Supabase. */}
+                  {DEMO_SWITCH.map((d) => (
+                    <a key={d.as} href={`/persona?as=${d.as}`} aria-current={d.as === role ? "true" : undefined} className={clsx("flex h-9 items-center justify-center rounded-pill text-[13px] font-medium", d.as === role && "bg-white shadow-[0_1px_3px_rgba(0,0,0,.1)]")}>{d.label}</a>
+                  ))}
+                </div>
+              ) : null}
+              {role === "engineer" && (
+                <Link href="/me/passport" className="block rounded-sm px-3 py-2.5 text-sm text-ink hover:bg-surface-muted">My Talent Passport</Link>
+              )}
+              {demo && role === "staffing_lead" && (
+                <Link href="/people/ana" className="block rounded-sm px-3 py-2.5 text-sm text-ink hover:bg-surface-muted">Sample passport: Ana Ruiz</Link>
+              )}
+              {!demo && (
+                <form action="/logout" method="post">
+                  <button type="submit" className="block w-full cursor-pointer rounded-sm border-0 bg-transparent px-3 py-2.5 text-left text-sm text-ink hover:bg-surface-muted">Sign out</button>
+                </form>
+              )}
             </Popover.Content>
           </Popover.Portal>
         </Popover.Root>

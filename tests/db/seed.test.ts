@@ -96,17 +96,17 @@ describe("fixture parity: what the app shows is what the database holds", () => 
   it("Ana's expression of interest in the Vela mobile role is its own record, shared", async () => {
     expect(await sql("select p.slug, rr.slug role, e.status::text st from expressions_of_interest e join people p on p.id = e.person_id join role_requirements rr on rr.id = e.role_requirement_id")).toEqual([{ slug: "ana", role: "vela-mobile", st: "shared" }]);
   });
-  it("the two domain personas exist as identities, linked to their profile; the extra identities are fictional and cannot sign in", async () => {
+  it("the two domain personas exist as identities, linked to their profile; the extra identities are fictional and have no password in the seed", async () => {
     const r = await sql("select u.display_name, p.slug person from app_users u left join people p on p.id = u.person_id order by u.display_name");
     for (const d of users) expect(r.find((x) => x.display_name === d.name)?.person ?? null, d.name).toBe(d.personId);
     expect(r).toHaveLength(SEED_USERS.length);
-    expect((await sql("select count(*)::int n from auth.users where email not like '%@example.invalid'"))[0]!.n).toBe(0);
+    expect((await sql("select count(*)::int n from auth.users where email not like '%@sparq-demo.example'"))[0]!.n).toBe(0);
     expect(Object.keys(U)).toEqual(SEED_USERS.map((u) => u.key));
   });
-  it("roles: engineers, one staffing lead, two delivery leads, one dual-role person, one administrator", async () => {
+  it("roles: engineers, one staffing lead, two delivery leads, one administrator: one role per account", async () => {
     const r = await sql("select u.display_name n, string_agg(r.role::text, ',' order by r.role::text) roles from user_roles r join app_users u on u.id = r.user_id group by u.display_name order by u.display_name");
     expect(Object.fromEntries(r.map((x) => [x.n, x.roles]))).toEqual({
-      "Admin Demo": "admin", "Ana Ruiz": "engineer", "Camila Duarte": "delivery_lead,engineer", "Inés Vidal": "delivery_lead", "Laura Gómez": "staffing_lead",
+      "Admin Demo": "admin", "Ana Ruiz": "engineer", "Camila Duarte": "engineer", "Inés Vidal": "delivery_lead", "Laura Gómez": "staffing_lead",
       "Lucía Fernández": "engineer", "Rafael Ortiz": "delivery_lead",
     });
   });
@@ -115,8 +115,8 @@ describe("fixture parity: what the app shows is what the database holds", () => 
       union all select p.id from project_experience p where p.verification = 'verified' and not exists (select 1 from audit_log a where a.action = 'evidence.verify' and a.subject_id = p.id and a.actor_id = p.verified_by)`);
     expect(orphans).toEqual([]);
   });
-  it("contains only fictional data: example.invalid emails and the invented seed dates", async () => {
-    expect((await sql("select count(*)::int n from auth.users where email like '%@example.invalid'"))[0]!.n).toBe(SEED_USERS.length);
+  it("contains only fictional data: reserved .example emails and the invented seed dates", async () => {
+    expect((await sql("select count(*)::int n from auth.users where email like '%@sparq-demo.example'"))[0]!.n).toBe(SEED_USERS.length);
     expect(readFileSync(SEED_SQL, "utf8")).toMatch(/FICTIONAL DATA ONLY/);
   });
 });

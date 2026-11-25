@@ -15,8 +15,16 @@ export type AssistantAnswer = {
   bullets: string[];
   refs: AssistantRef[];
   actions: AssistantAction[];
-  /** computed = derived from repository data by deterministic code; illustrative = predefined example text. */
-  provenance: "computed" | "illustrative" | "fallback";
+  /**
+   * computed = derived from repository data by deterministic code · illustrative = predefined example text ·
+   * fallback = guidance, or a deterministic answer shown because the model was unavailable ·
+   * ai = written by a real language model (ONLY then), from documented data it read through authorized tools.
+   */
+  provenance: "computed" | "illustrative" | "fallback" | "ai";
+  /** Provenance "ai" only: the model that produced the answer. */
+  model?: string;
+  /** A short honest note shown with the answer (e.g. why a deterministic answer replaced the model's). */
+  notice?: string;
   /** Set when the request was declined by the responsible-use policy (see domain/talent-policy.ts). */
   policy?: PolicyCategory;
 };
@@ -53,10 +61,20 @@ export const ASSISTANT_CONTENT: Record<AssistantContext, ContextContent> = {
     { id: "opps-vela", q: "Summarize Vela Bank’s requirements", a: "Four roles starting Jan 12 for six months; two are already proposed.", bullets: ["Open: Senior Mobile Engineer (React Native, accessibility)", "Open: Backend Engineer (Node.js or Go, PostgreSQL)", "Proposed: Lucía Fernández (AI) and Camila Duarte (QA)"], actions: [P("Fill the mobile role", "/opportunities/new/role")] },
     { id: "opps-hardest", q: "Which opportunity is hardest to staff?", a: "Cobalt Mobility: 3 mobile seats from Jan 19, while January mobile capacity is already tight.", bullets: ["Only Ethan Brooks has documented Android experience", "No one with Mobile Tech Lead experience is free before Jan 5"], actions: [G("Open Insights", "/insights")] },
   ] },
-  role: { short: "Fill a role", hello: "Let’s find the right person.", intro: "Describe the role and I’ll draft the requirements with you.", prompts: [] },
-  team: { short: "Build a Team", hello: "Let’s shape this team.", intro: "I can check coverage, conflicts and availability as you compose.", prompts: [] },
-  compare: { short: "Compare", hello: "Comparing people?", intro: "I show documented evidence side by side, never a score.", prompts: [] },
+  // "Live from this page" prompts: they use the seats / opportunity the page passes as authorized context (see context-rules.ts).
+  role: { short: "Fill a role", hello: "Let’s find the right person.", intro: "Describe the role and I’ll draft the requirements with you.", prompts: [
+    { id: "role-candidates", q: "Who has documented experience for this role?", a: "", computed: true },
+    { id: "role-confirm", q: "Which requirements still need confirmation?", a: "", computed: true },
+  ] },
+  team: { short: "Build a Team", hello: "Let’s shape this team.", intro: "I can check coverage, conflicts and availability as you compose.", prompts: [
+    { id: "team-coverage", q: "Summarize this team’s documented coverage", a: "", computed: true },
+    { id: "team-conflicts", q: "Check availability conflicts for this team", a: "", computed: true },
+  ] },
+  compare: { short: "Compare", hello: "Comparing people?", intro: "I show documented evidence side by side, never a score.", prompts: [
+    { id: "compare-evidence", q: "What does the documented evidence say about these people?", a: "", computed: true },
+  ] },
   planning: { short: "Planning", hello: "Want this period explained?", intro: "I explain availability from documented assignments.", prompts: [
+    { id: "planning-pending", q: "Whose availability is still pending confirmation?", a: "", computed: true },
     { id: "planning-january", q: "Explain January availability", a: "Three mobile engineers free up in January; everyone else stays on projects until February.", bullets: ["Ana Ruiz and Javier Morales: Jan 5, after Meridian Health", "Ethan Brooks: Jan 19, after Lumen Retail", "Lucía Fernández is free now but proposed for Vela Bank"], actions: [P("Build a team", "/opportunities/new/team")] },
   ] },
   insights: { short: "Insights", hello: "What would you like to understand?", intro: "I read capability patterns, never individual performance.", prompts: [

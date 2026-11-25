@@ -11,6 +11,8 @@ import { Icon, SparkGlyph } from "@/design-system/icons";
 import { useUi } from "@/lib/ui-store";
 import { AnswerCard, AnswerError, AnswerLoading, useAsk } from "./client";
 import { ASSISTANT_CONTENT, contextForPath } from "./content";
+import { OPPORTUNITY_CONTEXTS, SEAT_CONTEXTS } from "./context-rules";
+import { useAssistantPageContext } from "./page-context";
 
 function DrawerDecoration() {
   return (
@@ -30,13 +32,19 @@ export function AskSparqPanel({ greetingName, ownPersonId }: { greetingName: str
   const subjectPersonId = pathname.startsWith("/people/") ? pathname.split("/")[2] : pathname.startsWith("/me/passport") ? ownPersonId ?? undefined : undefined;
   const { assistant, wide, openAssistant, closeAssistant, minimizeAssistant, toggleWide } = useUi();
   const ask = useAsk();
+  const pageCtx = useAssistantPageContext();
   const [draft, setDraft] = useState("");
   const hello = context === "home" ? `Good morning, ${greetingName}.` : content.hello;
 
   const send = (promptId?: string) => {
     const q = draft.trim();
     if (!promptId && !q) return;
-    ask.mutate({ context, promptId, question: promptId ? undefined : q, subjectPersonId });
+    ask.mutate({
+      context, promptId, question: promptId ? undefined : q, subjectPersonId,
+      // Only what the server accepts for this context; it re-authorizes all of it anyway.
+      opportunityId: OPPORTUNITY_CONTEXTS.includes(context) ? pageCtx.opportunityId : undefined,
+      seats: SEAT_CONTEXTS.includes(context) ? pageCtx.seats : undefined,
+    });
     setDraft("");
   };
   const reset = () => ask.reset();

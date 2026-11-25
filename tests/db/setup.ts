@@ -25,3 +25,7 @@ export const tryAs = (db: TestDb, who: string, sql: string, params?: unknown[]) 
 
 /** The rows a user can see: the main way to prove an access rule. */
 export const seen = (db: TestDb, who: string, sql: string, params?: unknown[]) => db.as(who, (q) => q(sql, params));
+
+/** The seed has ONE role per account. A test that needs the database's multi-role capability (an engineer who is also a delivery lead) grants it explicitly, as the owner. */
+export const grantRole = (db: TestDb, who: string, role: "engineer" | "staffing_lead" | "delivery_lead" | "admin") =>
+  db.sql("insert into user_roles (user_id, role, granted_by) values ($1, $2, null) on conflict do nothing", [who, role]);

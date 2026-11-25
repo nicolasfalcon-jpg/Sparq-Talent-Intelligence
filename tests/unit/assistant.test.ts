@@ -40,7 +40,7 @@ describe("POST /api/assistant requires a valid application session", () => {
     expect(r.text).not.toMatch(PEOPLE_NAMES);
   });
   it("an invalid or forged persona value is not a session", async () => {
-    for (const bad of ["admin", "root", "staffing_lead;engineer", ""]) {
+    for (const bad of ["superuser", "root", "staffing_lead;engineer", ""]) {
       state.persona = bad;
       expect((await call({ context: "home", promptId: "home-mobile-january" })).status).toBe(401);
     }

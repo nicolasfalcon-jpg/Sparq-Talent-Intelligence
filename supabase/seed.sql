@@ -3,15 +3,15 @@
 -- The fixed demo day of the dataset is 2026-11-24.
 begin;
 
-insert into auth.users (id, email) values
-  ('c857a5dc-82b8-5fd0-b88c-10acc8e0e53c', 'laura@example.invalid'),
-  ('56dd65b2-0d15-5b67-a6aa-8d45bd3c60ad', 'ana@example.invalid'),
-  ('1609b79f-58ff-574f-b09d-dc64b9a27dbd', 'lucia@example.invalid'),
-  ('d7b3f49e-5416-581c-96fc-25556c330743', 'rafael@example.invalid'),
-  ('3538c4df-5eb4-54e4-9bb7-43cd988c8e80', 'ines@example.invalid'),
-  ('b8772117-dda2-5f9b-9a67-82cc491cf2f8', 'camila@example.invalid'),
-  ('4c01fa2d-d6f6-5450-9268-47aa36246900', 'admin@example.invalid')
-on conflict do nothing;
+do $$
+declare missing text;
+begin
+  select string_agg(v.k, ', ') into missing from (values ('laura', 'c857a5dc-82b8-5fd0-b88c-10acc8e0e53c'::uuid), ('ana', '56dd65b2-0d15-5b67-a6aa-8d45bd3c60ad'::uuid), ('lucia', '1609b79f-58ff-574f-b09d-dc64b9a27dbd'::uuid), ('rafael', 'd7b3f49e-5416-581c-96fc-25556c330743'::uuid), ('ines', '3538c4df-5eb4-54e4-9bb7-43cd988c8e80'::uuid), ('camila', 'b8772117-dda2-5f9b-9a67-82cc491cf2f8'::uuid), ('admin', '4c01fa2d-d6f6-5450-9268-47aa36246900'::uuid)) as v(k, id)
+    where not exists (select 1 from auth.users a where a.id = v.id);
+  if missing is not null then
+    raise exception 'seed: demo account(s) missing from auth.users: %. Provision them first (npm run db:provision), then seed again.', missing using errcode = '23503';
+  end if;
+end $$;
 
 insert into public.capabilities (id, slug, name, grp, aliases) values
   ('cf84b492-6be8-59ac-b46c-d9e74fd1a791', 'react-native', 'React Native', 'mobile', array['react native', 'react-native', 'rn']::text[]),
@@ -85,7 +85,6 @@ insert into public.user_roles (user_id, role, granted_by) values
   ('d7b3f49e-5416-581c-96fc-25556c330743', 'delivery_lead', '4c01fa2d-d6f6-5450-9268-47aa36246900'),
   ('3538c4df-5eb4-54e4-9bb7-43cd988c8e80', 'delivery_lead', '4c01fa2d-d6f6-5450-9268-47aa36246900'),
   ('b8772117-dda2-5f9b-9a67-82cc491cf2f8', 'engineer', '4c01fa2d-d6f6-5450-9268-47aa36246900'),
-  ('b8772117-dda2-5f9b-9a67-82cc491cf2f8', 'delivery_lead', '4c01fa2d-d6f6-5450-9268-47aa36246900'),
   ('4c01fa2d-d6f6-5450-9268-47aa36246900', 'admin', null)
 on conflict do nothing;
 
@@ -341,7 +340,6 @@ select v.* from (values
   ('2026-10-01T09:00:00Z'::timestamptz, '4c01fa2d-d6f6-5450-9268-47aa36246900'::uuid, 'permission.grant', 'app_user', 'd7b3f49e-5416-581c-96fc-25556c330743'::uuid, null::uuid, '{"role":"delivery_lead","seeded":true}'::jsonb),
   ('2026-10-01T09:00:00Z'::timestamptz, '4c01fa2d-d6f6-5450-9268-47aa36246900'::uuid, 'permission.grant', 'app_user', '3538c4df-5eb4-54e4-9bb7-43cd988c8e80'::uuid, null::uuid, '{"role":"delivery_lead","seeded":true}'::jsonb),
   ('2026-10-01T09:00:00Z'::timestamptz, '4c01fa2d-d6f6-5450-9268-47aa36246900'::uuid, 'permission.grant', 'app_user', 'b8772117-dda2-5f9b-9a67-82cc491cf2f8'::uuid, null::uuid, '{"role":"engineer","seeded":true}'::jsonb),
-  ('2026-10-01T09:00:00Z'::timestamptz, '4c01fa2d-d6f6-5450-9268-47aa36246900'::uuid, 'permission.grant', 'app_user', 'b8772117-dda2-5f9b-9a67-82cc491cf2f8'::uuid, null::uuid, '{"role":"delivery_lead","seeded":true}'::jsonb),
   ('2026-10-01T09:05:00Z'::timestamptz, '4c01fa2d-d6f6-5450-9268-47aa36246900'::uuid, 'permission.assign_delivery_lead', 'opportunity', '5d5df1fc-26ad-57e9-a761-0e09f67542ac'::uuid, null::uuid, '{"user_id":"d7b3f49e-5416-581c-96fc-25556c330743","assigned":true,"seeded":true}'::jsonb),
   ('2026-10-01T09:05:00Z'::timestamptz, '4c01fa2d-d6f6-5450-9268-47aa36246900'::uuid, 'permission.assign_delivery_lead', 'opportunity', '99d08180-e125-504b-8c06-94b9213b621b'::uuid, null::uuid, '{"user_id":"3538c4df-5eb4-54e4-9bb7-43cd988c8e80","assigned":true,"seeded":true}'::jsonb),
   ('2026-10-01T09:05:00Z'::timestamptz, '4c01fa2d-d6f6-5450-9268-47aa36246900'::uuid, 'permission.assign_delivery_lead', 'opportunity', '3c7fc796-5c7c-5dc2-b5b5-bb31760d8ec8'::uuid, null::uuid, '{"user_id":"d7b3f49e-5416-581c-96fc-25556c330743","assigned":true,"seeded":true}'::jsonb),

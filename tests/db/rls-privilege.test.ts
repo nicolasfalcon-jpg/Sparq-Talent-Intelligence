@@ -4,7 +4,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { U, seedId } from "@/data/seed/ids";
-import { denied, seen, tryAs, withDb } from "./setup";
+import { denied, grantRole, seen, tryAs, withDb } from "./setup";
 
 const t = withDb();
 const P = (slug: string) => seedId("person", slug);
@@ -83,13 +83,15 @@ describe("administrators manage roles through audited functions, never their own
     expect((await t.db.sql("select count(*)::int n from audit_log"))[0]!.n).toBe(before);
   });
   it("a new reviewer assignment needs the delivery-lead role, and revoking the role drops their reviewer assignments", async () => {
-    const cobalt = seedId("opportunity", "cobalt");
-    expect(denied(await rpc(U.admin, "assign_delivery_lead($1, $2, true)", [cobalt, U.ana]))).toMatch(/not a delivery lead/);
-    expect((await rpc(U.admin, "assign_delivery_lead($1, $2, true)", [cobalt, U.camila])).ok).toBe(true);
-    expect((await seen(t.db, U.camila, "select slug from opportunities")).map((r) => r.slug)).toEqual(["cobalt"]);
+    await grantRole(t.db, U.camila, "delivery_lead"); // seed accounts have one role; the database supports an engineer who is also a delivery lead
+    const nimbus = seedId("opportunity", "nimbus"); // Upcoming: not published to engineers, so only the reviewer assignment can reveal it to Camila
+    const visible = async () => (await seen(t.db, U.camila, "select slug from opportunities where status <> 'Open'")).map((r) => r.slug);
+    expect(denied(await rpc(U.admin, "assign_delivery_lead($1, $2, true)", [nimbus, U.ana]))).toMatch(/not a delivery lead/);
+    expect((await rpc(U.admin, "assign_delivery_lead($1, $2, true)", [nimbus, U.camila])).ok).toBe(true);
+    expect(await visible()).toEqual(["nimbus"]);
     expect((await rpc(U.admin, "revoke_user_role($1, 'delivery_lead')", [U.camila])).ok).toBe(true);
     expect((await t.db.sql("select count(*)::int n from opportunity_delivery_leads where user_id = $1", [U.camila]))[0]!.n).toBe(0);
-    expect((await seen(t.db, U.camila, "select slug from opportunities")).length).toBe(0);
+    expect(await visible()).toEqual([]);
   });
   it("linking a user to a profile is audited, refuses a profile that is already someone's, and can be undone", async () => {
     expect(denied(await rpc(U.admin, "link_user_profile($1, $2)", [U.lucia, P("ana")]))).toMatch(/duplicate key|unique/);
@@ -149,7 +151,7 @@ describe("authorization predicates are total: they never return NULL (a NULL sil
     const helpers = (await t.db.sql(`select p.proname, pg_get_function_identity_arguments(p.oid) args from pg_proc p join pg_namespace n on n.oid = p.pronamespace
       where n.nspname = 'private' and p.prorettype = 'boolean'::regtype and has_function_privilege('authenticated', p.oid, 'execute') order by 1`));
     expect(helpers.map((h) => h.proname)).toEqual([
-      "can_edit_proposal", "can_read_profile", "can_see_opportunity", "can_see_proposal", "has_role", "is_admin", "is_reviewer_for_person",
+      "can_edit_proposal", "can_read_profile", "can_see_opportunity", "can_see_proposal", "can_see_published_opportunity", "has_role", "is_admin", "is_reviewer_for_person",
       "leads_opportunity", "owns_opportunity", "owns_person", "role_open_for_interest",
     ]);
     const callers = [U.ana, U.lucia, U.laura, U.rafael, U.camila, U.admin, "00000000-0000-4000-8000-00000000dead"];

@@ -5,6 +5,7 @@
 // RLS, grants, triggers and the privileged functions under real roles is tested by `npm run db:test` (tests/db/*).
 import { PGlite } from "@electric-sql/pglite";
 import { readdirSync, readFileSync } from "node:fs";
+import { demoAuthUsersSql } from "./db/seed-users.mjs";
 
 const db = new PGlite();
 await db.exec(readFileSync("tests/db/bootstrap.sql", "utf8"));
@@ -12,6 +13,7 @@ for (const f of readdirSync("supabase/migrations").filter((x) => x.endsWith(".sq
   await db.exec(readFileSync(`supabase/migrations/${f}`, "utf8"));
   console.log("applied", f);
 }
+await db.exec(demoAuthUsersSql()); // stands in for provisioning (Supabase Auth) in this disposable database only
 await db.exec(readFileSync("supabase/seed.sql", "utf8"));
 console.log("applied seed.sql");
 

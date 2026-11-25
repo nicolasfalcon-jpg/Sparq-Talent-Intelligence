@@ -8,3 +8,7 @@ test-results
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+
+# Admin-only secrets for scripts/db and tests/remote (never committed, never given to the app)
+.env.admin.local
+.demo-credentials.local.json

@@ -186,14 +186,25 @@ export const Opportunity = z.object({
   status: OpportunityStatus,
   kickoff: IsoDate,
   durationMonths: z.number().int().positive(),
+  /** Display name of the delivery lead ("" when the viewer is not allowed to read it). */
   deliveryLead: z.string(),
+  /** User id of the assigned delivery lead, when known. Used to scope what a delivery lead can see and review. */
+  deliveryLeadId: z.string().nullable().default(null),
   capabilities: z.array(z.string()),
   interestNote: z.string(),
   roles: z.array(RoleRequirement).min(1),
 });
 export type Opportunity = z.infer<typeof Opportunity>;
 
-export const UserRole = z.enum(["staffing_lead", "engineer"]);
+/**
+ * Application roles (mirrors the database enum `app_role`). One role per demo account today; the database allows more
+ * than one role per user, but the application resolves a single role per session.
+ *  - engineer: owns a Talent Passport and a personal space (My Space).
+ *  - staffing_lead: composes proposals (Fill a Role, Build a Team); sees the whole talent directory.
+ *  - delivery_lead: reviews proposals and confirms assignments, only for opportunities they are assigned to.
+ *  - admin: administration only (a landing page; no business powers, no staffing data).
+ */
+export const UserRole = z.enum(["engineer", "staffing_lead", "delivery_lead", "admin"]);
 export type UserRole = z.infer<typeof UserRole>;
 
 export const AppUser = z.object({
@@ -217,6 +228,143 @@ export const Notification = z.object({
   href: z.string(),
 });
 export type Notification = z.infer<typeof Notification>;
+
+/* ---------- Proposals, assignments and expressions of interest (phase B) ---------- */
+
+/**
+ * PROPOSED ≠ ASSIGNED. A proposal is a staffing lead's suggestion. Its lifecycle mirrors the database enum `proposal_state`:
+ * draft → submitted → approved | declined | changes_requested (→ resubmitted) | withdrawn. Approving a proposal creates NO
+ * assignment: the delivery lead confirms each seat separately (`confirmSeat`), which is the only way an Assignment exists.
+ */
+export const ProposalState = z.enum(["draft", "submitted", "changes_requested", "approved", "declined", "withdrawn"]);
+export type ProposalState = z.infer<typeof ProposalState>;
+export const ReviewDecision = z.enum(["approved", "declined", "changes_requested"]);
+export type ReviewDecision = z.infer<typeof ReviewDecision>;
+
+export const Seniority = z.enum(["Mid", "Senior", "Lead"]);
+export type Seniority = z.infer<typeof Seniority>;
+
+/** open: nobody proposed · proposed: a person is placed (not assigned) · confirmed: the seat became a real assignment. */
+export const SeatState = z.enum(["open", "proposed", "confirmed"]);
+export type SeatState = z.infer<typeof SeatState>;
+
+export const ProposalSeat = z.object({
+  id: z.string().min(1),
+  /** Slug of the opportunity's role requirement this seat answers, or null for a seat the lead added. */
+  roleRequirementId: z.string().nullable(),
+  title: z.string().min(1).max(80),
+  capabilities: z.array(z.string().min(1).max(60)).max(12),
+  seniority: Seniority.nullable(),
+  /** Fraction of a full-time engagement: 1 = full-time, 0.5 = half-time. */
+  allocation: z.number().gt(0).lte(1),
+  personId: z.string().nullable(),
+  seatState: SeatState,
+  /** Set when the seat has been confirmed into an Assignment. */
+  assignmentId: z.string().nullable().default(null),
+});
+export type ProposalSeat = z.infer<typeof ProposalSeat>;
+
+export const ProposalReview = z.object({
+  decision: ReviewDecision,
+  note: z.string().nullable(),
+  reviewerId: z.string(),
+  reviewerName: z.string(),
+  at: z.string(),
+});
+export type ProposalReview = z.infer<typeof ProposalReview>;
+
+export const TeamProposal = z.object({
+  id: z.string().min(1),
+  /** Slug of the opportunity the proposal answers. */
+  opportunityId: z.string().nullable(),
+  title: z.string(),
+  brief: z.string(),
+  noteForReviewer: z.string(),
+  state: ProposalState,
+  /** Increases by one on every resubmission after "changes requested". */
+  version: z.number().int().min(1),
+  createdBy: z.string(),
+  createdByName: z.string(),
+  submittedAt: z.string().nullable(),
+  updatedAt: z.string(),
+  seats: z.array(ProposalSeat),
+  /** The decision on the CURRENT version, if there is one. */
+  review: ProposalReview.nullable(),
+});
+export type TeamProposal = z.infer<typeof TeamProposal>;
+
+export const SaveSeatInput = z.object({
+  roleRequirementId: z.string().min(1).nullable().default(null),
+  title: z.string().trim().min(1).max(80),
+  capabilities: z.array(z.string().trim().min(1).max(60)).max(12),
+  seniority: Seniority.nullable().default(null),
+  allocation: z.number().gt(0).lte(1).default(1),
+  /** The proposed person (slug) or null for an open seat. */
+  personId: z.string().min(1).nullable().default(null),
+}).strict();
+export type SaveSeatInput = z.infer<typeof SaveSeatInput>;
+
+/** Create or replace a DRAFT (or a "changes requested") proposal. Seats are replaced as a whole. State is never set here. */
+export const SaveProposalInput = z.object({
+  id: z.string().min(1).optional(),
+  opportunityId: z.string().min(1),
+  title: z.string().trim().min(1).max(120),
+  brief: z.string().trim().max(2000).default(""),
+  noteForReviewer: z.string().trim().max(1000).default(""),
+  seats: z.array(SaveSeatInput).min(1).max(12),
+}).strict();
+export type SaveProposalInput = z.infer<typeof SaveProposalInput>;
+
+export const ReviewProposalInput = z.object({
+  id: z.string().min(1),
+  decision: ReviewDecision,
+  note: z.string().trim().max(2000).default(""),
+}).strict().refine((r) => r.decision === "approved" || r.note.length > 0, { message: "Explain your decision so the author knows what to do next.", path: ["note"] });
+export type ReviewProposalInput = z.infer<typeof ReviewProposalInput>;
+
+export const ConfirmSeatInput = z.object({
+  seatId: z.string().min(1),
+  startsOn: IsoDate,
+  endsOn: IsoDate.nullable().default(null),
+  availableFrom: IsoDate.nullable().default(null),
+  allocation: z.number().gt(0).lte(1).nullable().default(null),
+}).strict();
+export type ConfirmSeatInput = z.infer<typeof ConfirmSeatInput>;
+
+/** A confirmed engagement. Created only by a delivery lead confirming an approved proposal's seat. */
+export const Assignment = z.object({
+  id: z.string().min(1),
+  personId: z.string().min(1),
+  opportunityId: z.string().nullable(),
+  projectName: z.string(),
+  startsOn: IsoDate,
+  /** Last day of the project; null = open-ended. */
+  endsOn: IsoDate.nullable(),
+  /** First day the person can be planned elsewhere. */
+  availableFrom: IsoDate.nullable(),
+  allocation: z.number().gt(0).lte(1),
+  /** false = the end date is still pending confirmation. */
+  endConfirmed: z.boolean(),
+  deliveryLeadId: z.string(),
+  deliveryLeadName: z.string(),
+  proposalSeatId: z.string().nullable(),
+});
+export type Assignment = z.infer<typeof Assignment>;
+
+/** A person raising their hand for a role of an opportunity. Separate from private career interests. Visible to staffing and the delivery lead only while shared. */
+export const ExpressionOfInterest = z.object({
+  id: z.string().min(1),
+  personId: z.string().min(1),
+  roleRequirementId: z.string().min(1),
+  opportunityId: z.string().min(1),
+  note: z.string(),
+  status: z.enum(["shared", "withdrawn"]),
+  createdAt: z.string(),
+});
+export type ExpressionOfInterest = z.infer<typeof ExpressionOfInterest>;
+
+export const ExpressInterestInput = z.object({ roleRequirementId: z.string().min(1), note: z.string().trim().max(500).default("") }).strict();
+export const WithdrawInterestInput = z.object({ roleRequirementId: z.string().min(1) }).strict();
 
 /* ---------- Server-action inputs (validated at the boundary) ---------- */
 
@@ -250,11 +398,22 @@ export type AssistantContext = z.infer<typeof AssistantContext>;
  * Untrusted client input. Nothing in it is authoritative: the server resolves the user from the session and
  * authorizes the context, the suggestion and the subject (see features/ask-sparq/access.ts).
  */
+/** A seat as the page currently shows it (Build a Team / Fill a Role / Compare). UNTRUSTED: people are re-authorized server-side. */
+export const AssistantSeatContext = z.object({
+  capabilities: z.array(z.string().trim().min(1).max(60)).max(12),
+  personId: z.string().min(1).max(64).nullable().default(null),
+}).strict();
+export type AssistantSeatContext = z.infer<typeof AssistantSeatContext>;
+
 export const AssistantRequest = z.object({
   context: AssistantContext,
   /** Either a suggestion id or free text. */
   promptId: z.string().max(64).optional(),
   question: z.string().trim().max(500).optional(),
   subjectPersonId: z.string().max(64).optional(),
+  /** Page context (staff pages only; re-authorized in features/ask-sparq/access.ts): the opportunity slug the page is about. */
+  opportunityId: z.string().max(64).optional(),
+  /** Page context (role / team / compare / planning only): the seats on screen. */
+  seats: z.array(AssistantSeatContext).max(12).optional(),
 }).strict().refine((r) => r.promptId || r.question, { message: "promptId or question is required" });
 export type AssistantRequest = z.infer<typeof AssistantRequest>;

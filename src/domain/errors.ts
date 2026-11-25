@@ -35,7 +35,13 @@ export class InvalidRequestError extends Error {
 }
 
 /** A business rule refused the change, e.g. verified evidence cannot be removed by its owner. */
-export type DomainRuleCode = "evidence_locked" | "evidence_not_found" | "duplicate_evidence" | "interest_not_selected";
+export type DomainRuleCode =
+  | "evidence_locked" | "evidence_not_found" | "duplicate_evidence" | "interest_not_selected"
+  // proposals, assignments and expressions of interest (mirror the SQL constraints and functions of 0004/0006)
+  | "proposal_not_editable" | "invalid_transition" | "proposal_empty" | "duplicate_person" | "unknown_role" | "unknown_person" | "unknown_opportunity"
+  | "note_required" | "not_approved" | "seat_has_no_person" | "seat_already_confirmed" | "capacity_exceeded" | "invalid_dates" | "interest_closed"
+  // generic database-constraint mappings (Supabase adapter)
+  | "invalid_input" | "already_exists";
 export class DomainRuleError extends Error {
   constructor(readonly code: DomainRuleCode, message: string) {
     super(message);

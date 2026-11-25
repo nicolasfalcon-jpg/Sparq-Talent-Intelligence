@@ -5,6 +5,7 @@ import { ForbiddenError, InvalidRequestError, NotFoundError } from "@/domain/err
 import { assertAllowed, canUseAssistantContext } from "@/domain/policy";
 import type { AssistantRequest } from "@/domain/schemas";
 import { ASSISTANT_CONTENT } from "./content";
+import { OPPORTUNITY_CONTEXTS, SEAT_CONTEXTS } from "./context-rules";
 import type { AssistantActor, ResolvedAssistantRequest } from "./contract";
 
 /**
@@ -44,5 +45,24 @@ export async function resolveAssistantRequest(repos: Repositories, actor: Assist
     throw new InvalidRequestError("A person can’t be named in this context.");
   }
 
-  return { context: raw.context, promptId, question, subjectPersonId };
+  // Page context: only staff pages, only where it makes sense, and everything re-authorized (the client is never trusted).
+  let opportunityId: string | undefined;
+  if (raw.opportunityId) {
+    if (!OPPORTUNITY_CONTEXTS.includes(raw.context)) throw new InvalidRequestError("An opportunity can’t be named in this context.");
+    assertAllowed(actor, "opportunities:read");
+    if (!(await repos.opportunities.get(raw.opportunityId))) throw new NotFoundError("That opportunity doesn’t exist.");
+    opportunityId = raw.opportunityId;
+  }
+  let seats: ResolvedAssistantRequest["seats"];
+  if (raw.seats) {
+    if (!SEAT_CONTEXTS.includes(raw.context)) throw new InvalidRequestError("Seats can’t be passed in this context.");
+    assertAllowed(actor, "people:list");
+    const talent = scopedTalent(repos, actor);
+    for (const seat of raw.seats) {
+      if (seat.personId && !(await talent.getPerson(seat.personId))) throw new NotFoundError("That profile doesn’t exist.");
+    }
+    seats = raw.seats;
+  }
+
+  return { context: raw.context, promptId, question, subjectPersonId, opportunityId, seats };
 }

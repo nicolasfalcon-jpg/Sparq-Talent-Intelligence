@@ -35,6 +35,9 @@ export const PORTRAITS: Record<string, Spec> = {
   marcus: { name: "Marcus Chen", skin: SKIN.a, hair: HAIR.grey, back: "none", front: "side", shirt: "#4A4E57", bg: "#EAF3EC" },
   priya: { name: "Priya Nair", skin: SKIN.d, hair: HAIR.black, back: "long", front: "side", shirt: "#2F3A4A", bg: "#F6E6EE" },
   tomas: { name: "Tomás Herrera", skin: SKIN.c, hair: HAIR.black, back: "none", front: "cap", shirt: "#8D99A6", bg: "#F0F0F3" },
+  rafael: { name: "Rafael Ortiz", skin: SKIN.b, hair: HAIR.dark, back: "none", front: "side", shirt: "#4A4E57", bg: "#E3EFF0", beard: true },
+  ines: { name: "Inés Vidal", skin: SKIN.a, hair: HAIR.black, back: "bob", front: "fringe", shirt: "#8E5A4A", bg: "#F4EDE4" },
+  admin: { name: "Admin Demo", skin: SKIN.d, hair: HAIR.grey, back: "none", front: "buzz", shirt: "#2F3A4A", bg: "#F0F0F3" },
   laura: { name: "Laura Gómez", skin: SKIN.a, hair: HAIR.brown, back: "bob", front: "side", shirt: "#2F3A4A", bg: "#F0F0F3" },
 };
 

@@ -18,13 +18,14 @@ import "server-only";
  *    as confirmed facts, and missing evidence is "not documented", never "can't".
  */
 import { scopedTalent, type ScopedTalent } from "@/data/repositories/scoped";
+import { candidatesForSeat, resolveCapability, seatFit, teamCoverage } from "@/domain/proposals";
 import type { Repositories } from "@/data/repositories";
 import { ForbiddenError } from "@/domain/errors";
 import { authorize } from "@/domain/policy";
 import {
-  bestEvidence, describeAvailability, describeEvidence, evidenceBasis, interpretQuery, isAvailableBy, matchPeople, sourceWord, VERIFICATION_LABEL,
+  bestEvidence, describeAvailability, describeEvidence, evidenceBasis, interpretQuery, isAvailableBy, matchFor, matchPeople, sourceWord, VERIFICATION_LABEL,
 } from "@/domain/rules";
-import type { Discipline, SkillEvidence } from "@/domain/schemas";
+import type { Capability, Discipline, SkillEvidence } from "@/domain/schemas";
 import { assessTalentRequest, type PolicyCategory } from "@/domain/talent-policy";
 import { ASSISTANT_CONTENT, type AssistantAnswer, type AssistantRef } from "./content";
 import type { AssistantActor, AssistantGateway, ResolvedAssistantRequest } from "./contract";
@@ -33,6 +34,9 @@ export type { AssistantActor, AssistantGateway, ResolvedAssistantRequest } from 
 
 const NUM = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
 const n = (k: number) => NUM[k] ?? String(k);
+
+const PAGE_PROMPTS = new Set(["role-candidates", "role-confirm", "team-coverage", "team-conflicts", "compare-evidence", "planning-pending"]);
+const resolveCapabilityOnce = (label: string, catalogue: Capability[]): Capability | null => resolveCapability(label, catalogue);
 
 const noEvidenceOrFlag = (e: SkillEvidence) => `${e.label}${e.verification === "verified" ? "" : ` (${VERIFICATION_LABEL[e.verification]})`}`;
 
@@ -64,6 +68,7 @@ export class RuleBasedAssistant implements AssistantGateway {
     if (prompt?.id === "people-rn-ios") return this.skills(talent, question);
     if (prompt?.id === "passport-summary" && req.subjectPersonId) return this.passportSummary(talent, actor, question, req.subjectPersonId);
     if (prompt?.id === "passport-gaps" && req.subjectPersonId) return this.passportGaps(talent, question, req.subjectPersonId);
+    if (prompt?.computed && PAGE_PROMPTS.has(prompt.id)) return this.pageAnswer(talent, req, prompt.id);
     if (prompt) return { question, answer: prompt.a, bullets: prompt.bullets ?? [], refs: prompt.refs ?? [], actions: prompt.actions ?? [], provenance: "illustrative" };
 
     // Free text. 1) Responsible-use policy first.
@@ -86,6 +91,78 @@ export class RuleBasedAssistant implements AssistantGateway {
     if (hit) return { question, answer: hit.a, bullets: hit.bullets ?? [], refs: hit.refs ?? [], actions: hit.actions ?? [], provenance: "illustrative" };
 
     return { question, answer: "I can answer questions about documented skills, availability and open roles. Try one of the suggestions, or name a capability such as “React Native” or “AWS”.", bullets: [], refs: [], actions: [{ label: "Browse people", href: "/people", variant: "soft" }], provenance: "fallback" };
+  }
+
+  /** "Live from this page" prompts (Fill a Role, Build a Team, Compare, Planning), answered deterministically from the page context the server authorized. */
+  private async pageAnswer(talent: ScopedTalent, req: ResolvedAssistantRequest, id: string): Promise<AssistantAnswer> {
+    const question = req.question;
+    const needContext: AssistantAnswer = { question, answer: "Open this from a page that has roles or people on screen, and I’ll use them. Nothing is guessed.", bullets: [], refs: [], actions: [], provenance: "fallback" };
+    const today = this.repos.clock.today();
+
+    if (id === "planning-pending") {
+      const pending = (await talent.listPeople()).filter((r) => r.availability.status === "pending").sort((a, b) => a.availability.availableFrom.localeCompare(b.availability.availableFrom));
+      return {
+        question, bullets: [], actions: [{ label: "Open Planning", href: "/planning", variant: "soft" }], provenance: "computed",
+        answer: pending.length === 0 ? "Every availability date is confirmed." : `${n(pending.length)} ${pending.length === 1 ? "person has" : "people have"} an end date that a delivery lead has not confirmed yet.`,
+        refs: pending.map((r) => ({ personId: r.person.id, name: r.person.name, href: `/people/${r.person.id}`, evidence: `${r.availability.currentProject ?? "Current project"} · free from ${describeAvailability(r.availability, today).compact}`, when: "Pending", whenTone: "mute" as const })),
+      };
+    }
+
+    const seats = req.seats ?? [];
+    if (seats.length === 0) return needContext;
+    const catalogue = await talent.listCapabilities();
+    const people = await Promise.all([...new Set(seats.flatMap((s) => (s.personId ? [s.personId] : [])))].map((pid) => talent.getPerson(pid)));
+    const byId = new Map(people.flatMap((a) => (a ? [[a.person.id, a] as const] : [])));
+
+    if (id === "role-candidates") {
+      const rows = await talent.listPeople();
+      const { matches, uncatalogued } = candidatesForSeat(seats[0]!.capabilities, rows, catalogue);
+      const rowById = new Map(rows.map((r) => [r.person.id, r]));
+      const top = matches.slice(0, 4);
+      return {
+        question, bullets: uncatalogued.length ? [`Not in the skills catalogue (so nobody can match them yet, which is not the same as nobody having them): ${uncatalogued.join(", ")}`] : [], actions: [], provenance: "computed",
+        answer: top.length === 0 ? "Nobody has documented experience for these requirements yet. That is not the same as nobody having it." : `${n(top.length)} ${top.length === 1 ? "person has" : "people have"} documented experience for at least one requirement. Ordered by documented evidence, then availability. Not a ranking of people.`,
+        refs: top.map((m) => ({ personId: m.personId, name: rowById.get(m.personId)!.person.name, href: `/people/${m.personId}`, evidence: m.matches.map((x) => `${x.name}: ${describeEvidence(x.level, x.verification).text}`).join(" · ") })),
+      };
+    }
+
+    if (id === "role-confirm" || id === "team-coverage") {
+      const evidenceByPerson = Object.fromEntries([...byId].map(([pid, a]) => [pid, a.evidence]));
+      const cov = teamCoverage(seats, evidenceByPerson, catalogue);
+      const bullets = [
+        cov.documented.length ? `Professional experience documented on this team: ${cov.documented.join(", ")}` : "",
+        cov.trainingOrIndependent.length ? `Training or independent work only: ${cov.trainingOrIndependent.join(", ")}` : "",
+        cov.notDocumented.length ? `Not documented (a real gap, or simply undocumented: ask the people involved): ${cov.notDocumented.join(", ")}` : "",
+        cov.waitingOnOpenSeats.length ? `Waiting on an open seat: ${cov.waitingOnOpenSeats.join(", ")}` : "",
+      ].filter(Boolean);
+      return { question, answer: id === "role-confirm" ? "These are the requirements that still need confirmation, from documented evidence only." : "Coverage from documented capabilities, across everyone proposed.", bullets, refs: [], actions: [], provenance: "computed" };
+    }
+
+    if (id === "team-conflicts") {
+      if (!req.opportunityId) return needContext;
+      const opp = await this.repos.opportunities.get(req.opportunityId);
+      if (!opp) return needContext;
+      const lines = seats.flatMap((s) => {
+        const a = s.personId ? byId.get(s.personId) : undefined;
+        if (!a) return [];
+        const fit = seatFit(a.availability, opp.kickoff, opp.id, today);
+        return fit.conflict ? [`${a.person.name}: ${fit.text}`] : [];
+      });
+      return { question, answer: lines.length === 0 ? "No availability conflicts: everyone placed is free before kick-off." : `${n(lines.length)} availability ${lines.length === 1 ? "conflict" : "conflicts"} against the ${opp.client} kick-off.`, bullets: lines, refs: [], actions: [], provenance: "computed" };
+    }
+
+    if (id === "compare-evidence") {
+      const placed = seats.filter((s) => s.personId && byId.has(s.personId));
+      if (placed.length === 0) return needContext;
+      const refs: AssistantRef[] = placed.map((s) => {
+        const a = byId.get(s.personId as string)!;
+        const caps = s.capabilities.map((label) => resolveCapabilityOnce(label, catalogue)).filter((c): c is Capability => c !== null);
+        const text = caps.length ? caps.map((c) => { const m = matchFor(a.evidence, c); return `${c.name}: ${describeEvidence(m.level, m.verification).text}`; }).join(" · ") : "No catalogued requirement named";
+        return { personId: a.person.id, name: a.person.name, href: `/people/${a.person.id}`, evidence: text };
+      });
+      return { question, answer: "Documented evidence side by side, source and verification shown separately. This is not a score or a ranking.", bullets: [], refs, actions: [], provenance: "computed" };
+    }
+    return needContext;
   }
 
   /** A request the responsible-use policy declines: a short explanation plus a legitimate, requirement-based alternative. */
